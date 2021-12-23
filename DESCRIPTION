@@ -1,0 +1,18 @@
+Package: hplot
+Type: Package
+Title: Contains utility functions for when using base R graphics. This
+    package is required by many of my other packages.
+Description: Contains utility functions and custom plot functions that I 
+    commonly use when Writing R code. see ?hplot for the list of functions
+    and their individual help pages for details and examples of their use.
+Version: 0.0.1
+Date: 2021-12-23
+Author: <malcolm.haddon@gmail.com>
+Maintainer: <malcolm.haddon@gmail.com>
+Depends:
+    R (>= 3.5.0)
+License: GPL-2
+Imports: 
+    knitr
+RoxygenNote: 7.1.1
+Encoding: UTF-8
