@@ -1,7 +1,327 @@
 
 
+#' @title addlnorm estimates a log-normal distribution from output of hist.
+#'
+#' @description  addlnorm estiamtes a log-normal distribution from output of
+#'    a histogram of a data set.
+#'
+#' @param inhist is the output from a call to 'hist' (see examples)
+#' @param xdata is the data that is being plotted in the histogram.
+#' @param inc defaults to a value of 0.01; is the fine grain increment used to
+#'    define the normal curve. The histogram will be coarse grained relative to
+#'    this.
+#'
+#' @return a 4 x N matrix of x and y values to be used to plot the fitted normal
+#'    probability density function.Combined with estiamtes of mean(log(indata))
+#'    and log(sd(indata))
+#' @export addlnorm
+#'
+#' @examples
+#' egdata <- rlnorm(200,meanlog=0.075,sdlog=0.5)
+#' outh <- hist(egdata,main="",col=2,breaks=seq(0,8,0.2))
+#' ans <- addlnorm(outh,egdata)
+#' lines(ans[,"x"],ans[,"y"],lwd=2,col=4)
+addlnorm <- function(inhist,xdata,inc=0.01) {
+  lower <- inhist$breaks[1]
+  upper <- tail(inhist$breaks,1)
+  cw <- inhist$breaks[2]-inhist$breaks[1]
+  x <- seq(lower,upper, inc) #+ (cw/2)
+  avCE <- mean(log(xdata),na.rm=TRUE)
+  sdCE <- sd(log(xdata),na.rm=TRUE)
+  N <- length(xdata)
+  ans <- cbind(x,(N*cw) * stats::dlnorm(x,avCE,sdCE),avCE,sdCE)
+  colnames(ans) <- c("x","y","avCE","sdCE")
+  return(ans)
+} # end of addlnorm
 
-# plotutils ----------------------------------------------------
+#' @title addnorm adds a normal distribution to a histogram of a data set.
+#'
+#' @description  addnorm adds a normal distribution to a histogram of a data
+#'    set. This is generally to be used to illustrate whether log-transformation
+#'    normalizes a set of catch or cpue data.
+#'
+#' @param inhist is the output from a call to 'hist' (see examples)
+#' @param xdata is the data that is being plotted in the histogram.
+#' @param inc defaults to a value of 0.01; is the fine grain increment used to
+#'    define the normal curve. The histogram will be coarse grained relative to
+#'    this.
+#'
+#' @return a list with a vector of 'x' values and a vector of 'y' values (to be
+#'    used to plot the fitted normal probability density function), and a vector
+#'    used two called 'stats' containing the mean and sandard deviation of the
+#'    input data
+#' @export addnorm
+#' @examples
+#' x <- rnorm(1000,mean=5,sd=1)
+#' dev.new(height=6,width=4,noRStudioGD = TRUE)
+#' par(mfrow= c(1,1),mai=c(0.5,0.5,0.3,0.05))
+#' par(cex=0.85, mgp=c(1.5,0.35,0), font.axis=7)
+#' outH <- hist(x,breaks=25,col=3,main="")
+#' nline <- addnorm(outH,x)
+#' lines(nline$x,nline$y,lwd=3,col=2)
+#' print(nline$stats)
+addnorm <- function(inhist,xdata,inc=0.01) {
+  lower <- inhist$breaks[1]
+  upper <- tail(inhist$breaks,1)
+  cw <- inhist$breaks[2]-inhist$breaks[1]
+  x <- seq(lower,upper, inc) #+ (cw/2)
+  avCE <- mean(xdata,na.rm=TRUE)
+  sdCE <- sd(xdata,na.rm=TRUE)
+  N <- length(xdata)
+  ans <- list(x=x,y=(N*cw)*dnorm(x,avCE,sdCE),stats=c(avCE,sdCE,N))
+  return(ans)
+} # end of addnorm
+
+#' @title categoryplot generates a bubble plot of the contents of a matrix
+#' 
+#' @description categoryplot generates a bubble plot of the contents of a matrix
+#'     in an effort to visualize 2-D trends in the data. It must have the numeric
+#'     year variable in the columns. So if using table or tapply to generate the
+#'     matrix put year last in the list of variables. 
+#'
+#' @param x the matrix of values to be plotted
+#' @param xlab the label for the x-axis, default=''
+#' @param ylab the label for the y-axis, default=''
+#' @param mult the multiplier for the values. Should be selected so that the 
+#'     circles produce a visual representation of the variation in the data
+#' @param gridx should grey grid-lines be added for each year. default=FALSE
+#' @param addtotal should the sum of the year columns be printed at the top of
+#'     the diagram. default=FALSE. If TRUE it prints the column totals 
+#'     sequentially addlines-2 lines and then addlines-1 lines above the circles
+#' @param addlines if addtotal is TRUE then a number of lines are added at the 
+#'     top of the plot to contain the column totals. This argument determines 
+#'     the number of extra lines. default=3, but if only a few then a smaller 
+#'     number would be more appropriate. If addtotal = FALSE, then addlines is 
+#'     ignored
+#'
+#' @return nothing but it does generate a plot
+#' @export
+#'
+#' @examples
+#' xmat <- matrix(rnorm(25,5,2),nrow=5,ncol=5,dimnames=list(1:5,1:5))
+#' categoryplot(xmat,mult=0.03,ylab="Random Numbers",addtotal=TRUE,addline=2)
+categoryplot <- function(x,xlab="",ylab="",mult=0.1,gridx=FALSE,addtotal=FALSE,
+                         addlines=3) {  
+  xlabel <- colnames(x)
+  nx <- length(xlabel)
+  years <- as.numeric(xlabel) # assumes columns are years
+  ylabel <- rownames(x) # make no assumption about rows. can be categorical
+  ny <- length(ylabel)
+  yvar <- seq(1,ny,1)
+  upy <- ny+1
+  if (addtotal) upy <- ny+addlines
+  yrtot <- colSums(x,na.rm=TRUE)
+  countyr <- apply(x,2,countgtzero)
+  xval <- x
+  rownames(xval) <- yvar
+  values <- expandmatrix(xval)
+  plotprep(width=7, height=6, newdev=FALSE)
+  parset(cex=0.85)
+  plot(values[,1],values[,2],type="n",xlab=xlab,ylab=ylab,ylim=c(0,upy),
+       yaxs="i",yaxt="n",xaxt="n",xaxs="r")
+  axis(side=1,at=xlabel,labels=xlabel)
+  axis(side=2,at=yvar,labels=ylabel)
+  if (gridx) 
+    for (i in 1:nx) abline(v=xlabel[i],lwd=1,lty=3,col="grey")
+  for (i in 1:nx) # i = 1
+    symbols(rep(xlabel[i],ny),1:ny,circles=(mult*x[,i]),inches=FALSE,add=TRUE,
+            bg=rgb(1, 0, 0, 0.5), fg = "black")
+  if (addtotal) {
+    incstep <- trunc(addlines/2)
+    if (incstep > 2) incstep <- incstep - 1 
+    for (yr in 1:nx) {
+      oddeven <- yr %% 2
+      if (oddeven == 0) text(years[yr],(ny+incstep),round(yrtot[yr],1))
+      else  text(years[yr],(ny+incstep*2),round(yrtot[yr],1))
+    }
+  }
+  return(invisible(list(yrtotal=yrtot,yrcount=countyr)))
+} # end of categoryplot
+
+#' @title countgtzero used in apply to count the number >0 in a vector
+#'
+#' @description countgtzero used in apply to count number >0 in a vector
+#' @param invect vector of values
+#' @return A single value of number of values > 0
+#' @export countgtzero
+#' @examples
+#' \dontrun{
+#'   set.seed(12346)
+#'   x <- trunc(runif(10)*10)
+#'   x
+#'   countgtzero(x)  # should be 9
+#' }
+countgtzero <- function(invect) {
+  pick <- which(invect > 0)
+  return(length(pick))
+}
+
+#' @title expandmatrix reshapes a matrix of values into a 3 column data.frame
+#' 
+#' @description expandmatrix takes an oblong matrix of values and expands it
+#'     into a three column data.frame of row, column, value. This is then easier 
+#'     to plot as a scattergram or is used within categoryplot. It expects to 
+#'     have the year values in the columns = xvalues
+#'
+#' @param x a matrix of values 
+#'
+#' @return a 3-column matrix of (rows x cols) rows from the input matrix
+#' @export
+#'
+#' @examples
+#' x <- matrix(rnorm(25,5,1),nrow=5,ncol=5,dimnames=list(1:5,1:5))
+#' res <- expandmatrix(x)
+#' res
+expandmatrix <- function(x) { #  x=t(numyr)
+  ylabel <- as.numeric(rownames(x))
+  xlabel <- as.numeric(colnames(x))
+  nx <- length(xlabel)
+  ny <- length(ylabel)
+  res <- as.data.frame(matrix(0,nrow=(nx*ny),ncol=3))
+  count <- 0
+  for (i in 1:nx) {
+    for (j in 1:ny) {
+      count <- count + 1
+      res[count,] <- c(xlabel[i],ylabel[j],x[j,i])
+    }
+  }
+  rownames(res) <- paste0(res[,1],"_",res[,2])
+  colnames(res) <- c("rows","cols","value")
+  return(res)
+} # end of expandmatrix
+
+
+#' @title getmin generates the lower bound for a plot
+#'
+#' @description getmin generates lower bound for a plot where it is unknown
+#'     whether the minimum is less than zero of not. If less than 0 then
+#'     multiplying by the default mult of 1.05 works well but if the outcome
+#'     if > 0 then the multiplier needs to be adjusted appropriately so 
+#'     the minimum is slightly lower than the minimum of the data
+#'
+#' @param x the vector of data to be tested for its minimum
+#' @param mult the multiplier for both ends, defaults to 1.05 (=0.95 if >0)
+#'
+#' @return a suitable lower bound for a plot if required
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' vect <- rnorm(10,mean=0,sd=2)
+#' sort(vect)
+#' getmin(vect,mult=1.0)
+#' }
+getmin <- function(x,mult=1.05) {
+  ymin <- min(x,na.rm=TRUE)
+  if (ymin < 0) {
+    ymin <- ymin * mult
+  } else {
+    ymin <- ymin * (2 - mult)
+  }
+  return(ymin)
+} # end of getmin
+
+#' @title getmax generates the upper bound for a plot
+#'
+#' @description getmax generates upper bound for a plot where it is unknown
+#'     whether the maximum is greater than zero of not. If > 0 then
+#'     multiplying by the default mult of 1.05 works well but if the outcome
+#'     if < 0 then the multiplier needs to be adjusted appropriately so the 
+#'     maximum is slightly higher than the maximum of the data
+#'
+#' @param x the vector of data to be tested for its maximum
+#' @param mult the multiplier for both ends, defaults to 1.05 (=0.95 if < 0)
+#'
+#' @return a suitable upper bound for a plot if required
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#'  vect <- rnorm(10,mean=0,sd=2)
+#'  sort(vect,decreasing=TRUE)
+#'  getmax(vect,mult=1.0)
+#'  vect <- rnorm(10,mean = -5,sd = 1.5)
+#'  sort(vect,decreasing=TRUE)
+#'  getmax(vect,mult=1.0)
+#' }
+getmax <- function(x,mult=1.05) {
+  ymax <- max(x,na.rm=TRUE)
+  if (ymax > 0) {
+    ymax <- ymax * mult
+  } else {
+    ymax <- ymax * (2 - mult)
+  }
+  return(ymax)
+} # end of getmax
+
+
+#' @title histyear plots a histogram of a given variable for each year available
+#'
+#' @description histyear plots a histogram of a given variable for each year
+#'     available
+#'
+#' @param x the data.frame of data with at least a 'Year' and pickvar present
+#' @param xlimit the xaxis bounds for all histograms, defaults to c(NA,NA,NA),
+#'     the values would be as used in seq(xlimit[1],xlimit[2],xlimit[3]). If the
+#'     default is used then the 0 and 0.98 quantiles of the variable are used as
+#'     the bounds with 25 bins
+#' @param pickvar which variable to plot each year default = 'cpue'
+#' @param years which variable name identifies the yaer column, default='year'
+#' @param varlabel what label to use on x-axis, default = 'CPUE'
+#' @param vline an optional vertical line to aid interpretation. If it is
+#'     numeric it will be added to each plot
+#' @param plots how many plots to generate, default = c(5,5)
+#' @param normadd should a normal distribution be added to each plot. 
+#'     default=TRUE
+#' @param left on which side of each plot should the year and number of records 
+#'     be placed left=TRUE is the default. left=FALSE will place text on right
+#'
+#' @return invisibly, a matrix of the year, mean value, stdev, and N number of
+#'     observations. It also plots a histogram for each year and fits a
+#'     normal distribution to each one.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' print("still to be developed")
+#' # pickvar="x100nethr";years="year";varlabel="log(CPUE)";vline=NA;plots=plotnum;
+#' # normadd=TRUE;left=FALSE;xlimit=c(0,250,10)
+#' }
+histyear <- function(x,xlimit=c(NA,NA,NA),
+                     pickvar="cpue",years="year",varlabel="CPUE",
+                     vline=NA,plots=c(5,5),normadd=TRUE,left=TRUE) {
+  yrs <- sort(unique(x[,years]))
+  nyr <- length(yrs)
+  columns <- c("Year","maxcount","Mean","StDev","N","Min","Max")
+  results <- matrix(0,nrow=nyr,ncol=length(columns),dimnames=list(yrs,columns))
+  par(mfcol=plots,mai=c(0.25,0.25,0.05,0.05),oma=c(1.2,1.0,0.0,0.0))
+  par(cex=0.75, mgp=c(1.35,0.35,0), font.axis=7,font=7,font.lab=7)
+  if (left) adj=0 else adj=1
+  if (is.na(xlimit[1])) {
+    xlimit[1:2] <- quantile(x[,pickvar],probs=c(0,0.99))
+    bins <- seq(xlimit[1],xlimit[2],length=25)
+  } else { bins <- seq(xlimit[1],xlimit[2],xlimit[3]) }
+  pickX <- which((x[,pickvar] >= xlimit[1]) &
+                   (x[,pickvar] <= xlimit[2]))
+  x2 <- droplevels(x[pickX,])
+  for (yr in 1:nyr) {
+    pick <- which(x2[,years] == yrs[yr])
+    outh <- hist(x2[pick,pickvar],breaks=bins,col=2,main="",xlab="",ylab="")
+    mtext(paste0("  ",yrs[yr]),side=3,outer=F,line=-2,font=7,cex=0.9,adj=adj)
+    mtext(paste0("  ",length(pick)),side=3,outer=F,line=-3,font=7,cex=0.9,adj=adj)
+    if (is.numeric(vline)) abline(v=vline,col=4,lwd=2)
+    if (normadd) {
+      pickmax <- which.max(outh$counts)
+      ans <- addnorm(outh,x[pick,pickvar])
+      lines(ans$x,ans$y,col=3,lwd=2)
+      results[yr,] <- c(yrs[yr],outh$mids[pickmax],ans$stats,
+                        range(x2[pick,pickvar],na.rm=TRUE))
+    }
+  }
+  mtext("Frequency",side=2,outer=T,line=0.0,font=7,cex=1.0)
+  mtext(varlabel,side=1,outer=T,line=0.0,font=7,cex=1.0)
+  return(invisible(results))
+} # end of histyear
 
 #' @title inthist a replacement for the hist and boxplot functions
 #'
@@ -312,7 +632,7 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 
 #' @title plotnull generates an empty plot when one is needed
 #'
-#' @description plotnull there are often circumstances, for example, when
+#' @description plotnull, there are often circumstances, for example, when
 #'     plotting up results from each year and each SAU, where there will be
 #'     combinations of year and SAU that have no data, but to avoid a problem
 #'     with the plotting it is necessary to generate an empty plot.
@@ -515,4 +835,161 @@ uphist <- function(x,maxval=NA,...) {
     stop("maxval in uphist too small and no data remaining. \n")
   }
 } # end of uphist
+
+
+#' @title xyplotyear generates n year xy plots from a data.frame
+#' 
+#' @description xyplotyear meets a common need that occurs when we have xy data
+#'     from multiple years and want to plot them we can use xyplotyear. The 
+#'     y-label for each plot is the year of data. The numeric label at the top 
+#'     of each plot includes the number of observations, the gradient of the
+#'     regression, if included, and the sum of the yvar for each year. The same
+#'     y-axis scale is used for each plot.
+#'
+#' @param x the data.frame containing the data
+#' @param yvar the character name of y-axis column in the data.frame x 
+#' @param xvar the character name of x-axis column in the data.frame x 
+#' @param year the name of the year variable, default="year"
+#' @param plotnum a vector of rows and cols for the plots, default=c(1,1). This
+#'     assumes that the columns are filled first using mfcol
+#' @param xlim the range of the xvar to be plotted, default=c(0,12); If c(NA,NA)
+#'     the xlim is set to the range of the input xvar
+#' @param addline should a linear regression be fitted and added to each plot
+#'     default=TRUE
+#' @param origin should the regression pass through the origin, default=FALSE 
+#' @param xlab the  generic label for the x-axis, default='', if left empty the 
+#'     xvar name will be used
+#' @param ylab the generic label for the y-axis, default='', if left empty the 
+#'     yvar name will be used
+#' @param maxy is available if you wish to vary the maximum y-axis value. The 
+#'     default=NA, which means it will use getmax x 1.15 to find a maximum 
+#' 
+#'
+#' @return currently nothing but it does plot a graph
+#' @export
+#'
+#' @examples
+#' print("wait on internal data")
+xyplotyear <- function(x,yvar="",xvar="",year="year",plotnum=c(1,1),
+                       xlim=c(0,12),addline=TRUE,origin=FALSE,
+                       xlab="",ylab="",maxy=NA) {
+  if (is.na(maxy)) {
+    ymax <- getmax(x[,yvar],mult=1.15)
+  } else {
+    ymax <- maxy
+  }
+  parset(plots=plotnum,margin=c(0.2,0.35,0.05,0.05),outmargin=c(1.5,1.5,0,0), 
+         cex=0.7,byrow=FALSE)
+  yrs <- sort(unique(x[,year]))
+  nyr <- length(yrs)
+  if (is.na(xlim[1])) xlim <- range(x[,xvar])
+  for (i in 1:nyr) {
+    pickY <- which(x[,year] == yrs[i])
+    N <- length(pickY)
+    x2 <- droplevels(x[pickY,])
+    plot(x2[,xvar],x2[,yvar],type="p",pch=1,xlab="",ylab=yrs[i],
+         xlim=xlim,ylim=c(0,ymax))
+    label <- paste0(N," ",round(sum(x2[,yvar],na.rm=TRUE)/1000,2))
+    if (addline) {
+      if (origin) {
+        model <- lm(x2[,yvar] ~ x2[,xvar] - 1)  
+        grad <- round(coef(model),2)
+      } else {
+        model <- lm(x2[,yvar] ~ x2[,xvar]) 
+        grad <- round(coef(model)[2],2)
+      }
+      abline(model,lwd=2,col=2)
+      label <- paste0(N," _ ",grad," _ ",
+                      round(sum(x2[,yvar],na.rm=TRUE)/1000,2))
+    }
+    text(0,0.95*ymax,label,cex=0.8,pos=4)
+  }
+  if (nchar(xlab) == 0) xlab <- xvar
+  if(nchar(ylab) == 0) ylab <- yvar
+  mtext(xlab,side=1,line=0,cex=1.0,outer=TRUE)
+  mtext(ylab,side=2,line=0,cex=1.0,outer=TRUE)
+} # end of xyplotyear
+
+
+#' @title yearBubble Generates a bubbleplot of x against Year.
+#'
+#' @description yearBubble Generates a bubbleplot of x against Year.
+#'
+#' @param x a matrix of variable * Year; although it needn't be year
+#' @param xlabel defaults to nothing but allows a custom x-axis label
+#' @param ylabel defaults to nothing but allows a custom y-axis label
+#' @param diam defaults to 0.1, is a scaling factor to adjust bubble size
+#' @param vline defaults to NA but allows vertical ablines to higlight regions
+#' @param txt defaults are lines to vessel numbers, catches, catches, maximumY
+#' @param Fyear defaults to FALSE, if TRUE generates a fishing year x-axis
+#' @param xaxis defaults to TRUE, allows for a custom x-axis if desired by
+#'     using something like axis(1,at=years,labels=years).
+#' @param yaxis defaults to TRUE, allows for a custom y-axis if desired by
+#'     using something like axis(side=2,at=years,labels=years).
+#' @param hline defaults to FALSE
+#' @param nozero defaults to FALSE, if TRUE replaces all zeros with NA so they
+#'     do not appear in the plot
+#'
+#' @return invisible, vectors of catch and vessels by year, and radii matrix
+#' @export yearBubble
+#' @examples
+#' \dontrun{
+#'  data(sps)
+#'  cbv <- tapply(sps$catch_kg,list(sps$Vessel,sps$Year),sum,na.rm=TRUE)/1000
+#'  dim(cbv)
+#'  early <- rowSums(cbv[,1:6],na.rm=TRUE)
+#'  late <- rowSums(cbv[,7:14],na.rm=TRUE)
+#'  cbv1 <- cbv[order(late,-early),]
+#'  plotprep(width=7,height=6)
+#'  yearBubble(cbv1,ylabel="Catch by Trawl",vline=2006.5,diam=0.2)
+#' }
+yearBubble <- function(x,xlabel="",ylabel="",diam=0.1,vline=NA,txt=c(4,6,9,11),
+                       Fyear=FALSE,xaxis=TRUE,yaxis=TRUE,hline=FALSE,nozero=FALSE) {
+  nyrs <- dim(x)[2]
+  if (Fyear) {
+    tyrs <- colnames(x)  # assumes a yyyy/yyyy format
+    if (nchar(tyrs[1]) != 9) warning("Wrong fishing year format for yearBubble \n")
+    years <- as.numeric(substr(tyrs,1,4))
+  } else { years <- as.numeric(colnames(x)) # assumes columns are years
+  }
+  nves <- length(rownames(x))
+  yvar <- seq(1,nves,1)
+  if (nozero) {
+    pick <- which(x == 0)
+    x[pick] <- NA
+  }
+  radii <- sqrt(x)
+  biggest <- max(radii,na.rm=TRUE)
+  catch <- colSums(x,na.rm=TRUE)   # total annual catches
+  numves <- apply(x,2,function(x1) length(which(x1 > 0))) # num vess x year
+  answer <- list(catch,numves,radii) # generate output
+  names(answer) <- c("Catch","Vessels","Radii")
+  xspace <- 0.3
+  if (nchar(xlabel) > 0) xspace <- 0.45
+  par(mfrow= c(1,1))
+  par(mai=c(xspace,0.45,0.1,0.1), oma=c(0.0,0.0,0.0,0.0))
+  par(cex=0.85, mgp=c(1.5,0.3,0), font.axis=7,font=7)
+  xt <- "s"
+  yt <- "s"
+  if (!xaxis) xt <- "n"
+  if (!yaxis) yt <- "n"
+  plot(years,years,type="n",xlab="",ylab="",ylim=c(0,(nves+txt[4])),yaxs="r",
+       yaxt=yt,xaxt=xt,xaxs="r")
+  if (hline) abline(h=yvar,col="grey")
+  for (x in 1:nyrs) {
+    yr <- years[x]
+    odd.even<-x%%2
+    if (odd.even == 0) text(yr,nves+txt[3],round(catch[x],0),cex=0.65,font=7)
+    else text(yr,nves+txt[2],round(catch[x],0),cex=0.65,font=7)
+    text(yr,nves+txt[1],numves[x],cex=0.8,font=7)
+    mult <- max(radii[,x],na.rm=TRUE)/biggest
+    symbols(rep(yr,nves),yvar,circles=radii[,x],inches=diam*mult,
+            bg=rgb(1, 0, 0, 0.5), fg = "black",xlab="",ylab="",add=TRUE)
+  }
+  
+  if (length(vline) > 0) abline(v=c(vline),col="grey")
+  title(ylab=list(ylabel, cex=1.0, col=1, font=7))
+  return(invisible(answer))
+} # end of YearBubble
+
 

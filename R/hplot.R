@@ -16,9 +16,9 @@
 #' @name hplot
 NULL
 
-#' @importFrom grDevices dev.cur dev.new dev.off png palette
+#' @importFrom grDevices dev.cur dev.new dev.off png palette rgb 
 #' @importFrom graphics par grid plot axis mtext polygon title hist lines text
-#' @importFrom graphics points
+#' @importFrom graphics points abline symbols
 #' @importFrom utils tail head str write.table write.csv
-#' @importFrom stats quantile loess sd 
+#' @importFrom stats quantile loess sd coef lm dnorm
 NULL

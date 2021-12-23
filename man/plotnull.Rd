@@ -13,7 +13,7 @@ plotnull(msg = "")
 nothing but it does generate a plot
 }
 \description{
-plotnull there are often circumstances, for example, when
+plotnull, there are often circumstances, for example, when
     plotting up results from each year and each SAU, where there will be
     combinations of year and SAU that have no data, but to avoid a problem
     with the plotting it is necessary to generate an empty plot.
