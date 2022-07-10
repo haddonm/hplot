@@ -3,13 +3,11 @@
 #' The hplot package provides an array of utility functions and custom graphics
 #' functions.
 #'
-#' @section plotutils:
-#' \describe{
-#'   \item{newplot}{bare-bones plotprep, opens a new device + default par}
-#'   \item{parsyn}{prints par command syntax to the console to be copied}
-#'   \item{plotprep}{sets up a plotting device external to Rstudio}
-#'   \item{parset}{simplifies the definition of main par parameters}
-#'   \item{setplot}{writes a base graphics template to the console}
+#' @seealso{
+#'    \link{plot1}, \link{plotprep}, \link{parset}, \link{addnorm}, 
+#'    \link{getmax}, \link{getmin}, \link{pickbound}, \link{yearBubble}, 
+#'    \link{inthist}, \link{plotnull}, \link{plotxyy}, \link{uphist}
+#' 
 #' }
 #' 
 #' @docType package
