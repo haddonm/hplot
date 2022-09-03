@@ -24,4 +24,5 @@ devtools::install_github("haddonm/hplot")
 
 ## Development
 
--   2021-12-23
+-   2022-09-04 hplot 0.0.2 Added makepolygon, which simplifies the
+    generation of the input data for a polygon.

@@ -9,7 +9,7 @@ plotprep(
   height = 3.6,
   usefont = 7,
   cex = 0.85,
-  newdev = TRUE,
+  newdev = FALSE,
   filename = "",
   resol = 300,
   verbose = TRUE
@@ -25,7 +25,7 @@ plotprep(
 \item{cex}{default is 0.85, the font size font used for text in the plots}
 
 \item{newdev}{reuse a previously defined graphics device or make new one;
-defaults to TRUE}
+defaults to FALSE}
 
 \item{filename}{defaults to "" = do not save to a filename. If a
 filename is input the last three characters will be checked and if

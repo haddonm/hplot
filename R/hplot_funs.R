@@ -465,6 +465,55 @@ linept <- function(x,y,lwd=1,pch=16,...) {
   points(x,y,pch=pch,...)
 }
 
+#' @title makepolygon simplifies the creation of a polygon from xy data
+#' 
+#' @description makepolygon simplifies the generation of the outline data for
+#'     plotting a polygon when one has a pair of lines on a graph that one wants
+#'     to use as the bounds of a polygon. For example, given time-series of 
+#'     biomass trajectories across years, one may wish to impose, say, the 90th
+#'     quantiles to illustrate how the trends and variation changes through time.
+#'     One can use single coloured lines o depict such bounds or, alternatively,
+#'     one can use a polygon filled with an rgb transparent colour to more 
+#'     clearly show the outcome. This would be especially useful when trying to 
+#'     compare different sets of time-series. The overlap and differences would
+#'     become more clear visually.
+#'
+#' @param y1 the y-axis values for one of the time-series
+#' @param y2 the y-axis values for the other series
+#' @param x1 the x-axis values (often years) relating to the y1 values
+#' @param x2 the x-axis values (often years) relating to the y2 values. It is
+#'     expected that often x2 will be identical to x1 and so the default value
+#'     for x2 = NULL, in which case it is set - x1 inside the function
+#'
+#' @return a two column matrix that can act as the input to the polygon function
+#' @export
+#'
+#' @examples
+#' yrs <- 2000:2020
+#' nyrs <- length(yrs)
+#' reps <- 100
+#' av <- 5:(nyrs+4)
+#' dat <- matrix(0,nrow=reps,ncol=nyrs,dimnames=list(1:reps,yrs))
+#' for (i in 1:nyrs) dat[,i] <- rnorm(reps,mean=av[i],sd=2)
+#' qs <- apply(dat,2,quantile)
+#' poldat <- makepolygon(y1=qs[2,],y2=qs[4,],x1=yrs)
+#' plot(yrs,dat[1,],type="p",pch=16,cex=0.2,col=1,ylim=c(0,30),
+#' panel.first=grid(),xlab="years",ylab="data")
+#' for (i in 1:reps) points(yrs,dat[i,],pch=16,col=1,cex=0.2)
+#' polygon(poldat,border=NULL,col=rgb(1,0,0,0.1))
+makepolygon <- function(y1,y2,x1,x2=NULL) {
+  if ((is.null(x2))) x2 <- x1
+  if ((length(x1) != length(y1)) | (length(x2) != length(y2))) 
+    stop("Respective x-axis lengths MUST equal y-axis lengths in makexxpoly \n")
+  seqord <- 1:length(x2)
+  rx2 <- x2[order(seqord,decreasing=TRUE)]
+  seqord <- 1:length(y2)
+  ry2 <- y2[order(seqord,decreasing=TRUE)]  
+  x <- c(x1,rx2)
+  y <- c(y1,ry2)
+  return(cbind(x,y))
+} # end of makepolygon
+
 #' @title pickbound selects an optimum number of rows and cols for a plot
 #' 
 #' @description pickbound enables the automatic selection of a pre-determined
@@ -667,7 +716,7 @@ plotnull <- function(msg="") {
 #' @param usefont default is 7 (bold Times) 1 sans serif, 2 sans serif bold
 #' @param cex default is 0.85, the font size font used for text in the plots
 #' @param newdev reuse a previously defined graphics device or make new one;
-#'     defaults to TRUE
+#'     defaults to FALSE
 #' @param filename defaults to "" = do not save to a filename. If a
 #'     filename is input the last three characters will be checked and if
 #'     they are not png then .png will be added.
@@ -685,7 +734,7 @@ plotnull <- function(msg="") {
 #'  hist(x,breaks=30,main="",col=2)
 #' }
 plotprep <- function(width=6,height=3.6,usefont=7,cex=0.85,
-                     newdev=TRUE,filename="",resol=300,verbose=TRUE) {
+                     newdev=FALSE,filename="",resol=300,verbose=TRUE) {
   if  ((names(dev.cur()) != "null device") &
        (newdev)) suppressWarnings(dev.off())
   lenfile <- nchar(filename)
