@@ -805,6 +805,37 @@ plotxyy <- function(x,y1,y2,xlab="",ylab1="",ylab2="",cex=0.85,fnt=7,
   grid(ny=0)
 } # end of plotxyy
 
+#' @title RGB a wrapper for col2rgb and rgb with maxColorValue=255
+#'
+#' @description RGB is a wrapper that simplifies the use of the rgb function
+#'     used to generate transparent colours in plots. The basic palette of
+#'     colours used can be altered with the palette() function, and see
+#'     palette.pals() for a list of the palettes available by default. Each of
+#'     those defines 8 colours and col is either a named colour or a number
+#'     from 1 - 8. The outcome is a vector of three values the first being the
+#'     value from 0-255 for red, then green, then blue. The intensity of the
+#'     colour used is given by alpha, again 0-255. The use of 255 rather than 1
+#'     for the maximum value is in lione with standard usage of rgb colours.
+#'     This function is not vectorized so only a single number at a time can be
+#'     selected.
+#'
+#' @param col a single value as either a number from 1-8 or a named colour, for
+#'     example 'pink'
+#' @param alpha the intensity of colour as an integer from 0-255, where 255 is
+#'     a solid colour
+#'
+#' @return a vector of length 3 containing integer values from 0-255 in order
+#'     of red, green and blue as an rgb code
+#' @export
+#'
+#' @examples
+#' RGB("pink",alpha=255)
+#' RGB(2,alpha=127)
+RGB <- function(col,alpha=127) {
+  vals <- col2rgb(col=col)
+  return(rgb(vals[1],vals[2],vals[3],alpha=alpha,maxColorValue = 255))
+} # end of RGB
+
 #' @title setplot provides an example plot with defaults for a standard plot
 #'
 #' @description Provides an example plot with defaults for a standard plot
