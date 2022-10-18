@@ -570,6 +570,31 @@ newplot <- function(width=6,height=3.6,newdev=TRUE) {
 } # end of new_plot
 
 
+#' @title panel.hist a function to modify the pairs function
+#' 
+#' @description panel.hist is a function lifted directly from the help
+#'     for the 'pairs' function. It enables histograms of each variable
+#'     to be included in the diagonal plots insude the pairs plot. It is
+#'     only included here as a convenience.
+#'
+#' @param x a data.frame or matrix of variables that will be plotted
+#'     against each other in a pairs plot
+#' @param ... the other parameters for the function
+#'
+#' @return nothing but it does add histograms to the diagonals
+#' @export
+#'
+#' @examples
+#' print("wait on data sets")
+panel.hist <- function(x, ...) {
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(usr[1:2], 0, 1.5) )
+  h <- hist(x, plot = FALSE)
+  breaks <- h$breaks; nB <- length(breaks)
+  y <- h$counts; y <- y/max(y)
+  rect(breaks[-nB], 0, breaks[-1], y, col = "pale green", ...)
+} # end of panel.hist
+
 #' @title parset alters the current base graphics par settings
 #'
 #' @description parset alters the current base graphics par settings
