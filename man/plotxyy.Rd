@@ -5,7 +5,8 @@
 \title{plotxyy plots two vectors of numbers against single x-axis}
 \usage{
 plotxyy(
-  x,
+  x1,
+  x2 = x1,
   y1,
   y2,
   xlab = "",
@@ -18,7 +19,11 @@ plotxyy(
 )
 }
 \arguments{
-\item{x}{the x values}
+\item{x1}{the x values for the first variable. Always use the variable that 
+has the widest x-axis values as the first variable to ensure all values
+are plotted.}
+
+\item{x2}{the x values for the second variable.}
 
 \item{y1}{the left-hand axis values}
 

@@ -18,8 +18,8 @@ this.}
 \value{
 a list with a vector of 'x' values and a vector of 'y' values (to be
    used to plot the fitted normal probability density function), and a vector
-   used two called 'stats' containing the mean and sandard deviation of the
-   input data
+   of four called 'stats' containing the mean, standard deviation, number of
+   observations and median of the input data
 }
 \description{
 addnorm adds a normal distribution to a histogram of a data

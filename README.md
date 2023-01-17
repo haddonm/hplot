@@ -24,8 +24,11 @@ devtools::install_github("haddonm/hplot")
 
 ## Development
 
--   2022-09-05 hplot 0.0.3 Added RGB, which is a wrapper for using rgb
-    with numbered or named colours and a maxColorValue=255.
+- 2023-01-18 hplot 0.0.4 Added median to output stats from addnorm,
+  modified categoryplot and plotxyy
 
--   2022-09-04 hplot 0.0.2 Added makepolygon, which simplifies the
-    generation of the input data for a polygon.
+- 2022-09-05 hplot 0.0.3 Added RGB, which is a wrapper for using rgb
+  with numbered or named colours and a maxColorValue=255.
+
+- 2022-09-04 hplot 0.0.2 Added makepolygon, which simplifies the
+  generation of the input data for a polygon.

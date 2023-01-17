@@ -4,8 +4,8 @@ Title: Contains utility functions for when using base R graphics
 Description: Contains utility functions and custom plot functions that I 
     commonly use when Writing R code. see ?hplot for the list of functions
     and their individual help pages for details and examples of their use.
-Version: 0.0.3
-Date: 2022-09-05
+Version: 0.0.4
+Date: 2023-01-18
 Author: <malcolm.haddon@gmail.com>
 Maintainer: <malcolm.haddon@gmail.com>
 Depends:
@@ -13,5 +13,5 @@ Depends:
 License: GPL-2
 Imports: 
     knitr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.1
 Encoding: UTF-8

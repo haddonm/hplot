@@ -48,8 +48,9 @@ addlnorm <- function(inhist,xdata,inc=0.01) {
 #'
 #' @return a list with a vector of 'x' values and a vector of 'y' values (to be
 #'    used to plot the fitted normal probability density function), and a vector
-#'    used two called 'stats' containing the mean and sandard deviation of the
-#'    input data
+#'    of four called 'stats' containing the mean, standard deviation, number of
+#'    observations and median of the input data
+#'    
 #' @export addnorm
 #' @examples
 #' x <- rnorm(1000,mean=5,sd=1)
@@ -68,7 +69,9 @@ addnorm <- function(inhist,xdata,inc=0.01) {
   avCE <- mean(xdata,na.rm=TRUE)
   sdCE <- sd(xdata,na.rm=TRUE)
   N <- length(xdata)
-  ans <- list(x=x,y=(N*cw)*dnorm(x,avCE,sdCE),stats=c(avCE,sdCE,N))
+  med <- median(xdata,na.rm=TRUE)
+  ans <- list(x=x,y=(N*cw)*dnorm(x,avCE,sdCE),
+              stats=c(mean=avCE,stdev=sdCE,N=N,median=med))
   return(ans)
 } # end of addnorm
 
@@ -93,6 +96,8 @@ addnorm <- function(inhist,xdata,inc=0.01) {
 #'     the number of extra lines. default=3, but if only a few then a smaller 
 #'     number would be more appropriate. If addtotal = FALSE, then addlines is 
 #'     ignored
+#' @param textcex the totals at the top of the plot can be too large with the
+#'     default=1 so change the value here if required.
 #'
 #' @return nothing but it does generate a plot
 #' @export
@@ -101,7 +106,7 @@ addnorm <- function(inhist,xdata,inc=0.01) {
 #' xmat <- matrix(rnorm(25,5,2),nrow=5,ncol=5,dimnames=list(1:5,1:5))
 #' categoryplot(xmat,mult=0.03,ylab="Random Numbers",addtotal=TRUE,addline=2)
 categoryplot <- function(x,xlab="",ylab="",mult=0.1,gridx=FALSE,addtotal=FALSE,
-                         addlines=3) {  
+                         addlines=3,textcex=1) {  
   xlabel <- colnames(x)
   nx <- length(xlabel)
   years <- as.numeric(xlabel) # assumes columns are years
@@ -131,8 +136,8 @@ categoryplot <- function(x,xlab="",ylab="",mult=0.1,gridx=FALSE,addtotal=FALSE,
     if (incstep > 2) incstep <- incstep - 1 
     for (yr in 1:nx) {
       oddeven <- yr %% 2
-      if (oddeven == 0) text(years[yr],(ny+incstep),round(yrtot[yr],1))
-      else  text(years[yr],(ny+incstep*2),round(yrtot[yr],1))
+      if (oddeven == 0) text(years[yr],(ny+incstep),round(yrtot[yr],1),cex=textcex)
+      else  text(years[yr],(ny+incstep*2),round(yrtot[yr],1),cex=textcex)
     }
   }
   return(invisible(list(yrtotal=yrtot,yrcount=countyr)))
@@ -786,7 +791,10 @@ plotprep <- function(width=6,height=3.6,usefont=7,cex=0.85,
 #'     they share the x-axis. The first series is plotted on the left
 #'     vertical axis and the second on the right-hand axis.
 #'
-#' @param x the x values
+#' @param x1 the x values for the first variable. Always use the variable that 
+#'     has the widest x-axis values as the first variable to ensure all values
+#'     are plotted.
+#' @param x2 the x values for the second variable. 
 #' @param y1 the left-hand axis values
 #' @param y2 the right-hand axis values
 #' @param xlab the x label, default=""
@@ -810,20 +818,20 @@ plotprep <- function(width=6,height=3.6,usefont=7,cex=0.85,
 #' yval2 <- rnorm(20,mean=10,sd=1)
 #' plotxyy(x,yval1,yval2)
 #' }
-plotxyy <- function(x,y1,y2,xlab="",ylab1="",ylab2="",cex=0.85,fnt=7,
+plotxyy <- function(x1,x2=x1,y1,y2,xlab="",ylab1="",ylab2="",cex=0.85,fnt=7,
                     colour=c(1,2),defpar=FALSE) {
   if (defpar) {
     par(mfrow=c(1,1),mai=c(0.5,0.45,0.15,0.05),oma=c(0.0,0.75,0.0,3.0)) 
     par(cex=cex, mgp=c(1.35,0.35,0), font.axis=fnt,font=fnt,font.lab=fnt) 
   }
   maxy <- getmax(y1)
-  plot(x,y1,type="l",lwd=2,col=colour[1],ylim=c(0,maxy),yaxs="i",
+  plot(x1,y1,type="l",lwd=2,col=colour[1],ylim=c(0,maxy),yaxs="i",
        ylab="",xlab="")
   mtext(ylab1, side=2, line=1.5)
   mtext(xlab, side=1, line=1.25)
   par(new=TRUE)
   maxy2 <- getmax(y2)
-  plot(x,y2,type="l",lwd=2,col=colour[2],ylim=c(0,maxy2),axes=FALSE,
+  plot(x2,y2,type="l",lwd=2,col=colour[2],ylim=c(0,maxy2),axes=FALSE,
        xlab="",ylab="",yaxs="i")
   mtext(ylab2, side=4, line=1.5)
   axis(4)

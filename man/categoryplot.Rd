@@ -11,7 +11,8 @@ categoryplot(
   mult = 0.1,
   gridx = FALSE,
   addtotal = FALSE,
-  addlines = 3
+  addlines = 3,
+  textcex = 1
 )
 }
 \arguments{
@@ -35,6 +36,9 @@ top of the plot to contain the column totals. This argument determines
 the number of extra lines. default=3, but if only a few then a smaller 
 number would be more appropriate. If addtotal = FALSE, then addlines is 
 ignored}
+
+\item{textcex}{the totals at the top of the plot can be too large with the
+default=1 so change the value here if required.}
 }
 \value{
 nothing but it does generate a plot
