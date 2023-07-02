@@ -297,7 +297,7 @@ histyear <- function(x,xlimit=c(NA,NA,NA),
                      vline=NA,plots=c(5,5),normadd=TRUE,left=TRUE) {
   yrs <- sort(unique(x[,years]))
   nyr <- length(yrs)
-  columns <- c("Year","maxcount","Mean","StDev","N","Min","Max")
+  columns <- c("Year","maxcount","Mean","StDev","N","Median","Min","Max")
   results <- matrix(0,nrow=nyr,ncol=length(columns),dimnames=list(yrs,columns))
   par(mfcol=plots,mai=c(0.25,0.25,0.05,0.05),oma=c(1.2,1.0,0.0,0.0))
   par(cex=0.75, mgp=c(1.35,0.35,0), font.axis=7,font=7,font.lab=7)
