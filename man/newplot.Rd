@@ -23,7 +23,7 @@ newplot is a bare-bones setup routine to generate a plot in
     RStudio using a floating window. If you want to alter the default par
     settings then you can use either setplot() to get suitable syntax or,
     more simply, use parsyn() which only gives a template for the par 
-    syntax
+    syntax. DEPRECATED, USE plotprep() and parset() INSTEAD.
 }
 \examples{
 \dontrun{

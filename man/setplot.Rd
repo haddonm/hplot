@@ -17,7 +17,5 @@ Provides an example plot with defaults for a standard plot
   is open to development for customization of the example plot.
 }
 \examples{
-\dontrun{
 setplot()
-}
 }

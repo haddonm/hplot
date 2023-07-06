@@ -52,9 +52,7 @@ plotprep sets up a window and the par values for a single
     an active device exists already or not.
 }
 \examples{
-\dontrun{
  x <- rnorm(1000,mean=0,sd=1.0)
  plotprep()
  hist(x,breaks=30,main="",col=2)
-}
 }

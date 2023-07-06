@@ -57,8 +57,6 @@ plot1 provides a quick way to plot out a single xy
     y-axis is set to 0 - ymax or ymin - ymax
 }
 \examples{
-\dontrun{
 x <- rnorm(20,mean=5,sd=1)
 plot1(x,x,xlabel="x-values",ylabel="yvalues")
-}
 }

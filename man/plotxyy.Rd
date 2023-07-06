@@ -55,10 +55,8 @@ plotxyy plots two plots on the single graph so that
     vertical axis and the second on the right-hand axis.
 }
 \examples{
-\dontrun{
 x <- 1:20
 yval1 <- rnorm(20,mean=5,sd=1)
 yval2 <- rnorm(20,mean=10,sd=1)
-plotxyy(x,yval1,yval2)
-}
+plotxyy(x1=x,y1=yval1,y2=yval2,ylab1="mean=5",ylab2="mean=10")
 }

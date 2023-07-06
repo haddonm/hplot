@@ -22,12 +22,10 @@ getmax generates upper bound for a plot where it is unknown
     maximum is slightly higher than the maximum of the data
 }
 \examples{
-\dontrun{
  vect <- rnorm(10,mean=0,sd=2)
  sort(vect,decreasing=TRUE)
  getmax(vect,mult=1.0)
  vect <- rnorm(10,mean = -5,sd = 1.5)
  sort(vect,decreasing=TRUE)
  getmax(vect,mult=1.0)
-}
 }

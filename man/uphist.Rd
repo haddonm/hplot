@@ -29,10 +29,10 @@ uphist is merely a wrapper around the base hist
     eliminate any data then all data are used.
 }
 \examples{
-\dontrun{
+  plotprep(width=7, height=9)
+  parset(plots=c(3,1))
   x <- rlnorm(5000, meanlog=2, sdlog=1)
   hist(x,breaks=30,main="",xlab="log-normal values")
   uphist(x,breaks=30,main="",xlab="log-normal values",maxval=100)
   uphist(x,breaks=30,main="",xlab="log-normal values",maxval=1000)
-}
 }

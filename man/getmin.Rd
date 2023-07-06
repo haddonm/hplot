@@ -22,9 +22,7 @@ getmin generates lower bound for a plot where it is unknown
     the minimum is slightly lower than the minimum of the data
 }
 \examples{
-\dontrun{
 vect <- rnorm(10,mean=0,sd=2)
 sort(vect)
 getmin(vect,mult=1.0)
-}
 }

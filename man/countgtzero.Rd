@@ -16,10 +16,8 @@ A single value of number of values > 0
 countgtzero used in apply to count number >0 in a vector
 }
 \examples{
-\dontrun{
   set.seed(12346)
   x <- trunc(runif(10)*10)
   x
   countgtzero(x)  # should be 9
-}
 }

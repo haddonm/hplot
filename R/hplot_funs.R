@@ -150,12 +150,10 @@ categoryplot <- function(x,xlab="",ylab="",mult=0.1,gridx=FALSE,addtotal=FALSE,
 #' @return A single value of number of values > 0
 #' @export countgtzero
 #' @examples
-#' \dontrun{
 #'   set.seed(12346)
 #'   x <- trunc(runif(10)*10)
 #'   x
 #'   countgtzero(x)  # should be 9
-#' }
 countgtzero <- function(invect) {
   pick <- which(invect > 0)
   return(length(pick))
@@ -211,11 +209,9 @@ expandmatrix <- function(x) { #  x=t(numyr)
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' vect <- rnorm(10,mean=0,sd=2)
 #' sort(vect)
 #' getmin(vect,mult=1.0)
-#' }
 getmin <- function(x,mult=1.05) {
   ymin <- min(x,na.rm=TRUE)
   if (ymin < 0) {
@@ -241,14 +237,12 @@ getmin <- function(x,mult=1.05) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #'  vect <- rnorm(10,mean=0,sd=2)
 #'  sort(vect,decreasing=TRUE)
 #'  getmax(vect,mult=1.0)
 #'  vect <- rnorm(10,mean = -5,sd = 1.5)
 #'  sort(vect,decreasing=TRUE)
 #'  getmax(vect,mult=1.0)
-#' }
 getmax <- function(x,mult=1.05) {
   ymax <- max(x,na.rm=TRUE)
   if (ymax > 0) {
@@ -544,14 +538,13 @@ pickbound <- function(n) {
 } # end of pickbound
 
 
-
 #' @title newplot simple floating window setup a plot
 #'
 #' @description newplot is a bare-bones setup routine to generate a plot in
 #'     RStudio using a floating window. If you want to alter the default par
 #'     settings then you can use either setplot() to get suitable syntax or,
 #'     more simply, use parsyn() which only gives a template for the par 
-#'     syntax
+#'     syntax. DEPRECATED, USE plotprep() and parset() INSTEAD.
 #' @param width defaults to 6 inches = 15.24cm - width of plot
 #' @param height defaults to 3.6 inches = 9.144cm - height of plot
 #' @param newdev reuse a previously defined graphics device or make a new 
@@ -692,10 +685,8 @@ parsyn <- function() {
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' x <- rnorm(20,mean=5,sd=1)
 #' plot1(x,x,xlabel="x-values",ylabel="yvalues")
-#' }
 plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
                   maxy=0,defpar=TRUE,...){
   if (defpar) {
@@ -758,11 +749,9 @@ plotnull <- function(msg="") {
 #'     plotting par values. This changes the current plotting options!
 #' @export
 #' @examples
-#' \dontrun{
 #'  x <- rnorm(1000,mean=0,sd=1.0)
 #'  plotprep()
 #'  hist(x,breaks=30,main="",col=2)
-#' }
 plotprep <- function(width=6,height=3.6,usefont=7,cex=0.85,
                      newdev=FALSE,filename="",resol=300,verbose=TRUE) {
   if  ((names(dev.cur()) != "null device") &
@@ -812,12 +801,10 @@ plotprep <- function(width=6,height=3.6,usefont=7,cex=0.85,
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' x <- 1:20
 #' yval1 <- rnorm(20,mean=5,sd=1)
 #' yval2 <- rnorm(20,mean=10,sd=1)
-#' plotxyy(x,yval1,yval2)
-#' }
+#' plotxyy(x1=x,y1=yval1,y2=yval2,ylab1="mean=5",ylab2="mean=10")
 plotxyy <- function(x1,x2=x1,y1,y2,xlab="",ylab1="",ylab2="",cex=0.85,fnt=7,
                     colour=c(1,2),defpar=FALSE) {
   if (defpar) {
@@ -879,9 +866,7 @@ RGB <- function(col,alpha=127) {
 #'     copied into an R script.
 #' @export setplot
 #' @examples
-#' \dontrun{
 #' setplot()
-#' }
 setplot <- function() {
   cat('#if (names(dev.cur()) %in% c("null device","RStudioGD")) \n')
   cat('#    dev.new(width=width,height=height,noRStudioGD = TRUE) \n')
@@ -931,12 +916,12 @@ setplot <- function() {
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#'   plotprep(width=7, height=9)
+#'   parset(plots=c(3,1))
 #'   x <- rlnorm(5000, meanlog=2, sdlog=1)
 #'   hist(x,breaks=30,main="",xlab="log-normal values")
 #'   uphist(x,breaks=30,main="",xlab="log-normal values",maxval=100)
 #'   uphist(x,breaks=30,main="",xlab="log-normal values",maxval=1000)
-#' }
 uphist <- function(x,maxval=NA,...) {
   if (is.numeric(maxval)) {
     pick <- which(x > maxval)
