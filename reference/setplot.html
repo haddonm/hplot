@@ -64,9 +64,31 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="fu">setplot</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">setplot</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #if (names(dev.cur()) %in% c("null device","RStudioGD")) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #    dev.new(width=width,height=height,noRStudioGD = TRUE) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #graphfile &lt;- "name.tiff" OR "name.pdf" OR name.png  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #if (file.exists(graphfile)) file.remove(graphfile)  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #tiff(file=graphfile,width=150,height=150,units="mm",res=300,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       compression=c("lzw")) OR  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #pdf(file=graphfile,onefile=T,width=8,height=6,family="Times") OR </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #png(filename=graphfile,width=150,height=100,units="mm",res=300,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       family="Times") </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> par(mfrow=c(1,1),mai=c(0.45,0.45,0.05,0.05),oma=c(0.0,0,0.0,0.0)) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> par(cex=0.85, mgp=c(1.35,0.35,0), font.axis=7,font=7,font.lab=7) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ymax &lt;- max(y,na.rm=T) * 1.05 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> plot(x,y,type="l",xlab="",ylab="",col=1,ylim=c(0,ymax),yaxs="i",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       lwd=2) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> title(ylab=list("ylabel", cex=1.0, font=7),  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       xlab=list("xlabel", cex=1.0, font=7)) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> legend(0,0.45,c("True Mean","Precise","Imprecise"),col=c(4,1,2),</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       lwd=3,bty="n",cex=1.0) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mtext("label",side=2,outer=T,line=0.0,font=7,cex=1.0) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #dev.off() </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> #graphics.off() </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -76,14 +76,18 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span> <span class="va">vect</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">10</span>,mean<span class="op">=</span><span class="fl">0</span>,sd<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span> <span class="va">vect</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">10</span>,mean<span class="op">=</span><span class="fl">0</span>,sd<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">vect</span>,decreasing<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1]  4.3543545  1.1216139  0.7356057  0.5861252  0.2987379 -0.4890780</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] -0.5739257 -0.5817589 -1.2957193 -1.4422524</span>
 <span class="r-in"><span> <span class="fu">getmax</span><span class="op">(</span><span class="va">vect</span>,mult<span class="op">=</span><span class="fl">1.0</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4.354354</span>
 <span class="r-in"><span> <span class="va">vect</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">10</span>,mean <span class="op">=</span> <span class="op">-</span><span class="fl">5</span>,sd <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">vect</span>,decreasing<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] -3.044533 -3.184234 -3.414096 -5.094808 -5.564409 -5.987468 -6.306802</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] -7.515154 -7.927903 -8.210663</span>
 <span class="r-in"><span> <span class="fu">getmax</span><span class="op">(</span><span class="va">vect</span>,mult<span class="op">=</span><span class="fl">1.0</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -3.044533</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
