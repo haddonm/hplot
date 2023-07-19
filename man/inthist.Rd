@@ -9,8 +9,8 @@ inthist(
   col = 1,
   border = NULL,
   width = 0.9,
-  xlabel = "",
-  ylabel = "",
+  xlab = "",
+  ylab = "",
   main = "",
   lwd = 1,
   xmin = NA,
@@ -36,9 +36,9 @@ for an empty bar, but then give a value for border}
 \item{width}{denotes the width of each bar; defaults to 0.9, should be >0
 and <= 1}
 
-\item{xlabel}{the label for the x axis; defaults to ""}
+\item{xlab}{the label for the x axis; defaults to ""}
 
-\item{ylabel}{the label for the y axis; defaults to ""}
+\item{ylab}{the label for the y axis; defaults to ""}
 
 \item{main}{the title for the individual plot; defaults to ""}
 

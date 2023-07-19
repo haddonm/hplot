@@ -340,8 +340,8 @@ histyear <- function(x,xlimit=c(NA,NA,NA),
 #' @param border the colour of the outline of each bar defaults to col
 #' @param width denotes the width of each bar; defaults to 0.9, should be >0
 #'     and <= 1
-#' @param xlabel the label for the x axis; defaults to ""
-#' @param ylabel the label for the y axis; defaults to ""
+#' @param xlab the label for the x axis; defaults to ""
+#' @param ylab the label for the y axis; defaults to ""
 #' @param main the title for the individual plot; defaults to ""
 #' @param lwd the line width of the border; defaults to 1
 #' @param xmin sets the lower bound for x-axis; used to match plots, defaults to 
@@ -373,10 +373,10 @@ histyear <- function(x,xlimit=c(NA,NA,NA),
 #'   x <- as.matrix(cbind(c(1,2,3,4,5,6,7,8),trunc(runif(8,1,20))))
 #'   inthist(x,col="grey",border=3,width=0.75,xlabel="integers",
 #'           ylabel="Frequency")
-inthist <- function(x,col=1,border=NULL,width=0.9,xlabel="",ylabel="",
+inthist <- function(x,col=1,border=NULL,width=0.9,xlab="",ylab="",
                     main="",lwd=1,xmin=NA,xmax=NA,ymax=NA,plotout=TRUE,
                     prop=FALSE,inc=1,xaxis=TRUE,roundoff=TRUE,...) {
-  #  x=ebtipy;col=2;border=3;width=0.9;xlabel="";ylabel="";main="";lwd=1;xmin=NA
+  #  x=ebtipy;col=2;border=3;width=0.9;xlab="";ylab="";main="";lwd=1;xmin=NA
   #  xmax=NA;ymax=NA;plotout=TRUE;prop=FALSE;inc=1;xaxis=TRUE;roundoff=TRUE
   if (class(x)[1] == "matrix") {
     counts <- x[,2]
@@ -426,8 +426,8 @@ inthist <- function(x,col=1,border=NULL,width=0.9,xlabel="",ylabel="",
         if (is.null(border)) border <- col
         polygon(x,y,col=col,border=border,lwd=lwd)
       }
-      title(ylab=list(ylabel, cex=1.0, font=7),
-            xlab=list(xlabel, cex=1.0, font=7))
+      title(ylab=list(ylab, cex=1.0, font=7),
+            xlab=list(xlab, cex=1.0, font=7))
       if (nchar(main) > 0) mtext(main,side=3,line=-1.0,outer=FALSE,cex=0.9)
     }
   } # end of if-plotout
@@ -686,7 +686,7 @@ parsyn <- function() {
 #'
 #' @examples
 #' x <- rnorm(20,mean=5,sd=1)
-#' plot1(x,x,xlabel="x-values",ylabel="yvalues")
+#' plot1(x,x,xlab="x-values",ylab="yvalues")
 plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
                   maxy=0,defpar=TRUE,...){
   if (defpar) {

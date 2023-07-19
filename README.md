@@ -24,6 +24,8 @@ devtools::install_github("haddonm/hplot")
 
 ## Development
 
+- 2023-07-19 hplot 0.0.6 Change xlabel and ylabel to xlab and ylab!
+
 - 2023-01-18 hplot 0.0.4 Added median to output stats from addnorm,
   modified categoryplot and plotxyy
 
