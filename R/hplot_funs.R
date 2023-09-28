@@ -700,6 +700,74 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
        ylab=ylab,xlab=xlab,cex=cex,panel.first=grid(),...)
 } # end of plot1
 
+#' @title plotcompdata makes a series of barplots to compare composition data 
+#' 
+#' @description plotcompdata generates a horizontal array of up to 20 barplots
+#'     and is used to represent time-series of age- or size-composition data in
+#'     a manner that makes interannual comparisons simple. Currently designed 
+#'     for use with makehtml 
+#'
+#' @param compdata matrix of sizes or ages by years, row and column names should
+#'    be numbers, as in ages or sizeclasses for rows, and years for columns.
+#' @param sau name of spatial assessment unit or origin of samples
+#' @param horizline indices of the sizes or ages agsint which to draw reference
+#'     lines. default=NULL. IF draw 1 then eg line = 5, if 2 eg = c(5, 13)
+#' @param console should the graph be plotted to the console or saved as a file.
+#'     default=TRUE ie it goes to the console, if set to FALSE it goes to 
+#'     paste0(rundir,/) 
+#' @param rundir if saving a png file this is the directory to which a filename
+#'     is added
+#' @param barcol what colour should the bars be, default = red 
+#' @param bordercol what colour should the bar borders be? default = black
+#' @param ylabel what outer name to be used for the Y-axis, default=''
+#' @param tabname what web tab name to use. Only useful when using
+#' @param expandyears an fine idea which is not yet implemented. default=FALSE
+#'
+#' @return nothing but it does plot a graph
+#' @export
+#'
+#' @examples
+#' comps <- rnorm(400,mean=10,sd=2)
+#' x <- matrix(comps,nrow=20,ncol=20,dimnames=list(1:20,2000:2019))
+#' plotcompdata(compdata=x,sau="Here_and_There",horizline=c(5,10),console=TRUE)
+plotcompdata <- function(compdata,sau,horizline=NULL,console=TRUE,rundir="",
+                         barcol="red",bordercol="black",ylabel="",tabname="",
+                         expandyears=FALSE) {
+  filen <- ""
+  if (!console) {
+    filen <- paste0(rundir,"/horizontal_compdata_byyear_for_",sau,".png")
+    caption <- paste0("Observed size-composition data for ",sau)
+  }
+  compcl <- as.numeric(rownames(compdata))  # expects size or age classes
+  label <- as.numeric(colnames(compdata))   # expects years
+  if (expandyears)  yrrange <- range(label)
+  Nsamp <- ncol(compdata)
+  sampsize <- round(colSums(compdata),1)
+  if (length(horizline) == 1) linecol <- "blue"
+  if (length(horizline) == 2) linecol <- c("green","blue")
+  plotprep(width=13,height=4.5,newdev=TRUE,filename=filen,cex=0.9,verbose=FALSE)
+  parset(outmargin=c(1,2,1,2),margin=c(0.2,0.2,0,0))
+  matfor <- matrix(c(1:20),1,20,byrow=TRUE)
+  layout(matfor,heights=rep(1,20),TRUE)
+  barplot(compdata[,1],horiz=TRUE,axes=FALSE,col=barcol,border=bordercol,
+          space=0,axis.lty=1.0,cex.names=1.0)
+  mtext(label[1],side=1,outer=FALSE,cex=1,line=-1)
+  mtext(sampsize[1],side=3,outer=FALSE,line=-1,cex=1)
+  if (length(horizline) > 0) abline(h=horizline,lwd=3,col=linecol)
+  for (i in 2:Nsamp) {
+    barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
+            border=bordercol,space=0)
+    mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=1)
+    mtext(sampsize[i],side=3,outer=FALSE,line=-1,cex=1)
+    if (length(horizline) > 0) abline(h=horizline,lwd=3,col=linecol)
+  }
+  mtext(text=ylabel,side=2,outer=TRUE,cex=1.1,line=0.2)
+  if ((!console) & (nchar(tabname) > 0)) {
+    addplot(filen,rundir=rundir,category=tabname,caption)
+  }
+  if ((!console) & (nchar(tabname) == 0)) dev.off()
+} # end of plotcompdata
+
 #' @title plotnull generates an empty plot when one is needed
 #'
 #' @description plotnull, there are often circumstances, for example, when

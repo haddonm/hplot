@@ -16,7 +16,8 @@ NULL
 
 #' @importFrom grDevices dev.cur dev.new dev.off png palette rgb col2rgb
 #' @importFrom graphics par grid plot axis mtext polygon title hist lines text
-#' @importFrom graphics points abline symbols rect
+#' @importFrom graphics points abline symbols rect barplot layout
 #' @importFrom utils tail head str write.table write.csv
 #' @importFrom stats quantile loess sd coef lm dnorm median
+#' @importFrom makehtml addplot
 NULL
