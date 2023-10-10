@@ -14,7 +14,7 @@ plotcompdata(
   bordercol = "black",
   ylabel = "",
   tabname = "",
-  expandyears = FALSE
+  plotnumber = 1
 )
 }
 \arguments{
@@ -41,7 +41,13 @@ is added}
 
 \item{tabname}{what web tab name to use. Only useful when using}
 
-\item{expandyears}{an fine idea which is not yet implemented. default=FALSE}
+\item{plotnumber}{exects to recieve up to 20 years of data to plot. If in the 
+original data there are > 20 then it still expects to recieve only 20 or
+fewer years of data. The user needs to arrange compdata to have no more 
+than 20 years of data. This there can be more than 1 plot per sau.
+plotnumber identifies the plotnumber. If there are 2 one calls the 
+function with plotnumber = 1 (the default) and then calls the function 
+afain with plotnumber = 2. default=1}
 }
 \value{
 nothing but it does plot a graph

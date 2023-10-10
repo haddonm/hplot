@@ -721,7 +721,13 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 #' @param bordercol what colour should the bar borders be? default = black
 #' @param ylabel what outer name to be used for the Y-axis, default=''
 #' @param tabname what web tab name to use. Only useful when using
-#' @param expandyears an fine idea which is not yet implemented. default=FALSE
+#' @param plotnumber exects to recieve up to 20 years of data to plot. If in the 
+#'     original data there are > 20 then it still expects to recieve only 20 or
+#'     fewer years of data. The user needs to arrange compdata to have no more 
+#'     than 20 years of data. This there can be more than 1 plot per sau.
+#'     plotnumber identifies the plotnumber. If there are 2 one calls the 
+#'     function with plotnumber = 1 (the default) and then calls the function 
+#'     afain with plotnumber = 2. default=1
 #'
 #' @return nothing but it does plot a graph
 #' @export
@@ -732,15 +738,15 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 #' plotcompdata(compdata=x,sau="Here_and_There",horizline=c(5,10),console=TRUE)
 plotcompdata <- function(compdata,sau,horizline=NULL,console=TRUE,rundir="",
                          barcol="red",bordercol="black",ylabel="",tabname="",
-                         expandyears=FALSE) {
+                         plotnumber=1) {
   filen <- ""
   if (!console) {
-    filen <- paste0(rundir,"/horizontal_compdata_byyear_for_",sau,".png")
+    filen <- paste0(rundir,"/plot_",plotnumber,"_horizontal_compdata_byyear_for_",
+                    sau,".png")
     caption <- paste0("Observed size-composition data for ",sau)
   }
   compcl <- as.numeric(rownames(compdata))  # expects size or age classes
   label <- as.numeric(colnames(compdata))   # expects years
-  if (expandyears)  yrrange <- range(label)
   Nsamp <- ncol(compdata)
   sampsize <- round(colSums(compdata),1)
   if (length(horizline) == 1) linecol <- "blue"
@@ -923,6 +929,59 @@ RGB <- function(col,alpha=127) {
   vals <- col2rgb(col=col)
   return(rgb(vals[1],vals[2],vals[3],alpha=alpha,maxColorValue = 255))
 } # end of RGB
+
+#' @title saucompdata plots horizontal barcharts of size-composition data
+#' 
+#' @description saucompdata generates horizontal plots of all observed size-
+#'     composition data. If there are more than 20 years of data then it will 
+#'     generate two pots of up to 20 years each, separating the plots using
+#'     the plotnumber argument in the file name. This function uses plotcompdata
+#'
+#' @param allcomp A 3-D array of observed data on size-classes x years x sau 
+#' @param glb the globals objects. specifically glb$nSAU and glb$saunames are
+#'     required as a list.
+#' @param horizline indices of the sizes or ages agsint which to draw reference
+#'     lines. default=NULL. IF draw 1 then eg line = 5, if 2 eg = c(5, 13)
+#' @param console should the graph be plotted to the console or saved as a file.
+#'     default=TRUE ie it goes to the console, if set to FALSE it goes to 
+#'     paste0(rundir,/) 
+#' @param rundir if saving a png file this is the directory to which a filename
+#'     is added
+#' @param barcol what colour should the bars be, default = red 
+#' @param bordercol what colour should the bar borders be? default = black
+#' @param ylabel what outer name to be used for the Y-axis, default=''
+#' @param tabname what web tab name to use. Only useful when using
+#'
+#' @return nothing but it does generate plots for ech sau
+#' @export
+#'
+#' @examples
+#' print("wait on data")
+saucompdata <- function(allcomp, glb, horizline = NULL,console = TRUE,
+                        rundir = "",barcol = "red",bordercol = "black",
+                        ylabel = "",tabname = "") {
+  nsau <- glb$nSAU
+  saunames <- glb$saunames
+  for (sau in 1:nsau) {  # sau=4
+    usecomp <- allcomp[,,sau]
+    numcol <- ncol(usecomp)
+    if (ncol(usecomp) <= 20) {
+      plotcompdata(compdata=usecomp,sau=saunames[sau],
+                   horizline=horizline,console=console,rundir=rundir,
+                   barcol=barcol,bordercol=bordercol,ylabel=ylabel,
+                   tabname=tabname,plotnumber=1)
+    } else {
+      plotcompdata(compdata=usecomp[,(numcol-19):numcol],sau=saunames[sau],
+                   horizline=horizline,console=console,rundir=rundir,
+                   barcol=barcol,bordercol=bordercol,ylabel=ylabel,
+                   tabname=tabname,plotnumber=1)
+      plotcompdata(compdata=usecomp[,1:(numcol-20)],sau=saunames[sau],
+                   horizline=horizline,console=console,rundir=rundir,
+                   ylabel=ylabel,tabname=tabname,plotnumber=2)
+    }
+  }
+} # end of saucompdata
+
 
 #' @title setplot provides an example plot with defaults for a standard plot
 #'
