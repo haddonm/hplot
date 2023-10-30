@@ -12,6 +12,8 @@
 #' 
 #' @docType package
 #' @name hplot
+#' @keywords internal
+"_PACKAGE"
 NULL
 
 #' @importFrom grDevices dev.cur dev.new dev.off png palette rgb col2rgb

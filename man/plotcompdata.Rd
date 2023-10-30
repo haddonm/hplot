@@ -7,14 +7,12 @@
 plotcompdata(
   compdata,
   sau,
-  horizline = NULL,
+  ylabel = "",
   console = TRUE,
-  rundir = "",
+  outdir = "",
   barcol = "red",
   bordercol = "black",
-  ylabel = "",
-  tabname = "",
-  plotnumber = 1
+  horizline = NULL
 )
 }
 \arguments{
@@ -23,34 +21,24 @@ be numbers, as in ages or sizeclasses for rows, and years for columns.}
 
 \item{sau}{name of spatial assessment unit or origin of samples}
 
-\item{horizline}{indices of the sizes or ages agsint which to draw reference
-lines. default=NULL. IF draw 1 then eg line = 5, if 2 eg = c(5, 13)}
+\item{ylabel}{what outer name to be used for the Y-axis, default=''}
 
 \item{console}{should the graph be plotted to the console or saved as a file.
 default=TRUE ie it goes to the console, if set to FALSE it goes to 
 paste0(rundir,/)}
 
-\item{rundir}{if saving a png file this is the directory to which a filename
-is added}
+\item{outdir}{if saving a png file this is the directory to which a filename
+is added, default=""}
 
 \item{barcol}{what colour should the bars be, default = red}
 
 \item{bordercol}{what colour should the bar borders be? default = black}
 
-\item{ylabel}{what outer name to be used for the Y-axis, default=''}
-
-\item{tabname}{what web tab name to use. Only useful when using}
-
-\item{plotnumber}{exects to recieve up to 20 years of data to plot. If in the 
-original data there are > 20 then it still expects to recieve only 20 or
-fewer years of data. The user needs to arrange compdata to have no more 
-than 20 years of data. This there can be more than 1 plot per sau.
-plotnumber identifies the plotnumber. If there are 2 one calls the 
-function with plotnumber = 1 (the default) and then calls the function 
-afain with plotnumber = 2. default=1}
+\item{horizline}{indices of the sizes or ages againt which to draw reference
+lines. default=NULL. To draw 1 line then eg line = 5, if 2 eg = c(5, 13)}
 }
 \value{
-nothing but it does plot a graph
+invisibly returns a list of the filename and caption
 }
 \description{
 plotcompdata generates a horizontal array of up to 20 barplots
@@ -59,7 +47,11 @@ plotcompdata generates a horizontal array of up to 20 barplots
     for use with makehtml
 }
 \examples{
-comps <- rnorm(400,mean=10,sd=2)
-x <- matrix(comps,nrow=20,ncol=20,dimnames=list(1:20,2000:2019))
-plotcompdata(compdata=x,sau="Here_and_There",horizline=c(5,10),console=TRUE)
+x <- matrix(rnorm(600,mean=20,sd=3),nrow=20,ncol=30,
+            dimnames=list(1:20,1991:2020))
+ylabel="Random Composition"
+numcol <- ncol(x)
+if (numcol > 20) x1 <- x[,1:20]
+plotcompdata(compdata=x1,sau="sauX",ylabel="Random Composition Data",
+             console=TRUE,horizline=c(5,10))
 }

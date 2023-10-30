@@ -710,45 +710,40 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 #' @param compdata matrix of sizes or ages by years, row and column names should
 #'    be numbers, as in ages or sizeclasses for rows, and years for columns.
 #' @param sau name of spatial assessment unit or origin of samples
-#' @param horizline indices of the sizes or ages agsint which to draw reference
-#'     lines. default=NULL. IF draw 1 then eg line = 5, if 2 eg = c(5, 13)
+#' @param ylabel what outer name to be used for the Y-axis, default=''
 #' @param console should the graph be plotted to the console or saved as a file.
 #'     default=TRUE ie it goes to the console, if set to FALSE it goes to 
 #'     paste0(rundir,/) 
-#' @param rundir if saving a png file this is the directory to which a filename
-#'     is added
+#' @param outdir if saving a png file this is the directory to which a filename
+#'     is added, default=""
 #' @param barcol what colour should the bars be, default = red 
 #' @param bordercol what colour should the bar borders be? default = black
-#' @param ylabel what outer name to be used for the Y-axis, default=''
-#' @param tabname what web tab name to use. Only useful when using
-#' @param plotnumber exects to recieve up to 20 years of data to plot. If in the 
-#'     original data there are > 20 then it still expects to recieve only 20 or
-#'     fewer years of data. The user needs to arrange compdata to have no more 
-#'     than 20 years of data. This there can be more than 1 plot per sau.
-#'     plotnumber identifies the plotnumber. If there are 2 one calls the 
-#'     function with plotnumber = 1 (the default) and then calls the function 
-#'     afain with plotnumber = 2. default=1
+#' @param horizline indices of the sizes or ages againt which to draw reference
+#'     lines. default=NULL. To draw 1 line then eg line = 5, if 2 eg = c(5, 13)
 #'
-#' @return nothing but it does plot a graph
+#' @return invisibly returns a list of the filename and caption
 #' @export
 #'
 #' @examples
-#' comps <- rnorm(400,mean=10,sd=2)
-#' x <- matrix(comps,nrow=20,ncol=20,dimnames=list(1:20,2000:2019))
-#' plotcompdata(compdata=x,sau="Here_and_There",horizline=c(5,10),console=TRUE)
-plotcompdata <- function(compdata,sau,horizline=NULL,console=TRUE,rundir="",
-                         barcol="red",bordercol="black",ylabel="",tabname="",
-                         plotnumber=1) {
-  filen <- ""
-  if (!console) {
-    filen <- paste0(rundir,"/plot_",plotnumber,"_horizontal_compdata_byyear_for_",
-                    sau,".png")
-    caption <- paste0("Observed size-composition data for ",sau)
-  }
+#' x <- matrix(rnorm(600,mean=20,sd=3),nrow=20,ncol=30,
+#'             dimnames=list(1:20,1991:2020))
+#' ylabel="Random Composition"
+#' numcol <- ncol(x)
+#' if (numcol > 20) x1 <- x[,1:20]
+#' plotcompdata(compdata=x1,sau="sauX",ylabel="Random Composition Data",
+#'              console=TRUE,horizline=c(5,10))
+plotcompdata <- function(compdata,sau,ylabel="",console=TRUE,outdir="",
+                          barcol="red",bordercol="black",horizline=NULL) {
   compcl <- as.numeric(rownames(compdata))  # expects size or age classes
   label <- as.numeric(colnames(compdata))   # expects years
+  addyrs <- paste0(label[1],"_",label[length(label)])
   Nsamp <- ncol(compdata)
-  sampsize <- round(colSums(compdata),1)
+  sampsize <- round(colSums(compdata),1)  
+  filen <- ""
+  if (!console) {
+    filen <- paste0(outdir,"/horizontal_compdata_for_",sau,"_",addyrs,".png")
+  }
+  caption <- paste0("Observed size-composition data for ",sau)
   if (length(horizline) == 1) linecol <- "blue"
   if (length(horizline) == 2) linecol <- c("green","blue")
   plotprep(width=13,height=4.5,newdev=TRUE,filename=filen,cex=0.9,verbose=FALSE)
@@ -757,7 +752,7 @@ plotcompdata <- function(compdata,sau,horizline=NULL,console=TRUE,rundir="",
   layout(matfor,heights=rep(1,20),TRUE)
   barplot(compdata[,1],horiz=TRUE,axes=FALSE,col=barcol,border=bordercol,
           space=0,axis.lty=1.0,cex.names=1.0)
-  mtext(label[1],side=1,outer=FALSE,cex=1,line=-1)
+  mtext(label[1],side=1,outer=FALSE,cex=1,line=-0.75)
   mtext(sampsize[1],side=3,outer=FALSE,line=-1,cex=1)
   if (length(horizline) > 0) abline(h=horizline,lwd=3,col=linecol)
   for (i in 2:Nsamp) {
@@ -768,10 +763,8 @@ plotcompdata <- function(compdata,sau,horizline=NULL,console=TRUE,rundir="",
     if (length(horizline) > 0) abline(h=horizline,lwd=3,col=linecol)
   }
   mtext(text=ylabel,side=2,outer=TRUE,cex=1.1,line=0.2)
-  if ((!console) & (nchar(tabname) > 0)) {
-    addplot(filen,rundir=rundir,category=tabname,caption)
-  }
-  if ((!console) & (nchar(tabname) == 0)) dev.off()
+  if (!console) dev.off()
+  return(invisible(list(filename=filen,caption=caption)))
 } # end of plotcompdata
 
 #' @title plotnull generates an empty plot when one is needed
@@ -966,22 +959,22 @@ saucompdata <- function(allcomp, glb, horizline = NULL,console = TRUE,
     usecomp <- allcomp[,,sau]
     numcol <- ncol(usecomp)
     if (ncol(usecomp) <= 20) {
-      plotcompdata(compdata=usecomp,sau=saunames[sau],
-                   horizline=horizline,console=console,rundir=rundir,
-                   barcol=barcol,bordercol=bordercol,ylabel=ylabel,
-                   tabname=tabname,plotnumber=1)
+      ans <- plotcompdata(compdata=usecomp,sau=saunames[sau],ylabel=ylabel,
+                   console=console,outdir=rundir,barcol=barcol,
+                   bordercol=bordercol,horizline=horizline)
+      addplot(ans$filename,rundir=rundir,category=tabname,ans$caption)
     } else {
-      plotcompdata(compdata=usecomp[,(numcol-19):numcol],sau=saunames[sau],
-                   horizline=horizline,console=console,rundir=rundir,
-                   barcol=barcol,bordercol=bordercol,ylabel=ylabel,
-                   tabname=tabname,plotnumber=1)
-      plotcompdata(compdata=usecomp[,1:(numcol-20)],sau=saunames[sau],
-                   horizline=horizline,console=console,rundir=rundir,
-                   ylabel=ylabel,tabname=tabname,plotnumber=2)
+      ans <- plotcompdata(compdata=usecomp[,(numcol-19):numcol],sau=saunames[sau],
+                          ylabel=ylabel,console=console,outdir=rundir,
+                          barcol=barcol,bordercol=bordercol,horizline=horizline)
+      addplot(ans$filename,rundir=rundir,category=tabname,ans$caption)
+      ans <- plotcompdata(compdata=usecomp[,1:(numcol-20)],sau=saunames[sau],
+                          ylabel=ylabel,console=console,outdir=rundir,
+                          barcol=barcol,bordercol=bordercol,horizline=horizline)
+      addplot(ans$filename,rundir=rundir,category=tabname,ans$caption)
     }
   }
 } # end of saucompdata
-
 
 #' @title setplot provides an example plot with defaults for a standard plot
 #'

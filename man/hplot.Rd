@@ -3,6 +3,7 @@
 \docType{package}
 \name{hplot}
 \alias{hplot}
+\alias{hplot-package}
 \title{hplot: a set of functions providing aid for case graphics plus custom plots}
 \description{
 The hplot package provides an array of utility functions and custom graphics
@@ -16,3 +17,4 @@ functions.
 
 }
 }
+\keyword{internal}
