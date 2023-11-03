@@ -12,7 +12,8 @@ plotcompdata(
   outdir = "",
   barcol = "red",
   bordercol = "black",
-  horizline = NULL
+  horizline = NULL,
+  prepplot = FALSE
 )
 }
 \arguments{
@@ -36,6 +37,9 @@ is added, default=""}
 
 \item{horizline}{indices of the sizes or ages againt which to draw reference
 lines. default=NULL. To draw 1 line then eg line = 5, if 2 eg = c(5, 13)}
+
+\item{prepplot}{should plotprep be called to generate an external plotting
+device? default=FALSE}
 }
 \value{
 invisibly returns a list of the filename and caption
@@ -47,11 +51,13 @@ plotcompdata generates a horizontal array of up to 20 barplots
     for use with makehtml
 }
 \examples{
-x <- matrix(rnorm(600,mean=20,sd=3),nrow=20,ncol=30,
-            dimnames=list(1:20,1991:2020))
-ylabel="Random Composition"
-numcol <- ncol(x)
-if (numcol > 20) x1 <- x[,1:20]
-plotcompdata(compdata=x1,sau="sauX",ylabel="Random Composition Data",
-             console=TRUE,horizline=c(5,10))
+\dontrun{
+  x <- matrix(rnorm(600,mean=20,sd=3),nrow=20,ncol=30,
+              dimnames=list(1:20,1991:2020))
+  ylabel="Random Composition"
+  numcol <- ncol(x)
+  if (numcol > 20) x1 <- x[,1:20]
+  plotcompdata(compdata=x1,sau="sauX",ylabel="Random Composition Data",
+               console=TRUE,horizline=c(5,10))
+}              
 }

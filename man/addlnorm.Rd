@@ -21,7 +21,7 @@ a 4 x N matrix of x and y values to be used to plot the fitted normal
    and log(sd(indata))
 }
 \description{
-addlnorm estiamtes a log-normal distribution from output of
+addlnorm estimates a log-normal distribution from output of
    a histogram of a data set.
 }
 \examples{

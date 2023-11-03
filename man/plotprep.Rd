@@ -45,9 +45,9 @@ plotprep sets up a window and the par values for a single
     plot. It checks to see if a graphics device is open and opens a new 
     one if not. This is simply a utility function to save typing the 
     standard syntax. Some of the defaults can be changed. Typing the name
-    without () will provide a template for modification. If 'windows' is 
-    called repeatedly this will generate a new active graphics device 
-    each time leaving the older ones inactive but present. For quick 
+    without the brackets will provide a template for modification. If 
+    'windows' is called repeatedly this will generate a new active graphics 
+    device each time leaving the older ones inactive but present. For quick 
     exploratory plots this behaviour is not wanted, hence the check if 
     an active device exists already or not.
 }
