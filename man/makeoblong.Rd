@@ -4,7 +4,7 @@
 \alias{makeoblong}
 \title{makeoblong draws a rectangle once a canvas is available}
 \usage{
-makeoblong(x1, x2, y1, y2, col = "black", lwd = 1)
+makeoblong(x1, x2, y1, y2, col = "black", lwd = 1, ...)
 }
 \arguments{
 \item{x1}{defines lefthand edge of rectangle}
@@ -18,6 +18,8 @@ makeoblong(x1, x2, y1, y2, col = "black", lwd = 1)
 \item{col}{colour of line. default="black"}
 
 \item{lwd}{the width of the line, default=1}
+
+\item{...}{to allow for other graphics commands such as lty=2, etc}
 }
 \value{
 an invisible vector denoting the center (x,y) of the rectangle

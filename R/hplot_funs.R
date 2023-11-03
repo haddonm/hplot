@@ -661,6 +661,7 @@ makepolygon <- function(y1,y2,x1,x2=NULL) {
 #' @param y2 defines top edge of rectangle
 #' @param col colour of line. default="black"
 #' @param lwd the width of the line, default=1
+#' @param ... to allow for other graphics commands such as lty=2, etc
 #'
 #' @return an invisible vector denoting the center (x,y) of the rectangle
 #' @export
@@ -670,8 +671,8 @@ makepolygon <- function(y1,y2,x1,x2=NULL) {
 #'    makecanvas(xstart=0,xfinish=100,ystart=0,yfinish=100)
 #'    makeoblong(x1=20,x2=80,y1=25,y2=75,col="red",lwd=2)
 #' }
-makeoblong <- function(x1,x2,y1,y2,col="black",lwd=1) {
-  lines(makevx(x1,x2),makevy(y1,y2),col=col,lwd=lwd)
+makeoblong <- function(x1,x2,y1,y2,col="black",lwd=1,...) {
+  lines(makevx(x1,x2),makevy(y1,y2),col=col,lwd=lwd,...)
   centerx <- (x2 - x1)/2
   centery <- (y2 - y1)/2
   return(invisible(c(centerx,centery)))
