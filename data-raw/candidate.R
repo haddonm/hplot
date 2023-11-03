@@ -42,17 +42,6 @@ sizecomp <- outinit$sizecomp
 sizecomp[,1:5]
 
 
-
-
-
-
-
-
-
-
-
-
-
 plotcompdata(compdata=sizecomp,sau="sau11",horizline=c(5,13),console=TRUE,
                bordercol="red")
 
@@ -72,13 +61,36 @@ mtext(label[1],side=2,outer=FALSE,cex=1)
 abline(v=c(5,13),lwd=3,col=c("green","blue"))
 
 
-
-
-
-
-
-
-
+# The Game ----------------------------------
+plotprep(width=7, height=10)
+makecanvas()
+makeoblong(5,95,0,100,lwd=2,col="black")
+for (i in seq(0,75,25)){
+  makeoblong(5,25,i,i+25,lwd=1,col="grey")
+  makeoblong(25,95,i,i+25,lwd=1,col="grey")
+}
+mtext("offshore",side=3,adj=0.60,outer=TRUE,cex=1.0,line=-2,)
+mtext("onshore",side=3,adj=0.15,outer=TRUE,cex=1.0,line=-2,)
+mtext("Lat 1",side=4,adj=0.85,outer=TRUE,cex=1.0,line=-3)
+mtext("Lat 2",side=4,adj=0.625,outer=TRUE,cex=1.0,line=-3)
+mtext("Lat 3",side=4,adj=0.375,outer=TRUE,cex=1.0,line=-3)
+mtext("Lat 4",side=4,adj=0.15,outer=TRUE,cex=1.0,line=-3)
+mtext("North",side=2,adj=0.85,outer=TRUE,cex=1.0,line=-3)
+mtext("North",side=2,adj=0.625,outer=TRUE,cex=1.0,line=-3)
+mtext("South",side=2,adj=0.375,outer=TRUE,cex=1.0,line=-3)
+mtext("South",side=2,adj=0.15,outer=TRUE,cex=1.0,line=-3)
+makeoblong(7,23,2,98,lwd=2,col="red")
+text(15,50,"Recreational Fishery (Fleet 1)",srt=90,cex=2.0)
+makeoblong(27,93,2,98,lwd=4,col="blue")
+text(75,50,"Non-State Fishery (Fleet 3)",srt=90,cex=2.0,col="blue")
+makeoblong(29,91,4,96,lwd=4,col="green")
+lines(c(29,91),c(50,50),lwd=2,col="green")
+text(45,75,"State Fishery (Fleet 2N)",srt=90,cex=2.0,col="green")
+text(45,25,"State Fishery (Fleet 2S)",srt=90,cex=2.0,col="green")
+mtext("larger",side=1,adj=0.60,outer=TRUE,cex=1.0,line=-2)
+mtext("older",side=1,adj=0.60,outer=TRUE,cex=1.0,line=-1)
+mtext("smaller",side=1,adj=0.15,outer=TRUE,cex=1.0,line=-2)
+mtext("younger",side=1,adj=0.15,outer=TRUE,cex=1.0,line=-1)
 
 
 

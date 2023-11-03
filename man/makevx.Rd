@@ -2,29 +2,29 @@
 % Please edit documentation in R/hplot_funs.R
 \name{makevx}
 \alias{makevx}
-\title{makevx make an x values vector}
+\title{makevx make an x values vector for plotting oblongs}
 \usage{
-makevx(init, inc)
+makevx(x1, x2)
 }
 \arguments{
-\item{init}{x-value for the left-hand edge of a rectangle}
+\item{x1}{x-value for the left-hand edge of a rectangle}
 
-\item{inc}{the x-increment added to init to define the right-hand edge}
+\item{x2}{x value for the the right-hand edge}
 }
 \value{
-a vector of y-values
+a vector of x-values
 }
 \description{
 makevx takes the left x value of a rectangle and the
-    increment rightwards that defines a vector describing the four
-    vertices of the rectangle topleft, topright, bottomright,
-    bottomleft, topleft. when matched with makevy generates the
-    descriptor for a complete rectangle.
+    right x value and defines a vector describing the four
+    vertices of the rectangle bottomleft, bottomright, topright,
+    topleftleft, bottomleft. when matched with makevy generates the
+    descriptor for a complete rectangle or oblong.
 }
 \examples{
 \dontrun{
- plot(0:100,seq(58,93.5,length=101),type="n",xaxt="n",yaxt="n",
+ plot(0:100,seq(0,100),type="n",xaxt="n",yaxt="n",
  xlab="",ylab="", bty="n")
- polygon(makevx(2,27),makevy(90,6),col=0,lwd=1,border=1)
+ lines(makevx(20,80),makevy(20,80),col=1,lwd=2)
 }
 }

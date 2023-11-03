@@ -4,21 +4,21 @@
 \alias{makevy}
 \title{makevy make a y values vector}
 \usage{
-makevy(init, inc)
+makevy(y1, y2)
 }
 \arguments{
-\item{init}{y-value for the top edge of a rectangle}
+\item{y1}{y-value for the top edge of a rectangle}
 
-\item{inc}{the y-increment subtracted from init to define the lower edge}
+\item{y2}{the y-increment subtracted from init to define the lower edge}
 }
 \value{
 a vector of y-values
 }
 \description{
-makevy takes the top y value of a rectangle and the
-    vertical increment downwards and defines a vector describing the four
-    vertices of the rectangle topleft, topright, bottomright,
-    bottomleft. topleft, when matched with makevx generates the
+makevy takes the bottom y value of a rectangle and the
+    top y value and defines a vector describing the four
+    vertices of the rectangle bottomleft, bottomright, topright, topleft,
+    bottomleft. When matched with makevx generates the
     descriptor for a complete rectangle.
 }
 \examples{
