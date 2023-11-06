@@ -2,24 +2,29 @@
 % Please edit documentation in R/hplot_funs.R
 \name{makevy}
 \alias{makevy}
-\title{makevy make a y values vector}
+\title{makevy make a y values vector for either an oblong or a triangle}
 \usage{
 makevy(y1, y2)
 }
 \arguments{
-\item{y1}{y-value for the top edge of a rectangle}
+\item{y1}{y-value for the bottom edge of a rectangle, or a vector of 3 x values
+for vertices if defining a triangle.}
 
-\item{y2}{the y-increment subtracted from init to define the lower edge}
+\item{y2}{y-value for the top edge of an oblong, or defaults to NULL if 
+defining a triangle}
 }
 \value{
 a vector of y-values
 }
 \description{
-makevy takes the bottom y value of a rectangle and the
-    top y value and defines a vector describing the four
-    vertices of the rectangle bottomleft, bottomright, topright, topleft,
-    bottomleft. When matched with makevx generates the
-    descriptor for a complete rectangle.
+makevx takes either a vector of 3 values or two single values.
+    If it receives 2 single values then the left x value of a rectangle and 
+    the right x value defines a vector describing the four vertices of the 
+    rectangle bottomleft, bottomright, topright, topleft, bottomleft. When 
+    matched with makevx generates the descriptor for a complete rectangle or
+    oblong is returned. If it receives a single vector of 3 values it returns 
+    that vector with a repeat of the first value appended so that it is ready 
+    to plot a triangle if paired with makevx.
 }
 \examples{
 \dontrun{

@@ -95,6 +95,38 @@ mtext("younger",side=1,adj=0.15,outer=TRUE,cex=1.0,line=-1)
 
 
 
+# diagrams within hpolot---------------------------------------
+
+library(codeutils)
+library(hplot)
+
+
+plotprep(width=10,height=10)
+
+makecanvas()
+
+putcircle(origx = 50, origy = 50, radius = 10, col = NA, lwd = 3, fill = RGB("red",127))
+putcircle(origx = 30, origy = 30, radius = 25, col = NA, lwd = 3, fill = RGB("yellow",127))
+
+putoblong(x1=50,x2=80,y1=10,y2=30,col=NA,fill=RGB("blue",63),lwd=1)
+
+puttriangle(c(40,60,80),c(40,60,40),col=NA,fill=RGB("red",50),lwd=1)
+puttriangle(c(40,60,80),c(40,70,40),col=NA,fill=RGB("red",50),lwd=1)
+puttriangle(c(40,60,80),c(40,80,40),col=NA,fill=RGB("red",50),lwd=1)
+puttriangle(c(40,60,80),c(40,90,40),col=NA,fill=RGB("red",50),lwd=1)
+puttriangle(c(40,60,80),c(40,100,40),col=NA,fill=RGB("red",50),lwd=1)
+
+
+makecanvas()
+for (i in 1:20) {
+  putoblong(x1=(40+2*i),x2=(55+1.2*i),y1=(40+2*i),y2=(65+2*i),col="black")
+}
+
+
+
+
+
+
 
 
 

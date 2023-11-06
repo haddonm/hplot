@@ -2,24 +2,29 @@
 % Please edit documentation in R/hplot_funs.R
 \name{makevx}
 \alias{makevx}
-\title{makevx make an x values vector for plotting oblongs}
+\title{makevx make an x values vector for plotting oblongs and triangles}
 \usage{
-makevx(x1, x2)
+makevx(x1, x2 = NULL)
 }
 \arguments{
-\item{x1}{x-value for the left-hand edge of a rectangle}
+\item{x1}{x-value for the left-hand edge of a rectangle, or a vector of 3
+if defining a triangle}
 
-\item{x2}{x value for the the right-hand edge}
+\item{x2}{x value for the the right-hand edge, or defaults to NULL if 
+defining a triangle}
 }
 \value{
 a vector of x-values
 }
 \description{
-makevx takes the left x value of a rectangle and the
-    right x value and defines a vector describing the four
-    vertices of the rectangle bottomleft, bottomright, topright,
-    topleftleft, bottomleft. when matched with makevy generates the
-    descriptor for a complete rectangle or oblong.
+makevx takes either a vector of 3 values or two single values.
+    If it receives 2 single values then the left x value of a rectangle and 
+    the right x value defines a vector describing the four vertices of the 
+    rectangle bottomleft, bottomright, topright,topleftleft, bottomleft. 
+    When matched with makevy generates the descriptor for a complete 
+    rectangle or oblong is returned. If it receives a single vector of 3
+    values it returns that vector with a repeat of the first value appended
+    so that it is ready to plot a triangle if paired with makevy.
 }
 \examples{
 \dontrun{

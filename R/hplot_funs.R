@@ -166,31 +166,6 @@ categoryplot <- function(x,xlab="",ylab="",mult=0.1,gridx=FALSE,addtotal=FALSE,
 } # end of categoryplot
 
 
-#' @title circle draws a circle with a given origin and radius
-#' 
-#' @description circle provides the means of drawing a circle of a given
-#'     radius and origin within a diagram ready for the addition of text.
-#'
-#' @param origx the final x origin
-#' @param origy the final y origin
-#' @param radius the radius of the circle
-#' @param col the col of the circle
-#' @param lwd the line width of the circle
-#'
-#' @return the matrix of x and y values invisibly  
-#' @export
-#'
-#' @examples
-#'   makecanvas()
-#'   circle(origx=35,origy=70,radius=30,lwd=2,col=1)
-#'   circle(origx=65,origy=60,radius=30,lwd=2,col=2)
-#'   circle(origx=45,origy=40,radius=30,lwd=2,col=4)
-circle <- function(origx=50,origy=50,radius=10,col=1,lwd=1) {
-  ans <- pol2cart(angle=seq(0,360,0.1),dist=radius,xorig=origx,yorig=origy)
-  lines(ans[,"x"],ans[,"y"],lwd=lwd,col=col)
-  return(invisible(ans))
-} # end of circle
-
 #' @title countgtzero used in apply to count the number >0 in a vector
 #'
 #' @description countgtzero used in apply to count number >0 in a vector
@@ -555,16 +530,21 @@ makecanvas <- function(xstart=0,xfinish=100,ystart=0,yfinish=100) {
        type="n",xaxt="n",yaxt="n",xlab="",ylab="", bty="n")
 } # end of makecanvas
 
-#' @title makevx make an x values vector for plotting oblongs
+#' @title makevx make an x values vector for plotting oblongs and triangles
 #'
-#' @description makevx takes the left x value of a rectangle and the
-#'     right x value and defines a vector describing the four
-#'     vertices of the rectangle bottomleft, bottomright, topright,
-#'     topleftleft, bottomleft. when matched with makevy generates the
-#'     descriptor for a complete rectangle or oblong.
+#' @description makevx takes either a vector of 3 values or two single values.
+#'     If it receives 2 single values then the left x value of a rectangle and 
+#'     the right x value defines a vector describing the four vertices of the 
+#'     rectangle bottomleft, bottomright, topright,topleftleft, bottomleft. 
+#'     When matched with makevy generates the descriptor for a complete 
+#'     rectangle or oblong is returned. If it receives a single vector of 3
+#'     values it returns that vector with a repeat of the first value appended
+#'     so that it is ready to plot a triangle if paired with makevy.
 #'
-#' @param x1 x-value for the left-hand edge of a rectangle
-#' @param x2 x value for the the right-hand edge
+#' @param x1 x-value for the left-hand edge of a rectangle, or a vector of 3
+#'     if defining a triangle
+#' @param x2 x value for the the right-hand edge, or defaults to NULL if 
+#'     defining a triangle
 #'
 #' @return a vector of x-values
 #' @export
@@ -575,20 +555,30 @@ makecanvas <- function(xstart=0,xfinish=100,ystart=0,yfinish=100) {
 #'  xlab="",ylab="", bty="n")
 #'  lines(makevx(20,80),makevy(20,80),col=1,lwd=2)
 #' }
-makevx <- function(x1,x2) {
-  return(c(x1,x2,x2,x1,x1))
-}
+makevx <- function(x1,x2=NULL) {
+  if (length(x1) == 1) {
+    return(c(x1,x2,x2,x1,x1))
+  }
+  if (length(x1) == 3) {
+    return(c(x1,x1[1]))
+  }
+} # end of makevx
 
-#' @title makevy make a y values vector
+#' @title makevy make a y values vector for either an oblong or a triangle
 #'
-#' @description makevy takes the bottom y value of a rectangle and the
-#'     top y value and defines a vector describing the four
-#'     vertices of the rectangle bottomleft, bottomright, topright, topleft,
-#'     bottomleft. When matched with makevx generates the
-#'     descriptor for a complete rectangle.
+#' @description makevx takes either a vector of 3 values or two single values.
+#'     If it receives 2 single values then the left x value of a rectangle and 
+#'     the right x value defines a vector describing the four vertices of the 
+#'     rectangle bottomleft, bottomright, topright, topleft, bottomleft. When 
+#'     matched with makevx generates the descriptor for a complete rectangle or
+#'     oblong is returned. If it receives a single vector of 3 values it returns 
+#'     that vector with a repeat of the first value appended so that it is ready 
+#'     to plot a triangle if paired with makevx.
 #'
-#' @param y1 y-value for the top edge of a rectangle
-#' @param y2 the y-increment subtracted from init to define the lower edge
+#' @param y1 y-value for the bottom edge of a rectangle, or a vector of 3 x values
+#'     for vertices if defining a triangle.
+#' @param y2 y-value for the top edge of an oblong, or defaults to NULL if 
+#'     defining a triangle
 #'
 #' @return a vector of y-values
 #' @export
@@ -599,8 +589,13 @@ makevx <- function(x1,x2) {
 #'  polygon(makevx(2,27),makevy(90,6),col=0,lwd=1,border=1)
 #' }
 makevy <- function(y1,y2) {
-  return(c(y1,y1,y2,y2,y1))
-}
+  if (length(y1) == 1) {
+    return(c(y1,y1,y2,y2,y1))
+  }
+  if (length(y1) == 3) {
+    return(c(y1,y1[1]))
+  }
+} # end of makevy
 
 #' @title makepolygon simplifies the creation of a polygon from xy data
 #' 
@@ -641,7 +636,7 @@ makevy <- function(y1,y2) {
 makepolygon <- function(y1,y2,x1,x2=NULL) {
   if ((is.null(x2))) x2 <- x1
   if ((length(x1) != length(y1)) | (length(x2) != length(y2))) 
-    stop("Respective x-axis lengths MUST equal y-axis lengths in makexxpoly \n")
+    stop("The number of x-axis values MUST equal the number of y-axis values in makepolygon \n")
   seqord <- 1:length(x2)
   rx2 <- x2[order(seqord,decreasing=TRUE)]
   seqord <- 1:length(y2)
@@ -650,63 +645,6 @@ makepolygon <- function(y1,y2,x1,x2=NULL) {
   y <- c(y1,ry2)
   return(cbind(x,y))
 } # end of makepolygon
-
-#' @title makeoblong draws a rectangle once a canvas is available
-#'
-#' @description makeoblong draws a rectangle after makecanvas has been called
-#'
-#' @param x1 defines lefthand edge of rectangle
-#' @param x2 defines right-hand edge or rectangle
-#' @param y1 defines bottom edge of rectangle
-#' @param y2 defines top edge of rectangle
-#' @param col colour of line. default="black"
-#' @param lwd the width of the line, default=1
-#' @param ... to allow for other graphics commands such as lty=2, etc
-#'
-#' @return an invisible vector denoting the center (x,y) of the rectangle
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#'    makecanvas(xstart=0,xfinish=100,ystart=0,yfinish=100)
-#'    makeoblong(x1=20,x2=80,y1=25,y2=75,col="red",lwd=2)
-#' }
-makeoblong <- function(x1,x2,y1,y2,col="black",lwd=1,...) {
-  lines(makevx(x1,x2),makevy(y1,y2),col=col,lwd=lwd,...)
-  centerx <- (x2 - x1)/2
-  centery <- (y2 - y1)/2
-  return(invisible(c(centerx,centery)))
-} # end of makeoblong
-
-
-#' @title makerect draws a rectangle once a plot is available
-#'
-#' @description makerect draws a rectangle after canvas has been called
-#'
-#' @param left defines lefthand edge of rectangle
-#' @param xinc left + xinc defines right-hand edge or rectangle
-#' @param top defines top edge of rectangle
-#' @param yinc top - yincdefines bottom edge of rectangle
-#' @param linecol colour of line. default="grey"
-#' @param lwd the width of the line, default=1
-#' @param col the fill colour of the polygon drawn. default=NULL so not filled
-#'
-#' @return a vector denoting the center (x,y) of the rectangle
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#'    canvas(ystart=50,yfinish=93.5)
-#'    makerect(left=2,xinc=27,top=90,yinc=6)
-#' }
-makerect <- function(left,xinc,top,yinc,linecol="grey",lwd=1,col=NULL) {
-  polygon(makevx(left,xinc),makevy(top,yinc),col=col,
-          lwd=lwd,border=linecol)
-  centerx <- (left * 2 + xinc)/2
-  centery <- (top * 2 - yinc)/2
-  return(invisible(c(centerx,centery)))
-}
-
 
 #' @title pickbound selects an optimum number of rows and cols for a plot
 #' 
@@ -1151,6 +1089,90 @@ pol2cart <- function(angle,dist,xorig=0,yorig=0){
   }
   return(coord) #output the new x and y coordinates
 } # end of pol2cart
+
+#' @title putcircle draws a circle with a given origin and radius
+#' 
+#' @description putcircle provides the means of drawing a circle of a given
+#'     radius and origin within a diagram ready for the addition of text.
+#'
+#' @param origx the final x origin
+#' @param origy the final y origin
+#' @param radius the radius of the circle
+#' @param col the col of the circle
+#' @param lwd the line width of the circle
+#' @param fill should the circle be filled with colour? default=NA = empty
+#' @param ... to allow for other graphics commands such as lty=2, etc
+#'
+#' @return the matrix of x and y values invisibly  
+#' @export
+#'
+#' @examples
+#'   makecanvas()
+#'   putcircle(origx=35,origy=70,radius=30,lwd=2,col=1)
+#'   putcircle(origx=65,origy=60,radius=30,lwd=2,col=2)
+#'   putcircle(origx=45,origy=40,radius=30,lwd=2,col=4)
+putcircle <- function(origx=50,origy=50,radius=10,col=1,lwd=1,fill=NA,...) {
+  xy <- pol2cart(angle=seq(0,360,0.1),dist=radius,xorig=origx,yorig=origy)
+  polygon(xy[,"x"],xy[,"y"],border=col,col=fill,lwd=lwd,...)
+  #  lines(ans[,"x"],ans[,"y"],lwd=lwd,col=col)
+  return(invisible(xy))
+} # end of circle
+
+#' @title putoblong draws a rectangle once a canvas is available
+#'
+#' @description putoblong draws a rectangle after makecanvas has been called
+#'
+#' @param x1 defines lefthand edge of rectangle
+#' @param x2 defines right-hand edge or rectangle
+#' @param y1 defines bottom edge of rectangle
+#' @param y2 defines top edge of rectangle
+#' @param col colour of line. default="black"
+#' @param fill colour with which to fill the oblong, default=NA = empty
+#' @param lwd the width of the line, default=1
+#' @param ... to allow for other graphics commands such as lty=2, etc
+#'
+#' @return an invisible matrix of x,y series defining the polygon
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#'    makecanvas(xstart=0,xfinish=100,ystart=0,yfinish=100)
+#'    putoblong(x1=20,x2=80,y1=25,y2=75,col="red",lwd=2)
+#' }
+putoblong <- function(x1,x2,y1,y2,col="black",fill=NA,lwd=1,...) {
+  xs <- makevx(x1,x2)
+  ys <- makevy(y1,y2)
+  polygon(x=xs,y=ys,border=col,lwd=lwd,col=fill,...)
+  centerx <- (x2 - x1)/2
+  centery <- (y2 - y1)/2
+  return(invisible(cbind(xs,ys)))
+} # end of putoblong
+
+#' @title puttriangle draws a triangle once a canvas is available
+#' 
+#' @description puttriangle draws a triangle once a canvas is available. It
+#'     requires two0 vectors of three values defining the three vertices of the 
+#'     triangle.
+#'
+#' @param xs a vector of 3 values defining the x-axis values for the vertices
+#' @param ys a vector of 3 values defining the y-axis values for the vertices
+#' @param col the colour of theborder of the triangle
+#' @param fill the col of the fill of the triangle, default=NA = no fill
+#' @param lwd the line width if the border is coloured
+#' @param ... to allow for other graphics commands such as lty=2, etc
+#'
+#' @return an invisible matrix of x,y series defining the polygon
+#' @export
+#'
+#' @examples
+#' makecanvas()
+#' puttriangle(xs=c(40,60,80),ys=c(40,60,40),col=NA,fill=RGB("red",alpha=127))
+puttriangle <- function(xs,ys,col="black",fill=NA,lwd=1,...) {
+  xv <- makevx(xs)
+  yv <- makevy(ys)
+  polygon(xv,yv,border=col,col=fill,lwd=lwd,...)
+  return(xy=cbind(xv,yv))
+} # end of puttriangle
 
 #' @title pythag calculates Pythagorus' theorum on a vector of two values
 #' 
