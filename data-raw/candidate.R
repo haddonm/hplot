@@ -108,7 +108,7 @@ makecanvas()
 putcircle(origx = 50, origy = 50, radius = 10, col = NA, lwd = 3, fill = RGB("red",127))
 putcircle(origx = 30, origy = 30, radius = 25, col = NA, lwd = 3, fill = RGB("yellow",127))
 
-putoblong(x1=50,x2=80,y1=10,y2=30,col=NA,fill=RGB("blue",63),lwd=1)
+putoblong(x1=50,x2=20,y1=10,y2=30,col=NA,fill=RGB("blue",63),lwd=1)
 
 puttriangle(c(40,60,80),c(40,60,40),col=NA,fill=RGB("red",50),lwd=1)
 puttriangle(c(40,60,80),c(40,70,40),col=NA,fill=RGB("red",50),lwd=1)

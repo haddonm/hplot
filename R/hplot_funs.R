@@ -646,6 +646,33 @@ makepolygon <- function(y1,y2,x1,x2=NULL) {
   return(cbind(x,y))
 } # end of makepolygon
 
+#' @title makerect draws a rectangle once a plot is available
+#'
+#' @description makerect draws a rectangle after canvas has been called
+#'
+#' @param left defines lefthand edge of rectangle
+#' @param xinc left + xinc defines right-hand edge or rectangle
+#' @param top defines top edge of rectangle
+#' @param yinc top - yincdefines bottom edge of rectangle
+#' @param linecol colour of line. default="grey"
+#' @param lwd the width of the line, default=1
+#'
+#' @return a vector denoting the center (x,y) of the rectangle
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#'    canvas(ystart=50,yfinish=93.5)
+#'    makerect(left=2,xinc=27,top=90,yinc=6)
+#' }
+makerect <- function(left,xinc,top,yinc,linecol="grey",lwd=1) {
+  polygon(makevx(left,xinc),makevy(top,yinc),col=0,
+          lwd=lwd,border=linecol)
+  centerx <- (left * 2 + xinc)/2
+  centery <- (top * 2 - yinc)/2
+  return(invisible(c(centerx,centery)))
+}
+
 #' @title pickbound selects an optimum number of rows and cols for a plot
 #' 
 #' @description pickbound enables the automatic selection of a pre-determined
