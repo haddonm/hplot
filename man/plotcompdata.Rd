@@ -12,8 +12,7 @@ plotcompdata(
   outdir = "",
   barcol = "red",
   bordercol = "black",
-  horizline = NULL,
-  prepplot = FALSE
+  horizline = NULL
 )
 }
 \arguments{
@@ -37,9 +36,6 @@ is added, default=""}
 
 \item{horizline}{indices of the sizes or ages againt which to draw reference
 lines. default=NULL. To draw 1 line then eg line = 5, if 2 eg = c(5, 13)}
-
-\item{prepplot}{should plotprep be called to generate an external plotting
-device? default=FALSE}
 }
 \value{
 invisibly returns a list of the filename and caption

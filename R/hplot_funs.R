@@ -880,8 +880,6 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 #' @param bordercol what colour should the bar borders be? default = black
 #' @param horizline indices of the sizes or ages againt which to draw reference
 #'     lines. default=NULL. To draw 1 line then eg line = 5, if 2 eg = c(5, 13)
-#' @param prepplot should plotprep be called to generate an external plotting
-#'     device? default=FALSE
 #'
 #' @return invisibly returns a list of the filename and caption
 #' @export
@@ -897,8 +895,7 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 #'                console=TRUE,horizline=c(5,10))
 #' }              
 plotcompdata <- function(compdata,sau,ylabel="",console=TRUE,outdir="",
-                         barcol="red",bordercol="black",horizline=NULL,
-                         prepplot=FALSE) {
+                         barcol="red",bordercol="black",horizline=NULL) {
   compcl <- as.numeric(rownames(compdata))  # expects size or age classes
   label <- as.numeric(colnames(compdata))   # expects years
   addyrs <- paste0(label[1],"_",label[length(label)])
@@ -911,10 +908,8 @@ plotcompdata <- function(compdata,sau,ylabel="",console=TRUE,outdir="",
   caption <- paste0("Observed size-composition data for ",sau)
   if (length(horizline) == 1) linecol <- "blue"
   if (length(horizline) == 2) linecol <- c("green","blue")
-  if (prepplot) {
-    plotprep(width=12,height=4,newdev=TRUE,filename=filen,cex=0.9,
+  plotprep(width=12,height=4,newdev=TRUE,filename=filen,cex=0.9,
              verbose=FALSE)
-  }
   parset(outmargin=c(1,2,1,0.2),margin=c(0.2,0.2,0,0))
   matfor <- matrix(c(1:20),1,20,byrow=TRUE)
   layout(matfor,heights=rep(1,20),TRUE)
@@ -1312,7 +1307,7 @@ saucompdata <- function(allcomp, glb, horizline = NULL,console = TRUE,
 #' @title setplot provides an example plot with defaults for a standard plot
 #'
 #' @description Provides an example plot with defaults for a standard plot
-#'   includes details of how to gnerate tiff, pdf, and png versions,
+#'   includes details of how to generate tiff, pdf, and png versions,
 #'   mtext and legends. Currently no parameters, but the function
 #'   is open to development for customization of the example plot.
 #' @return prints lines of R that will define a standard plot and can be 

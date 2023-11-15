@@ -12,7 +12,7 @@ prints lines of R that will define a standard plot and can be
 }
 \description{
 Provides an example plot with defaults for a standard plot
-  includes details of how to gnerate tiff, pdf, and png versions,
+  includes details of how to generate tiff, pdf, and png versions,
   mtext and legends. Currently no parameters, but the function
   is open to development for customization of the example plot.
 }
