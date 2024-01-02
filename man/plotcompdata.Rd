@@ -34,7 +34,7 @@ is added, default=""}
 
 \item{bordercol}{what colour should the bar borders be? default = black}
 
-\item{horizline}{indices of the sizes or ages againt which to draw reference
+\item{horizline}{indices of the sizes or ages against which to draw reference
 lines. default=NULL. To draw 1 line then eg line = 5, if 2 eg = c(5, 13)}
 }
 \value{

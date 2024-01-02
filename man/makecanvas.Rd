@@ -16,7 +16,8 @@ makecanvas(xstart = 0, xfinish = 100, ystart = 0, yfinish = 100)
 \item{yfinish}{y-axis maximum default = 100}
 }
 \value{
-nothing but plots an empty graph ready for polygons and text
+plots an empty graph ready for polygons and text, returns a 
+    list defining the objects on the canvas
 }
 \description{
 makecanvas sets up a plotting areas ready for a flowchart
@@ -24,7 +25,7 @@ makecanvas sets up a plotting areas ready for a flowchart
 }
 \examples{
 \dontrun{
-  makecanvas(ystart=50,yfinish=93.5)
+  canvas=makecanvas(ystart=50,yfinish=93.5)
   polygon(makevx(2,27),makevy(90,6),col=0,lwd=1,border=1)
 }
 }

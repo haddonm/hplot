@@ -515,19 +515,25 @@ linept <- function(x,y,lwd=1,pch=16,...) {
 #' @param ystart y-origin value default = 0
 #' @param yfinish y-axis maximum default = 100
 #'
-#' @return nothing but plots an empty graph ready for polygons and text
+#' @return plots an empty graph ready for polygons and text, returns a 
+#'     list defining the objects on the canvas
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#'   makecanvas(ystart=50,yfinish=93.5)
+#'   canvas=makecanvas(ystart=50,yfinish=93.5)
 #'   polygon(makevx(2,27),makevy(90,6),col=0,lwd=1,border=1)
 #' }
 makecanvas <- function(xstart=0,xfinish=100,ystart=0,yfinish=100) {
+  width <- length(xstart:xfinish)
+  height <- length(ystart:yfinish)
   par(mfrow=c(1,1),mai=c(0.1,0.1,0.1,0.1),oma=c(0.0,0,0.0,0.0))
   par(cex=0.85, mgp=c(1.35,0.35,0), font.axis=7,font=7,font.lab=7)
   plot(seq(xstart,xfinish,length=101),seq(ystart,yfinish,length=101),
        type="n",xaxt="n",yaxt="n",xlab="",ylab="", bty="n")
+  canvas <- list(xyaxes=c(width,height),objects=0,form=NULL,
+                 coords=list(),njoin=0,join=list())
+  return(canvas)
 } # end of makecanvas
 
 #' @title makevx make an x values vector for plotting oblongs and triangles
@@ -878,7 +884,7 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 #'     is added, default=""
 #' @param barcol what colour should the bars be, default = red 
 #' @param bordercol what colour should the bar borders be? default = black
-#' @param horizline indices of the sizes or ages againt which to draw reference
+#' @param horizline indices of the sizes or ages against which to draw reference
 #'     lines. default=NULL. To draw 1 line then eg line = 5, if 2 eg = c(5, 13)
 #'
 #' @return invisibly returns a list of the filename and caption
@@ -909,7 +915,7 @@ plotcompdata <- function(compdata,sau,ylabel="",console=TRUE,outdir="",
   if (length(horizline) == 1) linecol <- "blue"
   if (length(horizline) == 2) linecol <- c("green","blue")
   plotprep(width=12,height=4,newdev=TRUE,filename=filen,cex=0.9,
-             verbose=FALSE)
+           verbose=FALSE)
   parset(outmargin=c(1,2,1,0.2),margin=c(0.2,0.2,0,0))
   matfor <- matrix(c(1:20),1,20,byrow=TRUE)
   layout(matfor,heights=rep(1,20),TRUE)
@@ -1081,6 +1087,28 @@ plotxyy <- function(x1,x2=x1,y1,y2,xlab="",ylab1="",ylab2="",cex=0.85,fnt=7,
   grid(ny=0)
 } # end of plotxyy
 
+#' @title pltregcol colours the plot region of a base R plot using panel.first
+#' 
+#' @description pltregcol is used to fill in the plot area with a neutral grey 
+#'     colour to clarify the use of some of the fainter colours, especially
+#'     when using faint transparent colours. The solution came from a
+#'     stackoverflow discussion. It is used as the argument for the panel.first
+#'     function.
+#'
+#' @param col what grey colour to use to infill, default = 'grey90'
+#' @param gridcol what colour to use for the grid added to the plot, default=
+#'     'darkgrey'
+#'
+#' @return nothing but it does infill the plot region of a plot
+#' @export
+#'
+#' @examples
+#' plot(x=2,y=2,panel.first=pltregcol())
+pltregcol <- function(col="grey90",gridcol="darkgrey") {
+  points(0,0,pch=16,cex=1e6,col=col)
+  grid(col=gridcol,lty="dotted")
+} # end of pltregcol
+
 #' @title pol2cart polar to cartesian coordinates
 #' 
 #' @description pol2cart translate polar coordinates of angles (as degrees)
@@ -1139,6 +1167,8 @@ putcircle <- function(origx=50,origy=50,radius=10,col=1,lwd=1,fill=NA,...) {
   #  lines(ans[,"x"],ans[,"y"],lwd=lwd,col=col)
   return(invisible(xy))
 } # end of circle
+
+
 
 #' @title putoblong draws a rectangle once a canvas is available
 #'
@@ -1459,7 +1489,9 @@ xyplotyear <- function(x,yvar="",xvar="",year="year",plotnum=c(1,1),
 
 #' @title yearBubble Generates a bubbleplot of x against Year.
 #'
-#' @description yearBubble Generates a bubbleplot of x against Year.
+#' @description yearBubble Generates a bubbleplot of x against Year. If the 
+#'     sum of x in year i == 0 then nothing is plotted but the graph is still
+#'     generated.
 #'
 #' @param x a matrix of variable * Year; although it needn't be year
 #' @param xlabel defaults to nothing but allows a custom x-axis label
@@ -1489,6 +1521,8 @@ xyplotyear <- function(x,yvar="",xvar="",year="year",plotnum=c(1,1),
 #'  plotprep(width=7,height=6)
 #'  yearBubble(cbv1,ylabel="Catch by Trawl",vline=2006.5,diam=0.2)
 #' }
+#' # x=cbv1;xlabel="";ylabel="";diam=0.1;vline=NA;txt=c(3,4,5,5)
+#' # Fyear=FALSE;xaxis=TRUE;yaxis=TRUE;hline=FALSE;nozero=FALSE
 yearBubble <- function(x,xlabel="",ylabel="",diam=0.1,vline=NA,txt=c(4,6,9,11),
                        Fyear=FALSE,xaxis=TRUE,yaxis=TRUE,hline=FALSE,nozero=FALSE) {
   nyrs <- dim(x)[2]
@@ -1505,8 +1539,8 @@ yearBubble <- function(x,xlabel="",ylabel="",diam=0.1,vline=NA,txt=c(4,6,9,11),
     x[pick] <- NA
   }
   radii <- sqrt(x)
+  catch <- colSums(x,na.rm=TRUE)   # total annual catches  
   biggest <- max(radii,na.rm=TRUE)
-  catch <- colSums(x,na.rm=TRUE)   # total annual catches
   numves <- apply(x,2,function(x1) length(which(x1 > 0))) # num vess x year
   answer <- list(catch,numves,radii) # generate output
   names(answer) <- c("Catch","Vessels","Radii")
@@ -1522,17 +1556,21 @@ yearBubble <- function(x,xlabel="",ylabel="",diam=0.1,vline=NA,txt=c(4,6,9,11),
   plot(years,years,type="n",xlab="",ylab="",ylim=c(0,(nves+txt[4])),yaxs="r",
        yaxt=yt,xaxt=xt,xaxs="r")
   if (hline) abline(h=yvar,col="grey")
-  for (x in 1:nyrs) {
-    yr <- years[x]
-    odd.even<-x%%2
-    if (odd.even == 0) text(yr,nves+txt[3],round(catch[x],0),cex=0.65,font=7)
-    else text(yr,nves+txt[2],round(catch[x],0),cex=0.65,font=7)
-    text(yr,nves+txt[1],numves[x],cex=0.8,font=7)
-    mult <- max(radii[,x],na.rm=TRUE)/biggest
-    symbols(rep(yr,nves),yvar,circles=radii[,x],inches=diam*mult,
-            bg=rgb(1, 0, 0, 0.5), fg = "black",xlab="",ylab="",add=TRUE)
+  for (i in 1:nyrs) { # i = 9
+    yr <- years[i]
+    odd.even<-i%%2
+    if (odd.even == 0) { 
+      text(yr,nves+txt[3],round(catch[i],0),cex=0.65,font=7)
+      } else { 
+      text(yr,nves+txt[2],round(catch[i],0),cex=0.65,font=7)
+    }
+    text(yr,nves+txt[1],numves[i],cex=0.8,font=7)
+    if (sum(radii[,i],na.rm=TRUE) > 0) {
+      mult <- max(radii[,i],na.rm=TRUE)/biggest
+      symbols(rep(yr,nves),yvar,circles=radii[,i],inches=diam*mult,
+              bg=rgb(1, 0, 0, 0.5), fg = "black",xlab="",ylab="",add=TRUE)
+    }
   }
-  
   if (length(vline) > 0) abline(v=c(vline),col="grey")
   title(ylab=list(ylabel, cex=1.0, col=1, font=7))
   return(invisible(answer))

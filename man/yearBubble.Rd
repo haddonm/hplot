@@ -48,7 +48,9 @@ do not appear in the plot}
 invisible, vectors of catch and vessels by year, and radii matrix
 }
 \description{
-yearBubble Generates a bubbleplot of x against Year.
+yearBubble Generates a bubbleplot of x against Year. If the 
+    sum of x in year i == 0 then nothing is plotted but the graph is still
+    generated.
 }
 \examples{
 \dontrun{
@@ -61,4 +63,6 @@ yearBubble Generates a bubbleplot of x against Year.
  plotprep(width=7,height=6)
  yearBubble(cbv1,ylabel="Catch by Trawl",vline=2006.5,diam=0.2)
 }
+# x=cbv1;xlabel="";ylabel="";diam=0.1;vline=NA;txt=c(3,4,5,5)
+# Fyear=FALSE;xaxis=TRUE;yaxis=TRUE;hline=FALSE;nozero=FALSE
 }

@@ -95,7 +95,7 @@ mtext("younger",side=1,adj=0.15,outer=TRUE,cex=1.0,line=-1)
 
 
 
-# diagrams within hpolot---------------------------------------
+# diagrams within hplot---------------------------------------
 
 library(codeutils)
 library(hplot)
@@ -105,8 +105,10 @@ plotprep(width=10,height=10)
 
 makecanvas()
 
-putcircle(origx = 50, origy = 50, radius = 10, col = NA, lwd = 3, fill = RGB("red",127))
-putcircle(origx = 30, origy = 30, radius = 25, col = NA, lwd = 3, fill = RGB("yellow",127))
+putcircle(origx = 50, origy = 50, radius = 10, col = NA, lwd = 3, 
+          fill = RGB("red",127))
+putcircle(origx = 30, origy = 30, radius = 25, col = NA, lwd = 3, 
+          fill = RGB("yellow",127))
 
 putoblong(x1=50,x2=20,y1=10,y2=30,col=NA,fill=RGB("blue",63),lwd=1)
 
@@ -121,6 +123,176 @@ makecanvas()
 for (i in 1:20) {
   putoblong(x1=(40+2*i),x2=(55+1.2*i),y1=(40+2*i),y2=(65+2*i),col="black")
 }
+
+
+
+
+# Flow Charts -----------------------------------
+
+
+
+updatecanvas <- function(canvas,form,coords) {
+    canvas$objects <- canvas$objects + 1
+    canvas$form <- c(canvas$form,form)
+    canvas$coords[[canvas$objects]] <- coords
+  return(canvas)
+} # end of updatecanvas
+
+puttextbox <- function(xy,width,height,canvas,txt="",cex=1.5,...) {
+# xy=c(50,90);width=26;height=12;txt="do_MSE";cex=1.5;canvas=canvas  
+  x1= xy[1]-width/2;    x2 <- xy[1]+width/2
+  y1 <- xy[2]-height/2; y2 <- xy[2]+height/2
+  coords <- c(xy=xy,xL=x1,xR=x2,yB=y1,yT=y2)
+  putoblong(x1,x2,y1,y2,col="black")
+  text(xy[1],xy[2],txt,cex=cex,...)
+  canvas <- updatecanvas(canvas,form="txtbox",coords=coords)
+  return(canvas)
+} # end of puttextbox
+
+
+
+joinobjs <- function(canvas,obj1,obj2,connect,lwd=2,code=2,
+                     angle=20,length=0.1) {
+# canvas=canvas;obj1=5;obj2=4;connect="downright";lwd=3;code=2;angle=20;length=0.1  
+  njoin <- canvas$njoin
+  update <- TRUE
+  if (njoin > 0) {
+     for (i in 1:njoin) {
+       if ((obj1 == canvas$join[[i]][1]) & (obj2 == canvas$join[[i]][2]))
+         update=FALSE
+     }
+  }
+  cord1 <- canvas$coords[[obj1]]
+  cord2 <- canvas$coords[[obj2]]
+  if (connect == "topdown") {
+    begin <- c(cord1["xy1"],cord1["yB"])
+    end <- c(cord2["xy1"],cord2["yT"])
+  }
+  if (connect == "leftright") {
+    begin <- c(cord1["xL"],cord1["xy2"])
+    end <- c(cord2["xR"],cord2["xy2"])
+  }
+  if (connect == "downright") {
+    lines(c(cord1["xy1"],cord1["xy1"]),c(cord1["yB"],cord2["xy2"]),lwd=lwd)
+    begin <- c(cord1["xy1"],cord2["xy2"])
+    end <- c(cord2["xL"],cord2["xy2"])
+  }
+  arrows(begin[1],begin[2],end[1],end[2],length=length,angle=angle,
+         code=2,lwd=lwd)
+  if (update) {
+    canvas$njoin <- canvas$njoin + 1
+    label <- c("obj1","obj2","x1","y1","x2","y2")
+    out <- c(obj1,obj2,begin,end); names(out) <- label
+    if (connect %in% c("downright","downleft")) {
+      out <- c(out,cord1["xy1"],cord1["yB"],cord1["xy1"],cord2["xy2"])
+      names(out) <- c(label,"x3","y3","x4","y4")
+    }
+    canvas$join[[canvas$njoin]] <- out
+  }
+  return(canvas)
+} # end of join objects
+
+
+labelobjects <- function(canvas) {
+  nobj <- canvas$objects
+  for (i in 1:nobj) { # i=3
+    cord <- canvas$coords[[i]]
+    form <- canvas$form[i]
+    if (form == "txtbox") {
+      x1 <- cord["xL"] + (cord["xy1"] - cord["xL"])/2
+      y1 <- cord["yT"]
+      text(x1,y1,i,pos=3,cex=1.5)
+    }
+    if (form == "decision") {
+      x1 <- cord["xL"] + (cord["xy1"] - cord["xL"])/2
+      y1 <- cord["xy2"] + (cord["yT"] - cord["xy2"])/2
+      text(x1,y1,i,pos=3,cex=1.5)
+    }
+  }
+} # end of labelobjects
+labelobjects(canvas)
+
+
+putdecision <- function(xy,width,height,canvas,txt="",cex=1.0,...) {
+   x4 <- c(xy[1],xy[1]+width/2,xy[1],xy[1]-width/2,xy[1])
+   y4 <- c(xy[2]+height/2,xy[2],xy[2]-height/2,xy[2],xy[2]+height/2)
+   coords <- c(xy,xy[1]-width/2,xy[1]+width/2,xy[2]-height/2,xy[2]+height/2) 
+   names(coords)=c("xy1","xy2","xL","xR","yB","yT")
+   lines(x4,y4,lwd=3)
+   text(xy[1],xy[2],txt,cex=cex,...)
+   text(xy[1],xy[2]-height/2,"N",pos=3,cex=cex)
+   text(xy[1]-width/2,xy[2],"Y",pos=3,cex=cex) 
+   canvas <- updatecanvas(canvas,form="decision",coords=coords)
+   return(invisible(canvas))
+} # end of putdecision
+
+  
+
+
+library(codeutils)
+library(hplot)
+
+plotprep(width=10,height=10)
+canvas <- makecanvas()
+#abline(v=c(0,50,100),lty=2,col="grey")
+
+canvas <- puttextbox(xy=c(50,91),width=26,height=6,canvas=canvas,
+                     txt="do_MSE",cex=1.5,font=7)
+canvas <- puttextbox(xy=c(50,79),width=26,height=6,canvas=canvas,
+                     txt="makequilzone",cex=1.5,font=7)
+canvas <- putdecision(xy=c(50,65),width=20,height=12,canvas=canvas,
+            txt="Any initdepl < 1.0",cex=1.3,font=7) 
+canvas <- puttextbox(xy=c(50,50),width=26,height=6,canvas=canvas,
+                     txt="dohistoricC",cex=1.5,font=7)
+canvas <- puttextbox(xy=c(25,65),width=15,height=6,canvas=canvas,
+                     txt="depleteSAU",cex=1.5,font=7)
+canvas <- puttextbox(xy=c(50,40),width=26,height=6,canvas=canvas,
+                     txt="Plots and Tables",cex=1.5,font=7)
+canvas <- puttextbox(xy=c(50,30),width=26,height=6,canvas=canvas,
+                     txt="prepareprojection",cex=1.5,font=7)
+canvas <- puttextbox(xy=c(50,20),width=26,height=6,canvas=canvas,
+                     txt="doprojections",cex=1.5,font=7)
+
+canvas <- joinobjs(canvas=canvas,obj1=1,obj2=2,connect="topdown",lwd=3)
+canvas <- joinobjs(canvas=canvas,obj1=2,obj2=3,connect="topdown",lwd=3)
+canvas <- joinobjs(canvas=canvas,obj1=3,obj2=5,connect="leftright",lwd=3)
+canvas <- joinobjs(canvas=canvas,obj1=3,obj2=4,connect="topdown",lwd=3)
+canvas <- joinobjs(canvas=canvas,obj1=5,obj2=4,connect="downright",lwd=3)
+canvas <- joinobjs(canvas=canvas,obj1=4,obj2=6,connect="topdown",lwd=3)
+canvas <- joinobjs(canvas=canvas,obj1=6,obj2=7,connect="topdown",lwd=3)
+canvas <- joinobjs(canvas=canvas,obj1=7,obj2=8,connect="topdown",lwd=3)
+
+
+
+
+
+
+
+
+labelobjects(canvas)
+
+
+
+ data(sps)
+ cbv <- tapply(sps$catch_kg,list(sps$Vessel,sps$Year),sum,na.rm=TRUE)/1000
+ dim(cbv)
+ early <- rowSums(cbv[,1:6],na.rm=TRUE)
+ late <- rowSums(cbv[,7:12],na.rm=TRUE)
+ cbv1 <- cbv[order(late,-early),]
+ plotprep(width=10,height=8)
+ yearBubble(cbv1,ylabel="Catch by Trawl",vline=2006.5,diam=0.2,txt=c(3,4,5,5))
+ 
+ cbv1[,9] <- NA
+ yearBubble(cbv1,ylabel="Catch by Trawl",vline=2006.5,diam=0.2,txt=c(3,4,5,5))
+ 
+
+
+
+
+
+
+
+
 
 
 
