@@ -15,10 +15,13 @@ a vector of two with the number of rows and columns for a plot
 \description{
 pickbound enables the automatic selection of a pre-determined
     optimum combination of plot rows and columns to suit a number of plots
-    up to 30. So, given a number of plots from 1 to 30 this returns a numeric 
-    dimer containing the number of rows and columns needed for par statement
+    up to 36. So, given a number of plots from 1 to 36 this returns a numeric 
+    dimer containing the number of rows and columns needed for par statement.
+    If pickbound is set to a value > 36 a warning will be given and it will
+    revert to 36, which I assume will ruin you plot.
 }
 \examples{
 pickbound(5)
 pickbound(8)
+pickbound(33)
 }

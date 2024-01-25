@@ -683,8 +683,10 @@ makerect <- function(left,xinc,top,yinc,linecol="grey",lwd=1) {
 #' 
 #' @description pickbound enables the automatic selection of a pre-determined
 #'     optimum combination of plot rows and columns to suit a number of plots
-#'     up to 30. So, given a number of plots from 1 to 30 this returns a numeric 
-#'     dimer containing the number of rows and columns needed for par statement
+#'     up to 36. So, given a number of plots from 1 to 36 this returns a numeric 
+#'     dimer containing the number of rows and columns needed for par statement.
+#'     If pickbound is set to a value > 36 a warning will be given and it will
+#'     revert to 36, which I assume will ruin you plot.
 #'
 #' @param n the number of plots to be included in a combined plot
 #'
@@ -694,11 +696,18 @@ makerect <- function(left,xinc,top,yinc,linecol="grey",lwd=1) {
 #' @examples
 #' pickbound(5)
 #' pickbound(8)
+#' pickbound(33)
 pickbound <- function(n) {
   bounds <- matrix(c(1,1,1,2,2,1,3,2,2,4,2,2,5,3,2,6,3,2,7,4,2,8,4,2,9,3,3,10,3,4,
                      11,3,4,12,3,4,13,5,3,14,5,3,15,5,3,16,4,4,17,5,4,18,5,4,19,5,4,
                      20,5,4,21,5,5,22,5,5,23,5,5,24,5,5,25,5,5,26,5,6,27,5,6,28,5,6,
-                     29,5,6,30,5,6),nrow=30,ncol=3,byrow=TRUE)
+                     29,5,6,30,5,6,31,8,4,32,8,4,33,6,6,34,6,6,35,7,5,36,6,6),
+                   nrow=36,ncol=3,byrow=TRUE,
+                   dimnames=list(1:36,c("plots","rows","cols")))
+  if (n > 36) {
+    warning("pickbound set to upper limit of 36 so a plot will fail.  \n")
+    n <- 36
+  }
   out <- c(bounds[n,2],bounds[n,3])
   return(out)
 } # end of pickbound
