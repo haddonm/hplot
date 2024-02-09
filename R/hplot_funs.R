@@ -705,10 +705,12 @@ pickbound <- function(n) {
                    nrow=36,ncol=3,byrow=TRUE,
                    dimnames=list(1:36,c("plots","rows","cols")))
   if (n > 36) {
-    warning("pickbound set to upper limit of 36 so a plot will fail.  \n")
-    n <- 36
+    tmp <- ceiling(sqrt(n))
+    out <- c(tmp,tmp)
+    if ((tmp * (tmp-1)) >= n) out <- c(tmp,(tmp-1)) 
+  } else {
+    out <- c(bounds[n,2],bounds[n,3])
   }
-  out <- c(bounds[n,2],bounds[n,3])
   return(out)
 } # end of pickbound
 
