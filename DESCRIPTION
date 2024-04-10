@@ -1,8 +1,8 @@
 Package: hplot
 Type: Package
 Title: Contains utility functions for when using base R graphics
-Version: 0.0.15
-Date: 2024-01-26
+Version: 0.0.16
+Date: 2024-04-10
 Authors@R: person(given="Malcolm",
                   family="Haddon", 
                   email = "malcolm.haddon@gmail.com", 

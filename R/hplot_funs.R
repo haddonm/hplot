@@ -514,6 +514,7 @@ linept <- function(x,y,lwd=1,pch=16,...) {
 #' @param xfinish maximum of x axis defaults = 100
 #' @param ystart y-origin value default = 0
 #' @param yfinish y-axis maximum default = 100
+#' @param addbox should a box be drawn around the canvas, default = FALSE
 #'
 #' @return plots an empty graph ready for polygons and text, returns a 
 #'     list defining the objects on the canvas
@@ -524,16 +525,18 @@ linept <- function(x,y,lwd=1,pch=16,...) {
 #'   canvas=makecanvas(ystart=50,yfinish=93.5)
 #'   polygon(makevx(2,27),makevy(90,6),col=0,lwd=1,border=1)
 #' }
-makecanvas <- function(xstart=0,xfinish=100,ystart=0,yfinish=100) {
+makecanvas <- function(xstart=0,xfinish=100,ystart=0,yfinish=100,addbox=FALSE) {
   width <- length(xstart:xfinish)
   height <- length(ystart:yfinish)
   par(mfrow=c(1,1),mai=c(0.1,0.1,0.1,0.1),oma=c(0.0,0,0.0,0.0))
   par(cex=0.85, mgp=c(1.35,0.35,0), font.axis=7,font=7,font.lab=7)
   plot(seq(xstart,xfinish,length=101),seq(ystart,yfinish,length=101),
        type="n",xaxt="n",yaxt="n",xlab="",ylab="", bty="n")
+  if (addbox) makerect(left=xstart,right=xfinish-xstart,
+                       bottom=yfinish - (yfinish-ystart),top=yfinish)
   canvas <- list(xyaxes=c(width,height),objects=0,form=NULL,
                  coords=list(),njoin=0,join=list())
-  return(canvas)
+  return(invisible(canvas))
 } # end of makecanvas
 
 #' @title makevx make an x values vector for plotting oblongs and triangles
@@ -657,11 +660,13 @@ makepolygon <- function(y1,y2,x1,x2=NULL) {
 #' @description makerect draws a rectangle after canvas has been called
 #'
 #' @param left defines lefthand edge of rectangle
-#' @param xinc left + xinc defines right-hand edge or rectangle
+#' @param right defines right-hand edge of rect
+#' @param bottom defines bottom edge of rectangle angle
 #' @param top defines top edge of rectangle
-#' @param yinc top - yincdefines bottom edge of rectangle
 #' @param linecol colour of line. default="grey"
 #' @param lwd the width of the line, default=1
+#' @param console should the centerx and centery bt sent ot console, 
+#'     default=FALSE
 #'
 #' @return a vector denoting the center (x,y) of the rectangle
 #' @export
@@ -671,12 +676,12 @@ makepolygon <- function(y1,y2,x1,x2=NULL) {
 #'    canvas(ystart=50,yfinish=93.5)
 #'    makerect(left=2,xinc=27,top=90,yinc=6)
 #' }
-makerect <- function(left,xinc,top,yinc,linecol="grey",lwd=1) {
-  polygon(makevx(left,xinc),makevy(top,yinc),col=0,
+makerect <- function(left,right,bottom,top,linecol="grey",lwd=1,console=FALSE) {
+  polygon(makevx(left,right),makevy(top,bottom),col=NULL,
           lwd=lwd,border=linecol)
-  centerx <- (left * 2 + xinc)/2
-  centery <- (top * 2 - yinc)/2
-  return(invisible(c(centerx,centery)))
+  centerx <- (left + (right-left)/2)
+  centery <- (top - (top- bottom)/2)
+  if (console) return(c(centerx,centery))
 }
 
 #' @title pickbound selects an optimum number of rows and cols for a plot
@@ -952,7 +957,8 @@ plotcompdata <- function(compdata,sau,ylabel="",console=TRUE,outdir="",
 #' @description plotnull, there are often circumstances, for example, when
 #'     plotting up results from each year and each SAU, where there will be
 #'     combinations of year and SAU that have no data, but to avoid a problem
-#'     with the plotting it is necessary to generate an empty plot.
+#'     with the plotting it is necessary to generate an empty plot. By using
+#'     x=0:100 and y= 0:100 this is equivalent to a canvas of 0:100,0:100
 #'
 #' @param msg a message to be printed in the middle of the empty plot.
 #'
@@ -962,7 +968,7 @@ plotcompdata <- function(compdata,sau,ylabel="",console=TRUE,outdir="",
 #' @examples
 #' plotnull("An empty plot")
 plotnull <- function(msg="") {
-  plot(1:10,1:10,type="n",xaxt="n",yaxt="n",xlab="",ylab="")
+  plot(0:100,0:100,type="n",xaxt="n",yaxt="n",xlab="",ylab="",frame.plot=FALSE)
   if (nchar(msg) > 0)
     text(x=5,y=5,msg,cex=1.0,font=7)
 } # end of plotnull

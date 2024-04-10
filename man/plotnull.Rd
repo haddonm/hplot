@@ -16,7 +16,8 @@ nothing but it does generate a plot
 plotnull, there are often circumstances, for example, when
     plotting up results from each year and each SAU, where there will be
     combinations of year and SAU that have no data, but to avoid a problem
-    with the plotting it is necessary to generate an empty plot.
+    with the plotting it is necessary to generate an empty plot. By using
+    x=0:100 and y= 0:100 this is equivalent to a canvas of 0:100,0:100
 }
 \examples{
 plotnull("An empty plot")

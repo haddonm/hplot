@@ -4,20 +4,23 @@
 \alias{makerect}
 \title{makerect draws a rectangle once a plot is available}
 \usage{
-makerect(left, xinc, top, yinc, linecol = "grey", lwd = 1)
+makerect(left, right, bottom, top, linecol = "grey", lwd = 1, console = FALSE)
 }
 \arguments{
 \item{left}{defines lefthand edge of rectangle}
 
-\item{xinc}{left + xinc defines right-hand edge or rectangle}
+\item{right}{defines right-hand edge of rect}
+
+\item{bottom}{defines bottom edge of rectangle angle}
 
 \item{top}{defines top edge of rectangle}
-
-\item{yinc}{top - yincdefines bottom edge of rectangle}
 
 \item{linecol}{colour of line. default="grey"}
 
 \item{lwd}{the width of the line, default=1}
+
+\item{console}{should the centerx and centery bt sent ot console, 
+default=FALSE}
 }
 \value{
 a vector denoting the center (x,y) of the rectangle

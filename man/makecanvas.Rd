@@ -4,7 +4,13 @@
 \alias{makecanvas}
 \title{makecanvas sets up a plotting area ready for the flowchart}
 \usage{
-makecanvas(xstart = 0, xfinish = 100, ystart = 0, yfinish = 100)
+makecanvas(
+  xstart = 0,
+  xfinish = 100,
+  ystart = 0,
+  yfinish = 100,
+  addbox = FALSE
+)
 }
 \arguments{
 \item{xstart}{x-origin value defaults = 0}
@@ -14,6 +20,8 @@ makecanvas(xstart = 0, xfinish = 100, ystart = 0, yfinish = 100)
 \item{ystart}{y-origin value default = 0}
 
 \item{yfinish}{y-axis maximum default = 100}
+
+\item{addbox}{should a box be drawn around the canvas, default = FALSE}
 }
 \value{
 plots an empty graph ready for polygons and text, returns a 

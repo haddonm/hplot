@@ -287,13 +287,63 @@ labelobjects(canvas)
  
 
 
-
-
-
-
-
-
-
+plotprep(width=10, height=4)
+parset()
+plotnull()
+plotoblong(x0=0,x1=100,y0=0,y1=100,col=0,lwd=4)
+text(5,95,"zone",cex=2.5)
+startx <- 1
+for (i in 1:4) {
+  plotoblong(x0=startx,x1=(startx+23),y0=3,y1=90,lwd=4)
+  text(x=(startx+3),y=86,"sau",cex=2.0)
+  startx <- startx + 25
+}
+pops <- c(3,5,8,4)
+#first sau
+leftx <- 2; rightx <- 23
+boty <- 5; upy <- 27
+for (i in 1:3) {
+  plotoblong(x0=leftx,x1=rightx,y0=boty,y1=upy,lwd=3)
+  boty <- boty + 27;  upy <- upy + 27
+}
+text(x=8.5,y=77,"Populations",cex=1.5)
+# second sau
+leftx <- 26+2; rightx <- 26+11; 
+boty <- 5; upy <- 27
+for (i in 1:3) {
+  plotoblong(x0=leftx,x1=rightx,y0=boty,y1=upy,lwd=3)
+  boty <- boty + 27;  upy <- upy + 27
+}
+boty <- 5; upy <- 35
+for (i in 1:2) {
+  plotoblong(x0=39,x1=48,y0=boty,y1=upy,lwd=3)
+  boty <- boty + 35;  upy <- upy + 45
+}
+# third sau
+leftx <- 52; rightx <- 62; 
+boty <- 5; upy <- 25
+for (i in 1:4) {
+  plotoblong(x0=leftx,x1=rightx,y0=boty,y1=upy,lwd=3)
+  boty <- boty + 18;  upy <- upy + 18
+}
+boty <- 5; upy <- 25
+for (i in 1:4) {
+  plotoblong(x0=63,x1=73,y0=boty,y1=upy,lwd=3)
+  boty <- boty + 18;  upy <- upy + 18
+}
+# fourth sau
+leftx <- 77; rightx <- 87; 
+boty <- 5; upy <- 40
+for (i in 1:2) {
+  plotoblong(x0=leftx,x1=rightx,y0=boty,y1=upy,lwd=3)
+  boty <- boty + 36;  upy <- upy + 36
+}
+leftx <- 88; rightx <- 98; 
+boty <- 5; upy <- 40
+for (i in 1:2) {
+  plotoblong(x0=leftx,x1=rightx,y0=boty,y1=upy,lwd=3)
+  boty <- boty + 36;  upy <- upy + 36
+}
 
 
 
