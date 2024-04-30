@@ -34,8 +34,8 @@ is added, default=""}
 
 \item{bordercol}{what colour should the bar borders be? default = black}
 
-\item{horizline}{indices of the sizes or ages against which to draw reference
-lines. default=NULL. To draw 1 line then eg line = 5, if 2 eg = c(5, 13)}
+\item{horizline}{the size or age against which to draw a reference line. 
+default=NULL. To draw a line at 136mm then horizline=136}
 }
 \value{
 invisibly returns a list of the filename and caption
@@ -49,11 +49,11 @@ plotcompdata generates a horizontal array of up to 20 barplots
 \examples{
 \dontrun{
   x <- matrix(rnorm(600,mean=20,sd=3),nrow=20,ncol=30,
-              dimnames=list(1:20,1991:2020))
+              dimnames=list(seq(122,160,2),1991:2020))
   ylabel="Random Composition"
   numcol <- ncol(x)
   if (numcol > 20) x1 <- x[,1:20]
   plotcompdata(compdata=x1,sau="sauX",ylabel="Random Composition Data",
-               console=TRUE,horizline=c(5,10))
+               console=TRUE,barcol="red",bordercol="black",horizline=136)
 }              
 }

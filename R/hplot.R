@@ -22,4 +22,5 @@ NULL
 #' @importFrom utils tail head str write.table write.csv
 #' @importFrom stats quantile loess sd coef lm dnorm median
 #' @importFrom makehtml addplot
+#' @importFrom codeutils which.closest
 NULL

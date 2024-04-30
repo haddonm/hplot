@@ -900,8 +900,8 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 #'     is added, default=""
 #' @param barcol what colour should the bars be, default = red 
 #' @param bordercol what colour should the bar borders be? default = black
-#' @param horizline indices of the sizes or ages against which to draw reference
-#'     lines. default=NULL. To draw 1 line then eg line = 5, if 2 eg = c(5, 13)
+#' @param horizline the size or age against which to draw a reference line. 
+#'     default=NULL. To draw a line at 136mm then horizline=136
 #'
 #' @return invisibly returns a list of the filename and caption
 #' @export
@@ -909,12 +909,12 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 #' @examples
 #' \dontrun{
 #'   x <- matrix(rnorm(600,mean=20,sd=3),nrow=20,ncol=30,
-#'               dimnames=list(1:20,1991:2020))
+#'               dimnames=list(seq(122,160,2),1991:2020))
 #'   ylabel="Random Composition"
 #'   numcol <- ncol(x)
 #'   if (numcol > 20) x1 <- x[,1:20]
 #'   plotcompdata(compdata=x1,sau="sauX",ylabel="Random Composition Data",
-#'                console=TRUE,horizline=c(5,10))
+#'                console=TRUE,barcol="red",bordercol="black",horizline=136)
 #' }              
 plotcompdata <- function(compdata,sau,ylabel="",console=TRUE,outdir="",
                          barcol="red",bordercol="black",horizline=NULL) {
@@ -939,13 +939,18 @@ plotcompdata <- function(compdata,sau,ylabel="",console=TRUE,outdir="",
           space=0,axis.lty=1.0,cex.names=1.0)
   mtext(label[1],side=1,outer=FALSE,cex=1,line=-0.75)
   mtext(sampsize[1],side=3,outer=FALSE,line=-1,cex=1)
-  if (length(horizline) > 0) abline(h=horizline,lwd=3,col=linecol)
+  if (length(horizline) > 0) {
+    pickcl <- which.closest(horizline,compcl)
+    if (compcl[pickcl] != horizline)
+      warning(cat("Horizontal line at ",compcl[pickcl]," not ",horizline,"\n"))
+    abline(h=pickcl-1,lwd=3,col=linecol)
+  }
   for (i in 2:Nsamp) {
     barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
             border=bordercol,space=0)
     mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=1)
     mtext(sampsize[i],side=3,outer=FALSE,line=-1,cex=1)
-    if (length(horizline) > 0) abline(h=horizline,lwd=3,col=linecol)
+    if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
   }
   mtext(text=ylabel,side=2,outer=TRUE,cex=1.1,line=0.2)
   if (!console) dev.off()
