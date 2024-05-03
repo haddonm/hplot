@@ -966,16 +966,17 @@ plotcompdata <- function(compdata,sau,ylabel="",console=TRUE,outdir="",
 #'     x=0:100 and y= 0:100 this is equivalent to a canvas of 0:100,0:100
 #'
 #' @param msg a message to be printed in the middle of the empty plot.
+#' @param cex what font size to use in any message, default = 1.0
 #'
 #' @return nothing but it does generate a plot
 #' @export
 #'
 #' @examples
-#' plotnull("An empty plot")
-plotnull <- function(msg="") {
+#' plotnull("An empty plot",cex=1.5)
+plotnull <- function(msg="",cex=1.0) {
   plot(0:100,0:100,type="n",xaxt="n",yaxt="n",xlab="",ylab="",frame.plot=FALSE)
   if (nchar(msg) > 0)
-    text(x=5,y=5,msg,cex=1.0,font=7)
+    text(x=5,y=5,msg,cex=cex,font=7)
 } # end of plotnull
 
 #' @title plotoblong generates an oblong from x0,x1,y0,y1

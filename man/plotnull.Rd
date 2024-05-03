@@ -4,10 +4,12 @@
 \alias{plotnull}
 \title{plotnull generates an empty plot when one is needed}
 \usage{
-plotnull(msg = "")
+plotnull(msg = "", cex = 1)
 }
 \arguments{
 \item{msg}{a message to be printed in the middle of the empty plot.}
+
+\item{cex}{what font size to use in any message, default = 1.0}
 }
 \value{
 nothing but it does generate a plot
@@ -20,5 +22,5 @@ plotnull, there are often circumstances, for example, when
     x=0:100 and y= 0:100 this is equivalent to a canvas of 0:100,0:100
 }
 \examples{
-plotnull("An empty plot")
+plotnull("An empty plot",cex=1.5)
 }
