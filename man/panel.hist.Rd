@@ -18,9 +18,11 @@ nothing but it does add histograms to the diagonals
 \description{
 panel.hist is a function lifted directly from the help
     for the 'pairs' function. It enables histograms of each variable
-    to be included in the diagonal plots insude the pairs plot. It is
+    to be included in the diagonal plots inside the pairs plot. It is
     only included here as a convenience.
 }
 \examples{
 print("wait on data sets")
+# syntax
+# pairs(x,...,diag.panel=panel.hist)
 }

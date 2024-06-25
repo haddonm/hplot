@@ -754,7 +754,7 @@ newplot <- function(width=6,height=3.6,newdev=TRUE) {
 #' 
 #' @description panel.hist is a function lifted directly from the help
 #'     for the 'pairs' function. It enables histograms of each variable
-#'     to be included in the diagonal plots insude the pairs plot. It is
+#'     to be included in the diagonal plots inside the pairs plot. It is
 #'     only included here as a convenience.
 #'
 #' @param x a data.frame or matrix of variables that will be plotted
@@ -766,11 +766,14 @@ newplot <- function(width=6,height=3.6,newdev=TRUE) {
 #'
 #' @examples
 #' print("wait on data sets")
+#' # syntax
+#' # pairs(x,...,diag.panel=panel.hist)
 panel.hist <- function(x, ...) {
-  usr <- par("usr"); on.exit(par(usr))
-  par(usr = c(usr[1:2], 0, 1.5) )
+  usr <- par("usr"); on.exit(par("usr"=usr))
+  par("usr" = c(usr[1:2], 0, 1.5) )
   h <- hist(x, plot = FALSE)
-  breaks <- h$breaks; nB <- length(breaks)
+  breaks <- h$breaks
+  nB <- length(breaks)
   y <- h$counts; y <- y/max(y)
   rect(breaks[-nB], 0, breaks[-1], y, col = "pale green", ...)
 } # end of panel.hist

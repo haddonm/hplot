@@ -2,8 +2,8 @@
 % Please edit documentation in R/hplot.R
 \docType{package}
 \name{hplot}
-\alias{hplot}
 \alias{hplot-package}
+\alias{hplot}
 \title{hplot: a set of functions providing aid for case graphics plus custom plots}
 \description{
 The hplot package provides an array of utility functions and custom graphics

@@ -16,7 +16,8 @@ Depends:
     R (>= 3.5.0)
 License: GPL-2
 Imports:
-    makehtml
-RoxygenNote: 7.2.3
+    makehtml,
+    codeutils
+RoxygenNote: 7.3.1
 Encoding: UTF-8
 URL: https://haddonm.github.io/hplot/

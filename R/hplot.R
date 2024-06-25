@@ -10,7 +10,6 @@
 #' 
 #' }
 #' 
-#' @docType package
 #' @name hplot
 #' @keywords internal
 "_PACKAGE"
