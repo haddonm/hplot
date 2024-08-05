@@ -1121,7 +1121,9 @@ plotxyy <- function(x1,x2=x1,y1,y2,xlab="",ylab1="",ylab2="",cex=0.85,fnt=7,
 #'     stackoverflow discussion. It is used as the argument for the panel.first
 #'     function.
 #'
-#' @param col what grey colour to use to infill, default = 'grey90'
+#' @param col what grey colour to use to infill, default = 'grey95'. Can also
+#'     just enter a number 15-99, which will generate different shades of grey
+#'     in case grey95 is too light or too dark
 #' @param gridcol what colour to use for the grid added to the plot, default=
 #'     'darkgrey'
 #'
@@ -1130,10 +1132,12 @@ plotxyy <- function(x1,x2=x1,y1,y2,xlab="",ylab1="",ylab2="",cex=0.85,fnt=7,
 #'
 #' @examples
 #' plot(x=2,y=2,panel.first=pltregcol())
-pltregcol <- function(col="grey90",gridcol="darkgrey") {
+pltregcol <- function(col="grey95",gridcol="darkgrey") {
+  if (is.numeric(col)) col <- paste0("grey",col)
   points(0,0,pch=16,cex=1e6,col=col)
   grid(col=gridcol,lty="dotted")
 } # end of pltregcol
+
 
 #' @title pol2cart polar to cartesian coordinates
 #' 

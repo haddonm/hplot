@@ -4,10 +4,12 @@
 \alias{pltregcol}
 \title{pltregcol colours the plot region of a base R plot using panel.first}
 \usage{
-pltregcol(col = "grey90", gridcol = "darkgrey")
+pltregcol(col = "grey95", gridcol = "darkgrey")
 }
 \arguments{
-\item{col}{what grey colour to use to infill, default = 'grey90'}
+\item{col}{what grey colour to use to infill, default = 'grey95'. Can also
+just enter a number 15-99, which will generate different shades of grey
+in case grey95 is too light or too dark}
 
 \item{gridcol}{what colour to use for the grid added to the plot, default=
 'darkgrey'}

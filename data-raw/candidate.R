@@ -350,6 +350,13 @@ for (i in 1:2) {
 
 
 
+pltregcol <- function(col="grey15",gridcol="darkgrey") {
+  if (is.numeric(col)) col <- paste0("grey",col)
+  points(0,0,pch=16,cex=1e6,col=col)
+  grid(col=gridcol,lty="dotted")
+} # end of pltregcol
+
+plot(x=2,y=2,panel.first=pltregcol(col=98))
 
 
 
