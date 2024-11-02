@@ -559,11 +559,9 @@ makecanvas <- function(xstart=0,xfinish=100,ystart=0,yfinish=100,addbox=FALSE) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #'  plot(0:100,seq(0,100),type="n",xaxt="n",yaxt="n",
 #'  xlab="",ylab="", bty="n")
 #'  lines(makevx(20,80),makevy(20,80),col=1,lwd=2)
-#' }
 makevx <- function(x1,x2=NULL) {
   if (length(x1) == 1) {
     return(c(x1,x2,x2,x1,x1))
