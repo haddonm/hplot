@@ -23,7 +23,7 @@ makerect(left, right, bottom, top, linecol = "grey", lwd = 1, console = FALSE)
 default=FALSE}
 }
 \value{
-a vector denoting the center (x,y) of the rectangle
+invisibly a vector denoting the center (x,y) of the rectangle
 }
 \description{
 makerect draws a rectangle after canvas has been called

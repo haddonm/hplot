@@ -1,4 +1,36 @@
 
+#' @title addgrid adds a grid to a canvas within a diagram
+#' 
+#' @description addgrid generates a grid to a canvas to act as a guide for
+#'     when adding rectangles, etc. 
+#'
+#' @param left defines lefthand edge of rectangle default = 0
+#' @param right defines right-hand edge of rect default = 100
+#' @param bottom defines bottom edge of rectangle angle default = 0
+#' @param top defines top edge of rectangle default = 100
+#' @param step how often to draw a grid line, default = 20
+#'
+#' @return nothing but it does add a grid to a canvas
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#'  plotprep(width=8,height=5)
+#'  center <- makecanvas(xstart=0,xfinish=100,ystart=0,yfinish=100,addbox=TRUE)
+#'  addgrid()  # remove when ready to make final plot
+#' }
+addgrid <- function(left=0,right=100,bottom=0,top=100,step=20) {
+  #  xstart=0;xfinish=100;ystart=0;yfinish=100;step=20
+  nx <- length(left:right)
+  ny <- length(bottom:top) 
+  xline <- trunc(seq(left,right,step))
+  yline <- trunc(seq(bottom,top,step))
+  lenx <- length(xline)
+  leny <- length(yline)
+  for (x in 1:lenx) lines(rep(xline[x],ny),bottom:top,lty=2,col="grey")    
+  for (y in 1:leny) lines(left:right,rep(yline[y],nx),lty=2,col="grey")    
+} # end of addgrid
+
 
 #' @title addlnorm estimates a log-normal distribution from output of hist.
 #'
@@ -624,7 +656,8 @@ makevy <- function(y1,y2) {
 #'     expected that often x2 will be identical to x1 and so the default value
 #'     for x2 = NULL, in which case it is set - x1 inside the function
 #'
-#' @return a two column matrix that can act as the input to the polygon function
+#' @return invisibly a two column matrix that can act as the input to the 
+#'     polygon function
 #' @export
 #'
 #' @examples
@@ -650,7 +683,7 @@ makepolygon <- function(y1,y2,x1,x2=NULL) {
   ry2 <- y2[order(seqord,decreasing=TRUE)]  
   x <- c(x1,rx2)
   y <- c(y1,ry2)
-  return(cbind(x,y))
+  return(invisible(cbind(x,y)))
 } # end of makepolygon
 
 #' @title makerect draws a rectangle once a plot is available
@@ -666,7 +699,7 @@ makepolygon <- function(y1,y2,x1,x2=NULL) {
 #' @param console should the centerx and centery bt sent ot console, 
 #'     default=FALSE
 #'
-#' @return a vector denoting the center (x,y) of the rectangle
+#' @return invisibly a vector denoting the center (x,y) of the rectangle
 #' @export
 #'
 #' @examples
@@ -679,7 +712,7 @@ makerect <- function(left,right,bottom,top,linecol="grey",lwd=1,console=FALSE) {
           lwd=lwd,border=linecol)
   centerx <- (left + (right-left)/2)
   centery <- (top - (top- bottom)/2)
-  if (console) return(c(centerx,centery))
+  return(invisible(c(centerx,centery)))
 }
 
 #' @title pickbound selects an optimum number of rows and cols for a plot

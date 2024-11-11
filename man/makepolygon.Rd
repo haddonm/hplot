@@ -18,7 +18,8 @@ expected that often x2 will be identical to x1 and so the default value
 for x2 = NULL, in which case it is set - x1 inside the function}
 }
 \value{
-a two column matrix that can act as the input to the polygon function
+invisibly a two column matrix that can act as the input to the 
+    polygon function
 }
 \description{
 makepolygon simplifies the generation of the outline data for

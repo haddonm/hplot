@@ -27,9 +27,7 @@ makevx takes either a vector of 3 values or two single values.
     so that it is ready to plot a triangle if paired with makevy.
 }
 \examples{
-\dontrun{
  plot(0:100,seq(0,100),type="n",xaxt="n",yaxt="n",
  xlab="",ylab="", bty="n")
  lines(makevx(20,80),makevy(20,80),col=1,lwd=2)
-}
 }
