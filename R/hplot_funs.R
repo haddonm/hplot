@@ -1001,16 +1001,18 @@ plotcompdata <- function(compdata,sau,ylabel="",console=TRUE,outdir="",
 #'
 #' @param msg a message to be printed in the middle of the empty plot.
 #' @param cex what font size to use in any message, default = 1.0
+#' @param x the x location (0 - 100) of the msg default = 10
+#' @param y the y location (0 - 100) of left side of message, default = 45
 #'
 #' @return nothing but it does generate a plot
 #' @export
 #'
 #' @examples
 #' plotnull("An empty plot",cex=1.5)
-plotnull <- function(msg="",cex=1.0) {
+plotnull <- function(msg="",cex=1.0,x=10,y=45) {
   plot(0:100,0:100,type="n",xaxt="n",yaxt="n",xlab="",ylab="",frame.plot=FALSE)
   if (nchar(msg) > 0)
-    text(x=5,y=5,msg,cex=cex,font=7)
+    text(x=5,y=5,msg,cex=cex,font=7,pos=4)
 } # end of plotnull
 
 #' @title plotoblong generates an oblong from x0,x1,y0,y1

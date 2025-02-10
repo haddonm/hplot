@@ -4,12 +4,16 @@
 \alias{plotnull}
 \title{plotnull generates an empty plot when one is needed}
 \usage{
-plotnull(msg = "", cex = 1)
+plotnull(msg = "", cex = 1, x = 10, y = 45)
 }
 \arguments{
 \item{msg}{a message to be printed in the middle of the empty plot.}
 
 \item{cex}{what font size to use in any message, default = 1.0}
+
+\item{x}{the x location (0 - 100) of the msg default = 10}
+
+\item{y}{the y location (0 - 100) of left side of message, default = 45}
 }
 \value{
 nothing but it does generate a plot
