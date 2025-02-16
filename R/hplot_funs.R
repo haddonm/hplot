@@ -925,7 +925,7 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 #'
 #' @param compdata matrix of sizes or ages by years, row and column names should
 #'    be numbers, as in ages or sizeclasses for rows, and years for columns.
-#' @param sau name of spatial assessment unit or origin of samples
+#' @param analysis name of assessment scenario or unit or origin of samples
 #' @param ylabel what outer name to be used for the Y-axis, default=''
 #' @param console should the graph be plotted to the console or saved as a file.
 #'     default=TRUE ie it goes to the console, if set to FALSE it goes to 
@@ -946,29 +946,40 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 #'               dimnames=list(seq(122,160,2),1991:2020))
 #'   ylabel="Random Composition"
 #'   numcol <- ncol(x)
-#'   if (numcol > 20) x1 <- x[,1:20]
-#'   plotcompdata(compdata=x1,sau="sauX",ylabel="Random Composition Data",
+#'   plotcompdata(compdata=x,analysis="sauX",ylabel="Random Composition Data",
 #'                console=TRUE,barcol="red",bordercol="black",horizline=136)
 #' }              
-plotcompdata <- function(compdata,sau,ylabel="",console=TRUE,outdir="",
+plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
                          barcol="red",bordercol="black",horizline=NULL) {
   compcl <- as.numeric(rownames(compdata))  # expects size or age classes
   label <- as.numeric(colnames(compdata))   # expects years
   addyrs <- paste0(label[1],"_",label[length(label)])
   Nsamp <- ncol(compdata)
+  if (Nsamp > 40) {
+    warning(cat("Age Composition data for ",ylabel,"limited to 40 years \n"))
+    compdata <- compdata[,1:40]
+  }
   sampsize <- round(colSums(compdata),1)  
   filen <- ""
   if (!console) {
-    filen <- paste0(outdir,"/horizontal_compdata_for_",sau,"_",addyrs,".png")
+    filen <- paste0(outdir,"/horizontal_compdata_for_",analysis,"_",addyrs,".png")
   }
-  caption <- paste0("Observed size-composition data for ",sau)
+  caption <- paste0("Observed size-composition data for ",analysis)
   if (length(horizline) == 1) linecol <- "blue"
   if (length(horizline) == 2) linecol <- c("green","blue")
-  plotprep(width=12,height=4,newdev=TRUE,filename=filen,cex=0.9,
-           verbose=FALSE)
-  parset(outmargin=c(1,2,1,0.2),margin=c(0.2,0.2,0,0))
-  matfor <- matrix(c(1:20),1,20,byrow=TRUE)
-  layout(matfor,heights=rep(1,20),TRUE)
+  if (Nsamp > 20) {
+    plotprep(width=12,height=8,newdev=TRUE,filename=filen,cex=0.9,
+             verbose=FALSE)
+    parset(outmargin=c(1,2,1,1),margin=c(0.2,0.2,0,0))
+    matfor <- matrix(c(1:40),2,20,byrow=TRUE)
+    layout(matfor,heights=rep(1,40),TRUE)
+  } else {  
+    plotprep(width=12,height=4,newdev=TRUE,filename=filen,cex=0.9,
+             verbose=FALSE)
+    parset(outmargin=c(1,2,1,0.2),margin=c(0.2,0.2,0,0))
+    matfor <- matrix(c(1:20),1,20,byrow=TRUE)
+    layout(matfor,heights=rep(1,20),TRUE)
+  }
   barplot(compdata[,1],horiz=TRUE,axes=FALSE,col=barcol,border=bordercol,
           space=0,axis.lty=1.0,cex.names=1.0)
   mtext(label[1],side=1,outer=FALSE,cex=1,line=-0.75)
@@ -979,12 +990,33 @@ plotcompdata <- function(compdata,sau,ylabel="",console=TRUE,outdir="",
       warning(cat("Horizontal line at ",compcl[pickcl]," not ",horizline,"\n"))
     abline(h=pickcl-1,lwd=3,col=linecol)
   }
-  for (i in 2:Nsamp) {
+  for (i in 2:20) {
     barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
             border=bordercol,space=0)
     mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=1)
     mtext(sampsize[i],side=3,outer=FALSE,line=-1,cex=1)
     if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
+  }
+  if (Nsamp > 20) {
+    barplot(compdata[,21],horiz=TRUE,axes=FALSE,col=barcol,border=bordercol,
+            space=0,axis.lty=1.0,cex.names=1.0)
+    mtext(label[1],side=1,outer=FALSE,cex=1,line=-0.75)
+    mtext(sampsize[1],side=3,outer=FALSE,line=-1,cex=1)
+    if (length(horizline) > 0) {
+      pickcl <- which.closest(horizline,compcl)
+      if (compcl[pickcl] != horizline)
+        warning(cat("Horizontal line at ",compcl[pickcl]," not ",horizline,"\n"))
+      abline(h=pickcl-1,lwd=3,col=linecol)
+    }
+    if (Nsamp > 21) {
+      for (i in 22:Nsamp) {
+        barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
+                border=bordercol,space=0)
+        mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=1)
+        mtext(sampsize[i],side=3,outer=FALSE,line=-1,cex=1)
+        if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
+      }
+    }
   }
   mtext(text=ylabel,side=2,outer=TRUE,cex=1.1,line=0.2)
   if (!console) dev.off()
@@ -1380,16 +1412,18 @@ saucompdata <- function(allcomp, glb, horizline = NULL,console = TRUE,
     usecomp <- allcomp[,,sau]
     numcol <- ncol(usecomp)
     if (ncol(usecomp) <= 20) {
-      ans <- plotcompdata(compdata=usecomp,sau=saunames[sau],ylabel=ylabel,
+      ans <- plotcompdata(compdata=usecomp,analysis=saunames[sau],ylabel=ylabel,
                    console=console,outdir=rundir,barcol=barcol,
                    bordercol=bordercol,horizline=horizline)
       addplot(ans$filename,rundir=rundir,category=tabname,ans$caption)
     } else {
-      ans <- plotcompdata(compdata=usecomp[,(numcol-19):numcol],sau=saunames[sau],
+      ans <- plotcompdata(compdata=usecomp[,(numcol-19):numcol],
+                          analysis=saunames[sau],
                           ylabel=ylabel,console=console,outdir=rundir,
                           barcol=barcol,bordercol=bordercol,horizline=horizline)
       addplot(ans$filename,rundir=rundir,category=tabname,ans$caption)
-      ans <- plotcompdata(compdata=usecomp[,1:(numcol-20)],sau=saunames[sau],
+      ans <- plotcompdata(compdata=usecomp[,1:(numcol-20)],
+                          analysis=saunames[sau],
                           ylabel=ylabel,console=console,outdir=rundir,
                           barcol=barcol,bordercol=bordercol,horizline=horizline)
       addplot(ans$filename,rundir=rundir,category=tabname,ans$caption)

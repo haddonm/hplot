@@ -359,5 +359,24 @@ pltregcol <- function(col="grey15",gridcol="darkgrey") {
 plot(x=2,y=2,panel.first=pltregcol(col=98))
 
 
+library(hplot)
+
+
+filen=""
+plotprep(width=12,height=4,newdev=TRUE,filename=filen,cex=0.9,
+         verbose=FALSE)
+parset(outmargin=c(1,2,1,0.2),margin=c(0.2,0.2,0,0))
+matfor <- matrix(c(1:20),1,20,byrow=TRUE)
+layout(matfor,heights=rep(1,20),TRUE)
+
+
+
+
+
+
+
+
+
+
 
 
