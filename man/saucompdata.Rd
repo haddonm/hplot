@@ -41,7 +41,7 @@ is added}
 \item{tabname}{what web tab name to use. Only useful when using}
 }
 \value{
-nothing but it does generate plots for ech sau
+nothing but it does generate a single plot for each sau
 }
 \description{
 saucompdata generates horizontal plots of all observed size-

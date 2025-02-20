@@ -1398,7 +1398,7 @@ RGB <- function(col,alpha=127) {
 #' @param ylabel what outer name to be used for the Y-axis, default=''
 #' @param tabname what web tab name to use. Only useful when using
 #'
-#' @return nothing but it does generate plots for ech sau
+#' @return nothing but it does generate a single plot for each sau
 #' @export
 #'
 #' @examples
@@ -1406,9 +1406,11 @@ RGB <- function(col,alpha=127) {
 saucompdata <- function(allcomp, glb, horizline = NULL,console = TRUE,
                         rundir = "",barcol = "red",bordercol = "black",
                         ylabel = "",tabname = "") {
+#  allcomp=compdat;glb=glb;horizline=140;console=FALSE;rundir=rundir
+#  ylabel="Size-Composition of Catches";tabname="OrigComp";barcol="red";bordercol=1  
   nsau <- glb$nSAU
   saunames <- glb$saunames
-  for (sau in 1:nsau) {  # sau=4
+  for (sau in 1:nsau) {  # sau=1
     usecomp <- allcomp[,,sau]
     numcol <- ncol(usecomp)
     if (ncol(usecomp) <= 20) {
@@ -1417,16 +1419,16 @@ saucompdata <- function(allcomp, glb, horizline = NULL,console = TRUE,
                    bordercol=bordercol,horizline=horizline)
       addplot(ans$filename,rundir=rundir,category=tabname,ans$caption)
     } else {
-      ans <- plotcompdata(compdata=usecomp[,(numcol-19):numcol],
+      ans <- plotcompdata(compdata=usecomp,
                           analysis=saunames[sau],
                           ylabel=ylabel,console=console,outdir=rundir,
                           barcol=barcol,bordercol=bordercol,horizline=horizline)
       addplot(ans$filename,rundir=rundir,category=tabname,ans$caption)
-      ans <- plotcompdata(compdata=usecomp[,1:(numcol-20)],
-                          analysis=saunames[sau],
-                          ylabel=ylabel,console=console,outdir=rundir,
-                          barcol=barcol,bordercol=bordercol,horizline=horizline)
-      addplot(ans$filename,rundir=rundir,category=tabname,ans$caption)
+      # ans <- plotcompdata(compdata=usecomp[,1:(numcol-20)],
+      #                     analysis=saunames[sau],
+      #                     ylabel=ylabel,console=console,outdir=rundir,
+      #                     barcol=barcol,bordercol=bordercol,horizline=horizline)
+      # addplot(ans$filename,rundir=rundir,category=tabname,ans$caption)
     }
   }
 } # end of saucompdata

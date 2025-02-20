@@ -6,7 +6,7 @@
 \usage{
 plotcompdata(
   compdata,
-  sau,
+  analysis,
   ylabel = "",
   console = TRUE,
   outdir = "",
@@ -19,7 +19,7 @@ plotcompdata(
 \item{compdata}{matrix of sizes or ages by years, row and column names should
 be numbers, as in ages or sizeclasses for rows, and years for columns.}
 
-\item{sau}{name of spatial assessment unit or origin of samples}
+\item{analysis}{name of assessment scenario or unit or origin of samples}
 
 \item{ylabel}{what outer name to be used for the Y-axis, default=''}
 
@@ -52,8 +52,7 @@ plotcompdata generates a horizontal array of up to 20 barplots
               dimnames=list(seq(122,160,2),1991:2020))
   ylabel="Random Composition"
   numcol <- ncol(x)
-  if (numcol > 20) x1 <- x[,1:20]
-  plotcompdata(compdata=x1,sau="sauX",ylabel="Random Composition Data",
+  plotcompdata(compdata=x,analysis="sauX",ylabel="Random Composition Data",
                console=TRUE,barcol="red",bordercol="black",horizline=136)
 }              
 }
