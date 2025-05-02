@@ -950,13 +950,14 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 #'                console=TRUE,barcol="red",bordercol="black",horizline=136)
 #' }              
 plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
-                         barcol="red",bordercol="black",horizline=NULL) {
+                         barcol="red",bordercol="black",horizline=NULL,
+                         xlabel="") {
   compcl <- as.numeric(rownames(compdata))  # expects size or age classes
   label <- as.numeric(colnames(compdata))   # expects years
   addyrs <- paste0(label[1],"_",label[length(label)])
   Nsamp <- ncol(compdata)
   if (Nsamp > 40) {
-    warning(cat("Age Composition data for ",ylabel,"limited to 40 years \n"))
+    warning(cat(ylabel," Composition data limited to 40 years \n"))
     compdata <- compdata[,1:40]
   }
   sampsize <- round(colSums(compdata),1)  
@@ -964,7 +965,7 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
   if (!console) {
     filen <- paste0(outdir,"/horizontal_compdata_for_",analysis,"_",addyrs,".png")
   }
-  caption <- paste0("Observed size-composition data for ",analysis)
+  caption <- paste0("Observed ",ylabel,"-composition data for ",analysis)
   if (length(horizline) == 1) linecol <- "blue"
   if (length(horizline) == 2) linecol <- c("green","blue")
   if (Nsamp > 20) {
@@ -990,7 +991,7 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
       warning(cat("Horizontal line at ",compcl[pickcl]," not ",horizline,"\n"))
     abline(h=pickcl-1,lwd=3,col=linecol)
   }
-  for (i in 2:20) {
+  for (i in 2:Nsamp) {
     barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
             border=bordercol,space=0)
     mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=1)

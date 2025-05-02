@@ -12,7 +12,8 @@ plotcompdata(
   outdir = "",
   barcol = "red",
   bordercol = "black",
-  horizline = NULL
+  horizline = NULL,
+  xlabel = ""
 )
 }
 \arguments{
