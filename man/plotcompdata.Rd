@@ -37,6 +37,8 @@ is added, default=""}
 
 \item{horizline}{the size or age against which to draw a reference line. 
 default=NULL. To draw a line at 136mm then horizline=136}
+
+\item{xlabel}{label for the x-axis. edfault = '', as years should be obvious}
 }
 \value{
 invisibly returns a list of the filename and caption

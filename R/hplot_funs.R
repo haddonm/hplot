@@ -936,6 +936,7 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 #' @param bordercol what colour should the bar borders be? default = black
 #' @param horizline the size or age against which to draw a reference line. 
 #'     default=NULL. To draw a line at 136mm then horizline=136
+#' @param xlabel label for the x-axis. edfault = '', as years should be obvious
 #'
 #' @return invisibly returns a list of the filename and caption
 #' @export
@@ -952,6 +953,8 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
                          barcol="red",bordercol="black",horizline=NULL,
                          xlabel="") {
+# compdata=round(catchN[,7:26,2]);analysis="AutoL_CatchAge"; ylabel="Age";
+#  console=TRUE;outdir=rundir;barcol="red";bordercol="black";horizline=NULL;xlabel=""
   compcl <- as.numeric(rownames(compdata))  # expects size or age classes
   label <- as.numeric(colnames(compdata))   # expects years
   addyrs <- paste0(label[1],"_",label[length(label)])
@@ -960,7 +963,7 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
     warning(cat(ylabel," Composition data limited to 40 years \n"))
     compdata <- compdata[,1:40]
   }
-  sampsize <- round(colSums(compdata),1)  
+  sampsize <- round(colSums(compdata,na.rm=TRUE),1)  
   filen <- ""
   if (!console) {
     filen <- paste0(outdir,"/horizontal_compdata_for_",analysis,"_",addyrs,".png")
@@ -981,8 +984,12 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
     matfor <- matrix(c(1:20),1,20,byrow=TRUE)
     layout(matfor,heights=rep(1,20),TRUE)
   }
-  barplot(compdata[,1],horiz=TRUE,axes=FALSE,col=barcol,border=bordercol,
-          space=0,axis.lty=1.0,cex.names=1.0)
+  if (sampsize[1] > 0) {
+    barplot(compdata[,1],horiz=TRUE,axes=FALSE,col=barcol,border=bordercol,
+            space=0,axis.lty=1.0,cex.names=1.0)
+  } else {  
+    plotnull(xvals=as.numeric(rownames(compdata))) 
+  }
   mtext(label[1],side=1,outer=FALSE,cex=1,line=-0.75)
   mtext(sampsize[1],side=3,outer=FALSE,line=-1,cex=1)
   if (length(horizline) > 0) {
@@ -992,15 +999,19 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
     abline(h=pickcl-1,lwd=3,col=linecol)
   }
   for (i in 2:Nsamp) {
-    barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
-            border=bordercol,space=0)
+    if (sampsize[i] > 0) {
+      barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
+              border=bordercol,space=0)
+    } else {  plotnull()  }    
     mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=1)
     mtext(sampsize[i],side=3,outer=FALSE,line=-1,cex=1)
     if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
   }
   if (Nsamp > 20) {
-    barplot(compdata[,21],horiz=TRUE,axes=FALSE,col=barcol,border=bordercol,
-            space=0,axis.lty=1.0,cex.names=1.0)
+    if (sampsize[21] > 0) {
+      barplot(compdata[,21],horiz=TRUE,axes=FALSE,col=barcol,border=bordercol,
+              space=0,axis.lty=1.0,cex.names=1.0)
+    } else {  plotnull(xvals=as.numeric(rownames(compdata))) }       
     mtext(label[1],side=1,outer=FALSE,cex=1,line=-0.75)
     mtext(sampsize[1],side=3,outer=FALSE,line=-1,cex=1)
     if (length(horizline) > 0) {
@@ -1011,8 +1022,10 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
     }
     if (Nsamp > 21) {
       for (i in 22:Nsamp) {
-        barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
-                border=bordercol,space=0)
+        if (sampsize[i] > 0) {
+          barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
+                  border=bordercol,space=0)
+        } else {  plotnull()  }             
         mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=1)
         mtext(sampsize[i],side=3,outer=FALSE,line=-1,cex=1)
         if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
@@ -1034,18 +1047,29 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
 #'
 #' @param msg a message to be printed in the middle of the empty plot.
 #' @param cex what font size to use in any message, default = 1.0
-#' @param x the x location (0 - 100) of the msg default = 10
-#' @param y the y location (0 - 100) of left side of message, default = 45
+#' @param xvals use (0 - 100) or a given vector of values. default = NULL
 #'
 #' @return nothing but it does generate a plot
 #' @export
 #'
 #' @examples
 #' plotnull("An empty plot",cex=1.5)
-plotnull <- function(msg="",cex=1.0,x=10,y=45) {
-  plot(0:100,0:100,type="n",xaxt="n",yaxt="n",xlab="",ylab="",frame.plot=FALSE)
-  if (nchar(msg) > 0)
-    text(x=5,y=5,msg,cex=cex,font=7,pos=4)
+#' plotnull("Another empty plot",cex=1.5,xvals=0:26)
+plotnull <- function(msg="",cex=1.0,xvals=NULL) {
+#  msg="A plot";cex=1.5;xvals=c(0:26)
+  if (length(xvals) > 0) {  
+    pvals <- xvals
+    plot(pvals,pvals,type="n",xaxt="n",xlab="",ylab="",frame.plot=FALSE)
+  } else {  
+    pvals <- c(0:100) 
+    plot(pvals,pvals,type="n",xaxt="n",yaxt="n",xlab="",ylab="",
+         frame.plot=FALSE)    
+  }
+
+  if (nchar(msg) > 0) {
+    locate <- round(max(pvals)/2)
+    text(x=locate,y=locate,msg,cex=cex,font=7,pos=1)
+  }
 } # end of plotnull
 
 #' @title plotoblong generates an oblong from x0,x1,y0,y1
