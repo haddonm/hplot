@@ -441,11 +441,11 @@ histyear <- function(x,xlimit=c(NA,NA,NA),
 #' 
 #' @examples
 #'   x <- trunc(runif(1000)*10) + 1
-#'   inthist(x,col="grey",border=3,width=0.75,xlabel="Random Uniform",
-#'           ylabel="Frequency")
+#'   inthist(x,col="grey",border=3,width=0.75,xlab="Random Uniform",
+#'           ylab="Frequency")
 #'   x <- as.matrix(cbind(c(1,2,3,4,5,6,7,8),trunc(runif(8,1,20))))
-#'   inthist(x,col="grey",border=3,width=0.75,xlabel="integers",
-#'           ylabel="Frequency")
+#'   inthist(x,col="grey",border=3,width=0.75,xlab="integers",
+#'           ylab="Frequency")
 inthist <- function(x,col=1,border=NULL,width=0.9,xlab="",ylab="",
                     main="",lwd=1,xmin=NA,xmax=NA,ymax=NA,plotout=TRUE,
                     prop=FALSE,inc=1,xaxis=TRUE,roundoff=TRUE,...) {
@@ -937,6 +937,10 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 #' @param horizline the size or age against which to draw a reference line. 
 #'     default=NULL. To draw a line at 136mm then horizline=136
 #' @param xlabel label for the x-axis. edfault = '', as years should be obvious
+#' @param labeldiv default = 1. The number of observations printed at the top
+#'     of each barplot can sometimes be vary large. In such cases dividing the
+#'     number by 10, 100, or 1000 can keep the value readable. If > 1 it will 
+#'     be added to the caption automatically.
 #'
 #' @return invisibly returns a list of the filename and caption
 #' @export
@@ -952,7 +956,7 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 #' }              
 plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
                          barcol="red",bordercol="black",horizline=NULL,
-                         xlabel="") {
+                         xlabel="",labeldiv=1) {
 # compdata=round(catchN[,7:26,2]);analysis="AutoL_CatchAge"; ylabel="Age";
 #  console=TRUE;outdir=rundir;barcol="red";bordercol="black";horizline=NULL;xlabel=""
   compcl <- as.numeric(rownames(compdata))  # expects size or age classes
@@ -968,7 +972,12 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
   if (!console) {
     filen <- paste0(outdir,"/horizontal_compdata_for_",analysis,"_",addyrs,".png")
   }
-  caption <- paste0("Observed ",ylabel,"-composition data for ",analysis)
+  if (labeldiv > 1) {
+    caption <- paste0("Observed ",ylabel,"-composition data for ",analysis,
+                      ". Column counts as ",labeldiv,"'s")
+  } else {
+    caption <- paste0("Observed ",ylabel,"-composition data for ",analysis)
+  }
   if (length(horizline) == 1) linecol <- "blue"
   if (length(horizline) == 2) linecol <- c("green","blue")
   if (Nsamp > 20) {
@@ -991,7 +1000,7 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
     plotnull(xvals=as.numeric(rownames(compdata))) 
   }
   mtext(label[1],side=1,outer=FALSE,cex=1,line=-0.75)
-  mtext(sampsize[1],side=3,outer=FALSE,line=-1,cex=1)
+  mtext(trunc(sampsize[1]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
   if (length(horizline) > 0) {
     pickcl <- which.closest(horizline,compcl)
     if (compcl[pickcl] != horizline)
@@ -1004,7 +1013,7 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
               border=bordercol,space=0)
     } else {  plotnull()  }    
     mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=1)
-    mtext(sampsize[i],side=3,outer=FALSE,line=-1,cex=1)
+    mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
     if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
   }
   if (Nsamp > 20) {
@@ -1013,7 +1022,7 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
               space=0,axis.lty=1.0,cex.names=1.0)
     } else {  plotnull(xvals=as.numeric(rownames(compdata))) }       
     mtext(label[1],side=1,outer=FALSE,cex=1,line=-0.75)
-    mtext(sampsize[1],side=3,outer=FALSE,line=-1,cex=1)
+    mtext(trunc(sampsize[1]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
     if (length(horizline) > 0) {
       pickcl <- which.closest(horizline,compcl)
       if (compcl[pickcl] != horizline)
@@ -1027,7 +1036,7 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
                   border=bordercol,space=0)
         } else {  plotnull()  }             
         mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=1)
-        mtext(sampsize[i],side=3,outer=FALSE,line=-1,cex=1)
+        mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
         if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
       }
     }

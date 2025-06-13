@@ -13,7 +13,8 @@ plotcompdata(
   barcol = "red",
   bordercol = "black",
   horizline = NULL,
-  xlabel = ""
+  xlabel = "",
+  labeldiv = 1
 )
 }
 \arguments{
@@ -39,6 +40,11 @@ is added, default=""}
 default=NULL. To draw a line at 136mm then horizline=136}
 
 \item{xlabel}{label for the x-axis. edfault = '', as years should be obvious}
+
+\item{labeldiv}{default = 1. The number of observations printed at the top
+of each barplot can sometimes be vary large. In such cases dividing the
+number by 10, 100, or 1000 can keep the value readable. If > 1 it will 
+be added to the caption automatically.}
 }
 \value{
 invisibly returns a list of the filename and caption

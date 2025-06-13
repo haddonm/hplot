@@ -86,9 +86,9 @@ inthist it is common to want to generate a list of counts as
 }
 \examples{
   x <- trunc(runif(1000)*10) + 1
-  inthist(x,col="grey",border=3,width=0.75,xlabel="Random Uniform",
-          ylabel="Frequency")
+  inthist(x,col="grey",border=3,width=0.75,xlab="Random Uniform",
+          ylab="Frequency")
   x <- as.matrix(cbind(c(1,2,3,4,5,6,7,8),trunc(runif(8,1,20))))
-  inthist(x,col="grey",border=3,width=0.75,xlabel="integers",
-          ylabel="Frequency")
+  inthist(x,col="grey",border=3,width=0.75,xlab="integers",
+          ylab="Frequency")
 }
