@@ -918,10 +918,10 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 
 #' @title plotcompdata makes a series of barplots to compare composition data 
 #' 
-#' @description plotcompdata generates a horizontal array of up to 20 barplots
-#'     and is used to represent time-series of age- or size-composition data in
-#'     a manner that makes interannual comparisons simple. Currently designed 
-#'     for use with makehtml 
+#' @description plotcompdata generates a horizontal array of up to 40 barplots,
+#'     20 plots per row. And is used to represent time-series of age- or 
+#'     size-composition data in a manner that makes interannual comparisons 
+#'     simple. Currently designed for use with makehtml 
 #'
 #' @param compdata matrix of sizes or ages by years, row and column names should
 #'    be numbers, as in ages or sizeclasses for rows, and years for columns.
@@ -959,15 +959,19 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
                          xlabel="",labeldiv=1) {
 # compdata=round(catchN[,7:26,2]);analysis="AutoL_CatchAge"; ylabel="Age";
 #  console=TRUE;outdir=rundir;barcol="red";bordercol="black";horizline=NULL;xlabel=""
+  sampsize <- round(colSums(compdata,na.rm=TRUE),1)  
+  fstsamp <- which(sampsize > 0)
+  picksamp <- min(fstsamp):max(fstsamp)
+  compdata <- compdata[,picksamp]
+  sampsize <- round(colSums(compdata,na.rm=TRUE),1) 
+  Nsamp <- ncol(compdata)
   compcl <- as.numeric(rownames(compdata))  # expects size or age classes
   label <- as.numeric(colnames(compdata))   # expects years
   addyrs <- paste0(label[1],"_",label[length(label)])
-  Nsamp <- ncol(compdata)
   if (Nsamp > 40) {
     warning(cat(ylabel," Composition data limited to 40 years \n"))
     compdata <- compdata[,1:40]
   }
-  sampsize <- round(colSums(compdata,na.rm=TRUE),1)  
   filen <- ""
   if (!console) {
     filen <- paste0(outdir,"/horizontal_compdata_for_",analysis,"_",addyrs,".png")
@@ -981,13 +985,13 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
   if (length(horizline) == 1) linecol <- "blue"
   if (length(horizline) == 2) linecol <- c("green","blue")
   if (Nsamp > 20) {
-    plotprep(width=12,height=8,newdev=TRUE,filename=filen,cex=0.9,
+    plotprep(width=12,height=8,newdev=!console,filename=filen,cex=0.9,
              verbose=FALSE)
     parset(outmargin=c(1,2,1,1),margin=c(0.2,0.2,0,0))
     matfor <- matrix(c(1:40),2,20,byrow=TRUE)
     layout(matfor,heights=rep(1,40),TRUE)
   } else {  
-    plotprep(width=12,height=4,newdev=TRUE,filename=filen,cex=0.9,
+    plotprep(width=12,height=4,newdev=!console,filename=filen,cex=0.9,
              verbose=FALSE)
     parset(outmargin=c(1,2,1,0.2),margin=c(0.2,0.2,0,0))
     matfor <- matrix(c(1:20),1,20,byrow=TRUE)
@@ -1007,20 +1011,32 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
       warning(cat("Horizontal line at ",compcl[pickcl]," not ",horizline,"\n"))
     abline(h=pickcl-1,lwd=3,col=linecol)
   }
-  for (i in 2:Nsamp) {
-    if (sampsize[i] > 0) {
-      barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
-              border=bordercol,space=0)
-    } else {  plotnull()  }    
-    mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=1)
-    mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
-    if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
-  }
-  if (Nsamp > 20) {
+  if (Nsamp <= 20) {
+    for (i in 2:Nsamp) {
+      if (sampsize[i] > 0) {
+        barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
+                border=bordercol,space=0)
+      } else {  plotnull()  }    
+      mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=1)
+      mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
+      if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
+    }
+  } else {
+    for (i in 2:20) {
+      if (sampsize[i] > 0) {
+        barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
+                border=bordercol,space=0)
+      } else {  plotnull()  }    
+      mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=1)
+      mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
+      if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
+    }
     if (sampsize[21] > 0) {
       barplot(compdata[,21],horiz=TRUE,axes=FALSE,col=barcol,border=bordercol,
               space=0,axis.lty=1.0,cex.names=1.0)
-    } else {  plotnull(xvals=as.numeric(rownames(compdata))) }       
+    } else {  
+      plotnull(xvals=as.numeric(rownames(compdata))) 
+    }
     mtext(label[1],side=1,outer=FALSE,cex=1,line=-0.75)
     mtext(trunc(sampsize[1]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
     if (length(horizline) > 0) {
@@ -1029,19 +1045,18 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
         warning(cat("Horizontal line at ",compcl[pickcl]," not ",horizline,"\n"))
       abline(h=pickcl-1,lwd=3,col=linecol)
     }
-    if (Nsamp > 21) {
-      for (i in 22:Nsamp) {
-        if (sampsize[i] > 0) {
-          barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
-                  border=bordercol,space=0)
-        } else {  plotnull()  }             
-        mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=1)
-        mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
-        if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
-      }
+    for (i in 22:Nsamp) {
+      if (sampsize[i] > 0) {
+        barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
+                border=bordercol,space=0)
+      } else {  plotnull()  }    
+      mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=1)
+      mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
+      if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
     }
-  }
-  mtext(text=ylabel,side=2,outer=TRUE,cex=1.1,line=0.2)
+  }  
+  txtlabel <- paste0(ylabel,"  ",analysis)
+  mtext(text=txtlabel,side=2,outer=TRUE,cex=1.1,line=0.2)
   if (!console) dev.off()
   return(invisible(list(filename=filen,caption=caption)))
 } # end of plotcompdata

@@ -50,10 +50,10 @@ be added to the caption automatically.}
 invisibly returns a list of the filename and caption
 }
 \description{
-plotcompdata generates a horizontal array of up to 20 barplots
-    and is used to represent time-series of age- or size-composition data in
-    a manner that makes interannual comparisons simple. Currently designed 
-    for use with makehtml
+plotcompdata generates a horizontal array of up to 40 barplots,
+    20 plots per row. And is used to represent time-series of age- or 
+    size-composition data in a manner that makes interannual comparisons 
+    simple. Currently designed for use with makehtml
 }
 \examples{
 \dontrun{
