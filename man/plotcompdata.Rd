@@ -39,7 +39,7 @@ is added, default=""}
 \item{horizline}{the size or age against which to draw a reference line. 
 default=NULL. To draw a line at 136mm then horizline=136}
 
-\item{xlabel}{label for the x-axis. edfault = '', as years should be obvious}
+\item{xlabel}{label for the x-axis. default = '', as years should be obvious}
 
 \item{labeldiv}{default = 1. The number of observations printed at the top
 of each barplot can sometimes be vary large. In such cases dividing the
@@ -50,10 +50,11 @@ be added to the caption automatically.}
 invisibly returns a list of the filename and caption
 }
 \description{
-plotcompdata generates a horizontal array of up to 40 barplots,
+plotcompdata generates a horizontal array of up to 60 barplots,
     20 plots per row. And is used to represent time-series of age- or 
     size-composition data in a manner that makes interannual comparisons 
-    simple. Currently designed for use with makehtml
+    simple. Currently designed for use with makehtml. It adjusts the size of
+    the output to match the number of barplots to be plotted.
 }
 \examples{
 \dontrun{
