@@ -1054,14 +1054,16 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
         warning(cat("Horizontal line at ",compcl[pickcl]," not ",horizline,"\n"))
       abline(h=pickcl-1,lwd=3,col=linecol)
     }
-    for (i in 22:min(40,Nsamp)) {
-      if (sampsize[i] > 0) {
-        barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
-                border=bordercol,space=0)
-      } else {  plotnull()  }    
-      mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=1)
-      mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
-      if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
+    if (Nsamp > 21) {
+      for (i in 22:min(40,Nsamp)) {
+        if (sampsize[i] > 0) {
+          barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
+                  border=bordercol,space=0)
+        } else {  plotnull()  }    
+        mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=1)
+        mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
+        if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
+      }
     }
     if (Nsamp > 40) {
       if (sampsize[41] > 0) {
@@ -1078,14 +1080,16 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
           warning(cat("Horizontal line at ",compcl[pickcl]," not ",horizline,"\n"))
         abline(h=pickcl-1,lwd=3,col=linecol)
       }
-      for (i in 42:Nsamp) {
-        if (sampsize[i] > 0) {
-          barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
-                  border=bordercol,space=0)
-        } else {  plotnull()  }    
-        mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=1)
-        mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
-        if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
+      if (Nsamp > 41) {
+        for (i in 42:Nsamp) {
+          if (sampsize[i] > 0) {
+            barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
+                    border=bordercol,space=0)
+          } else {  plotnull()  }    
+          mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=1)
+          mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
+          if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
+        }
       }
     }
   }  
