@@ -18,6 +18,6 @@ License: GPL-2
 Imports:
     makehtml,
     codeutils
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Encoding: UTF-8
 URL: https://haddonm.github.io/hplot/

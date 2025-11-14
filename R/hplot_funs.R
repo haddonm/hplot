@@ -975,7 +975,7 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
   }
   filen <- ""
   if (!console) {
-    filen <- paste0(outdir,"/horizontal_compdata_for_",analysis,"_",addyrs,".png")
+    filen <- paste0(outdir,"/compdata_for_",analysis,"_",addyrs,".png")
   }
   if (labeldiv > 1) {
     caption <- paste0("Observed ",ylabel,"-composition data for ",analysis,
@@ -1046,8 +1046,8 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
     } else {  
       plotnull(xvals=as.numeric(rownames(compdata))) 
     }
-    mtext(label[1],side=1,outer=FALSE,cex=1,line=-0.75)
-    mtext(trunc(sampsize[1]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
+    mtext(label[21],side=1,outer=FALSE,cex=1,line=-0.75)
+    mtext(trunc(sampsize[21]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
     if (length(horizline) > 0) {
       pickcl <- which.closest(horizline,compcl)
       if (compcl[pickcl] != horizline)
@@ -1072,8 +1072,8 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
       } else {  
         plotnull(xvals=as.numeric(rownames(compdata))) 
       }
-      mtext(label[1],side=1,outer=FALSE,cex=1,line=-0.75)
-      mtext(trunc(sampsize[1]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
+      mtext(label[41],side=1,outer=FALSE,cex=1,line=-0.75)
+      mtext(trunc(sampsize[41]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
       if (length(horizline) > 0) {
         pickcl <- which.closest(horizline,compcl)
         if (compcl[pickcl] != horizline)
