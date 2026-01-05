@@ -1558,6 +1558,58 @@ setplot <- function() {
   cat('#graphics.off() \n')
 } # end of set_plot
 
+#' @title textbox draws a rectangle on a canvas adding text is optional 
+#'
+#' @description textbox draws a rectangle on a canvas with the option of 
+#'     printing text centered vertically and horizontally inside the box. There
+#'     can be up to four lines of text, but no more. 
+#'
+#' @param x1 defines lefthand edge of rectangle
+#' @param x2 defines right-hand edge or rectangle
+#' @param y1 defines bottom edge of rectangle
+#' @param y2 defines top edge of rectangle
+#' @param col colour of line. default="black"
+#' @param fill colour with which to fill the oblong, default=NA = empty
+#' @param lwd the width of the line, default=1
+#' @param txt default='', = print nothing, the text to be printed centered in
+#'     the box. If multiple lines then txt must become a vector. 
+#' @param inc defaukt = -0.25, suitable for cex = 0.85. A number to add to the 
+#'     offset from the center point to ensure the text is centered. This might 
+#'     need modification if the font size is changed.
+#' @param space default = 1.0, as with inc, this might need changing if font 
+#'     size is changed.
+#' @param ... to allow for other graphics commands such as lty=2, font=2, etc
+#'
+#' @returns a list of the polygon definition of the box and the center coords.
+#' @export
+#'
+#' @examples
+#' canvas <- makecanvas(xstart=0,xfinish=100,ystart=0,yfinish=100,addbox=FALSE)
+#' outbox <- textbox(x1=5,x2=40,y1=90,y2=78,col="black",fill=NA,lwd=1,
+#'                   txt=c("Hello World","A second line","A third line",
+#'                   "A final fourth line, longer than the rest"))
+#' lines(c(5,40),c(outbox[[2]][2],outbox[[2]][2]))
+#' outbox <- textbox(x1=45,x2=95,y1=50,y2=62,col="black",fill=NA,lwd=1,
+#'                   txt=c("Hello World","A second line",
+#'                         "A final third line, longer than the rest"),cex=1.5)
+#' lines(c(45,95),c(outbox[[2]][2],outbox[[2]][2]))
+textbox <- function(x1,x2,y1,y2,col="black",fill=NA,lwd=1,txt="",inc=-0.25,
+                    space=1,...) {
+  xs <- makevx(x1,x2)
+  ys <- makevy(y1,y2)
+  polygon(x=xs,y=ys,border=col,lwd=lwd,col=fill,...)
+  if ((length(txt) > 1) || (nchar(txt) > 0)) {
+    centerx <- x1 + (x2 - x1)/2
+    centery <- y2 + (y1 - y2)/2
+    offs <- list(c(inc),c((2*inc)+space,-space-inc),c(inc+space,inc,inc-space),
+                 c((2*inc)+(2*space),(2*inc)+space,-space-inc,(-2*space)-inc))
+    nline <- length(txt)
+    pickoffs <- offs[[nline]]
+    for (i in 1:nline) text(x=centerx,y=centery,txt[i],pos=3,
+                            offset=pickoffs[i],...)
+  }
+  return(invisible(list(cbind(xs,ys),c(centerx,centery))))
+} # end of textbox
 
 #' @title uphist a histogram with an upper limit on the x-axis
 #' 
