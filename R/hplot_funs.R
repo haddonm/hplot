@@ -107,6 +107,68 @@ addnorm <- function(inhist,xdata,inc=0.01) {
   return(ans)
 } # end of addnorm
 
+#' @title anglearrow draws an angled arrow either left-right or right-left
+#' 
+#' @description anglearrow is used when drawing flowcharts and similar where
+#'     instead of a straight arrow from top to bottom or left to right, one 
+#'     textbox is to the left and below another or to the right and above the 
+#'     other. This means there is a need to draw a line followed by an arrow. 
+#'
+#' @param boxa the first box, output from textbox
+#' @param boxb the second box, output from textbox
+#' @param location default = 'leftright', meaning left-above to right-below, 
+#'     'rightleft' implies from right-above to left-below. Currently these two
+#'     options are the only available.
+#' @param len length of the arrow head, default = 0.1
+#' @param ang angle of the arrow head, default = 30 degrees
+#' @param code type of arrow head, default = 2, = arrow pointing to second box
+#' @param col the colour of the lines definning the box, default = black
+#' @param lwd the linewidth of hte arrow default = 3
+#'
+#' @returns nothing but it does draw an angled arrow 
+#' @export
+#'
+#' @examples
+#' plotprep(width=8,height=7)
+#' canvas <- makecanvas()
+#' box2 <- textbox(x1=6,x2=53,y1=75,y2=65,col="black",fill=NA,lwd=1,
+#'                 txt=c("Includes an If Statement"),cex=1.5) 
+#' box3 <- textbox(x1=65,x2=90,y1=62,y2=57,col="black",fill=NA,lwd=1,
+#'                 txt=c("An Alternative"),cex=1.1)
+#' box4 <- textbox(x1=6,x2=53,y1=55,y2=46,col="black",fill=NA,lwd=1,
+#'                 txt=c("Hello World","A second line",
+#'                       "A final third line"),cex=1.1)
+#' arrows(x0=box2[[2]][1],y0=min(box2[[1]][,2]),x1=box4[[2]][1],
+#'        y1=max(box4[[1]][,2]),length=0.1,angle=30,code=2,col="black",lwd=3)
+#' anglearrow(box2,box3,location="leftright")
+#' anglearrow(box3,box4,location="rightleft")
+anglearrow <- function(boxa,boxb,location="leftright",
+                       len=0.1,ang=30,code=2,col="black",lwd=3) {
+  if (location %in% c("leftright","rightleft")) {
+    if (location == "leftright") {
+      xL1 <- max(boxa[[1]][,1])
+      xL2 <- boxb[[2]][1]
+      yL1 <- boxa[[2]][2]
+      yA1 <- max(boxb[[1]][,2])
+      lines(x=c(xL1,xL2),y=c(yL1,yL1),lwd=lwd)
+      arrows(x0=xL2,y0=yL1,y1=yA1,length=len,angle=ang,code=code,
+             col=col,lwd=lwd)
+    }
+    if (location == "rightleft") {
+      xL1 <- boxa[[2]][1]
+      yL1 <- min(boxa[[1]][,2])
+      xA1 <- max(boxb[[1]][,1])
+      yL2 <- boxb[[2]][2]           
+      yA1 <- max(boxb[[1]][,2])
+      lines(x=c(xL1,xL1),y=c(yL1,yL2),lwd=lwd)
+      arrows(x0=xL1,x1=xA1,y0=yL2,length=len,angle=ang,code=code,
+             col=col,lwd=lwd)
+    }
+  } else {
+    stop(cat("anglearrows can only be leftright or rightleft  \n\n"))
+  }
+} # end of anglearrow
+
 #' @title cart2pol converts cartesian coordinates into the polar angle
 #' 
 #' @description cart2pol as a step in converting cartesian coordinates into
@@ -266,6 +328,45 @@ expandmatrix <- function(x) { #  x=t(numyr)
   return(res)
 } # end of expandmatrix
 
+#' @title flowcharttemplate write a flowchart template to the console
+#' 
+#' @description flowcharttemplate write a flowchart template to the console
+#'     which uses a set of hplot functions to create a canvas and text boxes
+#'     with arrows between them. The idea is to provide a working example that
+#'     can be modified while illustrating the use of the hplot functions.
+#'
+#' @returns R code to the console using hplot functions to draw a flowchart
+#' @export
+#'
+#' @examples
+#' flowcharttemplate()
+flowcharttemplate <- function() {
+  cat('plotprep(width=8,height=7,usefont=7) \n')
+  cat('canvas <- makecanvas() \n')
+  cat('box1 <- textbox(x1=12,x2=47,y1=95,y2=86,col="black",fill=NA,lwd=1, \n')
+  cat('                txt=c("Hello World","A second line"),cex=1.1) \n')
+  cat('box2 <- textbox(x1=6,x2=53,y1=75,y2=65,col="black",fill=NA,lwd=1, \n')
+  cat('                txt=c("Includes an If Statement"),cex=1.5) \n')
+  cat('box3 <- textbox(x1=65,x2=90,y1=62,y2=57,col="black",fill=NA,lwd=1, \n')
+  cat('                txt=c("An Alternative"),cex=1.1) \n')
+  cat('box4 <- textbox(x1=6,x2=53,y1=55,y2=46,col="black",fill=NA,lwd=1, \n')
+  cat('                txt=c("Hello World","A second line", \n')
+  cat('                "A final third line"),cex=1.1) \n')
+  cat('box5 <- textbox(x1=9,x2=50,y1=36,y2=24,col="black",fill=NA,lwd=1, \n')
+  cat('                txt=c("Hello World","A second line", \n')
+  cat('                "A third line","A MUCH LONGER FOURTH LINE"),cex=1.1) \n')
+  cat('arrows(x0=box1[[2]][1],y0=min(box1[[1]][,2]),x1=box2[[2]][1], \n')
+  cat('       y1=max(box2[[1]],2),length=0.1,angle=30,code=2,col="black",')
+  cat('lwd=3) \n')
+  cat('arrows(x0=box2[[2]][1],y0=min(box2[[1]][,2]),x1=box4[[2]][1], \n')
+  cat('       y1=max(box4[[1]][,2]),length=0.1,angle=30,code=2,col="black",')
+  cat('lwd=3) \n')
+  cat('arrows(x0=box4[[2]][1],y0=min(box4[[1]][,2]),x1=box5[[2]][1], \n')
+  cat('       y1=max(box5[[1]][,2]),length=0.1,angle=30,code=2,col="black",')
+  cat('lwd=3) \n')
+  cat('topanglearrow(box2,box3) \n')
+  cat('botanglearrow(box3,box4) \n')
+} # END OF flowcharttemplate
 
 #' @title getmin generates the lower bound for a plot
 #'
