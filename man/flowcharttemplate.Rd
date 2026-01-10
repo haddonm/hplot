@@ -16,5 +16,11 @@ flowcharttemplate write a flowchart template to the console
     can be modified while illustrating the use of the hplot functions.
 }
 \examples{
+# run the function, copy the code from the console and run it.
 flowcharttemplate()
+}
+\seealso{
+{
+   \link{makecanvas}, \link{textbox}, \link{drawarrow}
+}
 }

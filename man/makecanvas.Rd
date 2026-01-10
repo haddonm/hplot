@@ -32,8 +32,11 @@ makecanvas sets up a plotting areas ready for a flowchart
     made up of shapes, circles, polygons, rectangles, text, and arrows
 }
 \examples{
-\dontrun{
   canvas=makecanvas(ystart=50,yfinish=93.5)
   polygon(makevx(2,27),makevy(90,6),col=0,lwd=1,border=1)
+}
+\seealso{
+{
+   \link{drawarrow}, \link{textbox}, \link{flowcharttemplate}
 }
 }

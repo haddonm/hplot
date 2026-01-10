@@ -107,67 +107,153 @@ addnorm <- function(inhist,xdata,inc=0.01) {
   return(ans)
 } # end of addnorm
 
-#' @title anglearrow draws an angled arrow either left-right or right-left
+#' @title drawarrow draws an angled arrow either left-right or right-left
 #' 
-#' @description anglearrow is used when drawing flowcharts and similar where
-#'     instead of a straight arrow from top to bottom or left to right, one 
-#'     textbox is to the left and below another or to the right and above the 
-#'     other. This means there is a need to draw a line followed by an arrow. 
+#' @description drawarrow is used when drawing flowcharts and similar. The idea
+#'     is to describe how two boxes, box1 and box2, are joined, where box1 is 
+#'     the first input and box2 the second. So if the third input, 'location', 
+#'     is 'up' this would imply drawing an arrow from box1 up to box2, if 
+#'     location is 'down' then an arrow from box1 down to box2. Similarly with
+#'     'left' and 'right'. We sometimes need bent arrows to join 2 boxes that 
+#'     are on a diagonal to each other. So, 'upright' would imply an arrow that 
+#'     first rises up from box1 and then turns right to join box2, whichis up 
+#'     and to the right of box1. Similarly, 'upleft' rises from box1 and turns 
+#'     left to join box2. The possibilities include: 'up', 'down', 'left',
+#'     'right', 'upright', 'upleft', 'downright', and 'downleft'. See the 
+#'     example code.     
 #'
-#' @param boxa the first box, output from textbox
-#' @param boxb the second box, output from textbox
-#' @param location default = 'leftright', meaning left-above to right-below, 
-#'     'rightleft' implies from right-above to left-below. Currently these two
-#'     options are the only available.
+#' @param box1 the first box, output from textbox, from which an arrow starts
+#' @param box2 the second box, output from textbox, to which an arrow arrives
+#' @param location default = 'down', meaning draw an arrow starting from the
+#'     bottom of box1 down to the top of box2. Viable options include: 'up', 
+#'     'down','left','right','upright','upleft','downright', and 'downleft'
 #' @param len length of the arrow head, default = 0.1
 #' @param ang angle of the arrow head, default = 30 degrees
 #' @param code type of arrow head, default = 2, = arrow pointing to second box
-#' @param col the colour of the lines definning the box, default = black
-#' @param lwd the linewidth of hte arrow default = 3
+#' @param col the colour of the lines defining the box, default = black
+#' @param lwd the line width of the arrow default = 3
 #'
+#' @seealso{
+#'    \link{makecanvas}, \link{textbox}, \link{flowcharttemplate}
+#' }
+#' 
 #' @returns nothing but it does draw an angled arrow 
 #' @export
 #'
 #' @examples
 #' plotprep(width=8,height=7)
 #' canvas <- makecanvas()
-#' box2 <- textbox(x1=6,x2=53,y1=75,y2=65,col="black",fill=NA,lwd=1,
-#'                 txt=c("Includes an If Statement"),cex=1.5) 
-#' box3 <- textbox(x1=65,x2=90,y1=62,y2=57,col="black",fill=NA,lwd=1,
-#'                 txt=c("An Alternative"),cex=1.1)
-#' box4 <- textbox(x1=6,x2=53,y1=55,y2=46,col="black",fill=NA,lwd=1,
-#'                 txt=c("Hello World","A second line",
+#' boxa <- textbox(x1=6,x2=53,y1=75,y2=65,col="black",fill=NA,lwd=1,
+#'                 txt=c("a: Includes an If Statement"),cex=1.5)
+#' boxb <- textbox(x1=65,x2=90,y1=62,y2=57,col="black",fill=NA,lwd=1,
+#'                 txt=c("b: An Alternative"),cex=1.1)
+#' boxc <- textbox(x1=6,x2=53,y1=55,y2=46,col="black",fill=NA,lwd=1,
+#'                 txt=c("c: Hello World","A second line",
 #'                       "A final third line"),cex=1.1)
-#' arrows(x0=box2[[2]][1],y0=min(box2[[1]][,2]),x1=box4[[2]][1],
-#'        y1=max(box4[[1]][,2]),length=0.1,angle=30,code=2,col="black",lwd=3)
-#' anglearrow(box2,box3,location="leftright")
-#' anglearrow(box3,box4,location="rightleft")
-anglearrow <- function(boxa,boxb,location="leftright",
+#' drawarrow(box1=boxa,box2=boxc,location="down")
+#' drawarrow(box1=boxa,box2=boxb,location="rightdown")
+#' drawarrow(box1=boxb,box2=boxc,location="downleft")
+drawarrow <- function(box1,box2,location="down",
                        len=0.1,ang=30,code=2,col="black",lwd=3) {
-  if (location %in% c("leftright","rightleft")) {
-    if (location == "leftright") {
-      xL1 <- max(boxa[[1]][,1])
-      xL2 <- boxb[[2]][1]
-      yL1 <- boxa[[2]][2]
-      yA1 <- max(boxb[[1]][,2])
-      lines(x=c(xL1,xL2),y=c(yL1,yL1),lwd=lwd)
-      arrows(x0=xL2,y0=yL1,y1=yA1,length=len,angle=ang,code=code,
+  if (location %in% c("up","down","left","right","leftup","rightup",
+                      "downright","downleft","upright","upleft",
+                      "rightdown","leftdown")) {
+    if (location == "down") {
+      arrows(x0=box1[[2]][1],y0=min(box1[[1]][,2]),y1=max(box2[[1]][,2]),
+             length=len,angle=ang,code=code,col=col,lwd=lwd)
+    } # end down
+    if (location == "up") {
+      arrows(x0=box1[[2]][1],y0=max(box1[[1]][,2]),y1=min(box2[[1]][,2]),
+             length=len,angle=ang,code=code,col=col,lwd=lwd)
+    } # end up 
+    if (location == "left") {
+      arrows(x0=min(box1[[1]][,1]),y0=box1[[2]][2],x1=max(box2[[1]][,1]),
+             length=len,angle=ang,code=code,col=col,lwd=lwd)
+    } # end left 
+    if (location == "right") {
+      arrows(x0=max(box1[[1]][,1]),y0=box1[[2]][2],x1=min(box2[[1]][,1]),
+             length=len,angle=ang,code=code,col=col,lwd=lwd)
+    } # end left     
+    if (location == "downright") {
+      xL1 <- box1[[2]][1]
+      yL1 <- min(box1[[1]][,2])
+      yL2 <- box2[[2]][2]
+      xA2 <- min(box2[[1]][,1])
+      lines(x=c(xL1,xL1),y=c(yL1,yL2),lwd=lwd)
+      arrows(x0=xL1,x1=xA2,y0=yL2,length=len,angle=ang,code=code,
              col=col,lwd=lwd)
-    }
-    if (location == "rightleft") {
-      xL1 <- boxa[[2]][1]
-      yL1 <- min(boxa[[1]][,2])
-      xA1 <- max(boxb[[1]][,1])
-      yL2 <- boxb[[2]][2]           
-      yA1 <- max(boxb[[1]][,2])
+    } # end of downright
+    if (location == "downleft") {
+      xL1 <- box1[[2]][1]
+      yL1 <- min(box1[[1]][,2])
+      yL2 <- box2[[2]][2]   
+      xA1 <- max(box2[[1]][,1])
+      yA1 <- box2[[2]][2]
       lines(x=c(xL1,xL1),y=c(yL1,yL2),lwd=lwd)
       arrows(x0=xL1,x1=xA1,y0=yL2,length=len,angle=ang,code=code,
              col=col,lwd=lwd)
-    }
+    } # end of downleft
+    if (location == "upright") {
+      xL1 <- box1[[2]][1]
+      yL1 <- max(box1[[1]][,2])
+      yL2 <- box2[[2]][2]
+      xA2 <- min(box2[[1]][,1])
+      lines(x=c(xL1,xL1),y=c(yL1,yL2),lwd=lwd)
+      arrows(x0=xL1,x1=xA2,y0=yL2,length=len,angle=ang,code=code,
+             col=col,lwd=lwd)
+    } # end of upright
+    if (location == "leftup") {
+      xL1 <- min(box1[[1]][,1])
+      xL2 <- box2[[2]][1]
+      yL1 <- box1[[2]][2]
+      yA2 <- min(box2[[1]][,2])
+      lines(x=c(xL1,xL2),y=c(yL1,yL1),lwd=lwd)
+      arrows(x0=xL2,y0=yL1,y1=yA2,length=len,angle=ang,code=code,
+             col=col,lwd=lwd)
+    }  
+    if (location == "rightup") {
+      xL1 <- max(box1[[1]][,1])
+      xL2 <- box2[[2]][1]
+      yL1 <- box1[[2]][2]
+      yA2 <- min(box2[[1]][,2])
+      lines(x=c(xL1,xL2),y=c(yL1,yL1),lwd=lwd)
+      arrows(x0=xL2,y0=yL1,y1=yA2,length=len,angle=ang,code=code,
+             col=col,lwd=lwd)
+    } # end of rightup
+    if (location == "upleft") {
+      xL1 <- box1[[2]][1]
+      yL1 <- max(box1[[1]][,2])
+      yL2 <- box2[[2]][2]
+      xA2 <- max(box2[[1]][,1])
+      lines(x=c(xL1,xL1),y=c(yL1,yL2),lwd=lwd)
+      arrows(x0=xL1,x1=xA2,y0=yL2,length=len,angle=ang,code=code,
+             col=col,lwd=lwd)
+    } # end of upleft
+    if (location == "rightdown") {
+      xL1 <- max(box1[[1]][,1])
+      xL2 <- box2[[2]][1]
+      yL1 <- box1[[2]][2]
+      yA2 <- max(box2[[1]][,2])
+      lines(x=c(xL1,xL2),y=c(yL1,yL1),lwd=lwd)
+      arrows(x0=xL2,y0=yL1,y1=yA2,length=len,angle=ang,code=code,
+             col=col,lwd=lwd)
+    } # end of rightdown
+    if (location == "leftdown") {
+      xL1 <- min(box1[[1]][,1])
+      xL2 <- box2[[2]][1]
+      yL1 <- box1[[2]][2]
+      yA2 <- max(box2[[1]][,2])
+      lines(x=c(xL1,xL2),y=c(yL1,yL1),lwd=lwd)
+      arrows(x0=xL2,y0=yL1,y1=yA2,length=len,angle=ang,code=code,
+             col=col,lwd=lwd)
+    } # end of leftdown
   } else {
-    stop(cat("anglearrows can only be leftright or rightleft  \n\n"))
+    txt <- paste0("drawarrows can only be up, down, left, right, downleft, ",
+                  "downright, upright, upleft, rightdown, leftdown, leftup, ",
+                  "or rightup. Anything else willfail  \n\n")
+    stop(cat(txt))
   }
-} # end of anglearrow
+} # end of drawarrow
 
 #' @title cart2pol converts cartesian coordinates into the polar angle
 #' 
@@ -335,37 +421,39 @@ expandmatrix <- function(x) { #  x=t(numyr)
 #'     with arrows between them. The idea is to provide a working example that
 #'     can be modified while illustrating the use of the hplot functions.
 #'
+#' @seealso{
+#'    \link{makecanvas}, \link{textbox}, \link{drawarrow}
+#' }
+#'
 #' @returns R code to the console using hplot functions to draw a flowchart
 #' @export
 #'
 #' @examples
+#' # run the function, copy the code from the console and run it.
 #' flowcharttemplate()
 flowcharttemplate <- function() {
-  cat('plotprep(width=8,height=7,usefont=7) \n')
-  cat('canvas <- makecanvas() \n')
-  cat('box1 <- textbox(x1=12,x2=47,y1=95,y2=86,col="black",fill=NA,lwd=1, \n')
-  cat('                txt=c("Hello World","A second line"),cex=1.1) \n')
-  cat('box2 <- textbox(x1=6,x2=53,y1=75,y2=65,col="black",fill=NA,lwd=1, \n')
-  cat('                txt=c("Includes an If Statement"),cex=1.5) \n')
-  cat('box3 <- textbox(x1=65,x2=90,y1=62,y2=57,col="black",fill=NA,lwd=1, \n')
-  cat('                txt=c("An Alternative"),cex=1.1) \n')
-  cat('box4 <- textbox(x1=6,x2=53,y1=55,y2=46,col="black",fill=NA,lwd=1, \n')
-  cat('                txt=c("Hello World","A second line", \n')
-  cat('                "A final third line"),cex=1.1) \n')
-  cat('box5 <- textbox(x1=9,x2=50,y1=36,y2=24,col="black",fill=NA,lwd=1, \n')
-  cat('                txt=c("Hello World","A second line", \n')
-  cat('                "A third line","A MUCH LONGER FOURTH LINE"),cex=1.1) \n')
-  cat('arrows(x0=box1[[2]][1],y0=min(box1[[1]][,2]),x1=box2[[2]][1], \n')
-  cat('       y1=max(box2[[1]],2),length=0.1,angle=30,code=2,col="black",')
-  cat('lwd=3) \n')
-  cat('arrows(x0=box2[[2]][1],y0=min(box2[[1]][,2]),x1=box4[[2]][1], \n')
-  cat('       y1=max(box4[[1]][,2]),length=0.1,angle=30,code=2,col="black",')
-  cat('lwd=3) \n')
-  cat('arrows(x0=box4[[2]][1],y0=min(box4[[1]][,2]),x1=box5[[2]][1], \n')
-  cat('       y1=max(box5[[1]][,2]),length=0.1,angle=30,code=2,col="black",')
-  cat('lwd=3) \n')
-  cat('topanglearrow(box2,box3) \n')
-  cat('botanglearrow(box3,box4) \n')
+  cat('plotprep(width=8,height=7,usefont=7) \n') 
+  cat('canvas <- makecanvas()  \n')
+  cat('boxa <- textbox(x1=12,x2=47,y1=95,y2=86,col="black",fill=NA,lwd=1, \n') 
+  cat('                txt=c("Box a","A second line"),cex=1.1) \n') 
+  cat('boxb <- textbox(x1=6,x2=53,y1=75,y2=65,col="black",fill=NA,lwd=1, \n') 
+  cat('                txt=c("Box b","Includes an If Statement"),cex=1.5) \n') 
+  cat('boxc <- textbox(x1=65,x2=90,y1=62,y2=57,col="black",fill=NA,lwd=1, \n') 
+  cat('                txt=c("Box c"),cex=1.1) \n') 
+  cat('boxd <- textbox(x1=6,x2=53,y1=55,y2=46,col="black",fill=NA,lwd=1, \n') 
+  cat('                txt=c("Box d","A second line", \n') 
+  cat('                "A final third line"),cex=1.1) \n') 
+  cat('boxe <- textbox(x1=9,x2=50,y1=36,y2=24,col="black",fill=NA,lwd=1, \n') 
+  cat('                txt=c("Box e","A second line", \n') 
+  cat('                "A third line","A MUCH LONGER FOURTH LINE"),cex=1.1) \n') 
+  cat('boxf <- textbox(x1=65,x2=90,y1=85,y2=78,col="black",fill=NA,lwd=1,  \n')
+  cat('                txt=c("Box f","A second line"),cex=1.1) \n') 
+  cat('drawarrow(box1=boxa,box2=boxb,location="down") \n')
+  cat('drawarrow(box1=boxb,box2=boxc,location="downright") \n')
+  cat('drawarrow(box1=boxc,box2=boxd,location="downleft") \n')
+  cat('drawarrow(box1=boxc,box2=boxb,location="upleft") \n')
+  cat('drawarrow(box1=boxe,box2=boxd,location="up") \n')
+  cat('drawarrow(box1=boxa,box2=boxf,location="rightdown") \n')
 } # END OF flowcharttemplate
 
 #' @title getmin generates the lower bound for a plot
@@ -649,15 +737,17 @@ linept <- function(x,y,lwd=1,pch=16,...) {
 #' @param yfinish y-axis maximum default = 100
 #' @param addbox should a box be drawn around the canvas, default = FALSE
 #'
+#' @seealso{
+#'    \link{drawarrow}, \link{textbox}, \link{flowcharttemplate}
+#' }
+#'
 #' @return plots an empty graph ready for polygons and text, returns a 
 #'     list defining the objects on the canvas
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #'   canvas=makecanvas(ystart=50,yfinish=93.5)
 #'   polygon(makevx(2,27),makevy(90,6),col=0,lwd=1,border=1)
-#' }
 makecanvas <- function(xstart=0,xfinish=100,ystart=0,yfinish=100,addbox=FALSE) {
   width <- length(xstart:xfinish)
   height <- length(ystart:yfinish)
