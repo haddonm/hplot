@@ -30,7 +30,7 @@ makerect draws a rectangle after canvas has been called
 }
 \examples{
 \dontrun{
-   canvas(ystart=50,yfinish=93.5)
+   canvas(start=0,finish=93.5)
    makerect(left=2,xinc=27,top=90,yinc=6)
 }
 }

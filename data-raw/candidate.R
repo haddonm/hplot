@@ -376,23 +376,23 @@ layout(matfor,heights=rep(1,20),TRUE)
 
 library(hplot)
 
-code=2; col="black";lwd=3;len=0.1;ang=30
+#flowcharttemplate(columns=2)
 
 plotprep(width=8,height=7,usefont=7) 
-canvas <- makecanvas()  
-boxa <- textbox(x1=12,x2=47,y1=95,y2=86,col="black",fill=NA,lwd=1, 
+canvas <- makecanvas(start=0,finish=100,addgrid=TRUE)  
+boxa <- textbox(x1=12,x2=47,y1=95,y2=86,col="black",fill=NA,lwd=1,
                 txt=c("Box a","A second line"),cex=1.1) 
-boxb <- textbox(x1=6,x2=53,y1=75,y2=65,col="black",fill=NA,lwd=1, 
-                txt=c("Box b","Includes an If Statement"),cex=1.5) 
-boxc <- textbox(x1=65,x2=90,y1=62,y2=57,col="black",fill=NA,lwd=1, 
+boxb <- textbox(x1=6,x2=53,y1=75,y2=65,col="black",fill=NA,lwd=1,
+                txt=c("Box b","Includes an If Statement"),cex=1.5)
+boxc <- textbox(x1=65,x2=90,y1=62,y2=57,col="black",fill=NA,lwd=1,
                 txt=c("Box c"),cex=1.1) 
 boxd <- textbox(x1=6,x2=53,y1=55,y2=46,col="black",fill=NA,lwd=1, 
                 txt=c("Box d","A second line", 
                       "A final third line"),cex=1.1) 
 boxe <- textbox(x1=9,x2=50,y1=36,y2=24,col="black",fill=NA,lwd=1, 
                 txt=c("Box e","A second line", 
-                      "A third line","A MUCH LONGER FOURTH LINE"),cex=1.1) 
-boxf <- textbox(x1=65,x2=90,y1=85,y2=78,col="black",fill=NA,lwd=1,  
+                      "A third line","A LONGER FOURTH LINE"),cex=1.1) 
+boxf <- textbox(x1=65,x2=90,y1=85,y2=78,col="black",fill=NA,lwd=1,
                 txt=c("Box f","A second line"),cex=1.1) 
 drawarrow(box1=boxa,box2=boxb,location="down") 
 drawarrow(box1=boxb,box2=boxc,location="downright") 
@@ -400,12 +400,17 @@ drawarrow(box1=boxc,box2=boxd,location="downleft")
 drawarrow(box1=boxc,box2=boxb,location="upleft") 
 drawarrow(box1=boxe,box2=boxd,location="up") 
 drawarrow(box1=boxa,box2=boxf,location="rightdown") 
+ 
 
-
-
-
-
-
-
-
-
+canvas <- makecanvas(start=0,finish=100,addbox=FALSE)
+boxa <- textbox(x1=5,x2=40,y1=90,y2=78,col="black",fill=NA,lwd=1,
+                  txt=c("Hello World","A second line","A third line",
+                  "A final fourth line, longer than the rest"))
+boxb <- textbox(x1=45,x2=95,y1=50,y2=62,col="black",fill=NA,lwd=1,
+                  txt=c("Hello World","A second line",
+                        "A final third line, longer than the rest"),cex=1.5)
+ drawarrow(box1=boxa,box2=boxb,location="rightdown")
+  
+  
+  
+  

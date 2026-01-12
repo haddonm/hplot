@@ -28,7 +28,7 @@ makevx takes either a vector of 3 values or two single values.
 }
 \examples{
 \dontrun{
- canvas(ystart=50,yfinish=93.5)
+ canvas(start=0,finish=93.5)
  polygon(makevx(2,27),makevy(90,6),col=0,lwd=1,border=1)
 }
 }

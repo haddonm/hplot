@@ -1,8 +1,8 @@
 Package: hplot
 Type: Package
 Title: Contains utility functions for when using base R graphics
-Version: 0.1.7
-Date: 2026-01-10
+Version: 0.1.8
+Date: 2026-01-12
 Authors@R: person(given="Malcolm",
                   family="Haddon", 
                   email = "malcolm.haddon@gmail.com", 
@@ -12,6 +12,7 @@ Maintainer: <malcolm.haddon@gmail.com>
 Description: Contains utility functions and custom plot functions that I 
     commonly use when Writing R code. see ?hplot for the list of functions
     and their individual help pages for details and examples of their use.
+    See the diagrams function for some syntax.
 Depends:
     R (>= 3.5.0)
 License: GPL-2

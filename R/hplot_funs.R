@@ -1,36 +1,4 @@
 
-#' @title addgrid adds a grid to a canvas within a diagram
-#' 
-#' @description addgrid generates a grid to a canvas to act as a guide for
-#'     when adding rectangles, etc. 
-#'
-#' @param left defines lefthand edge of rectangle default = 0
-#' @param right defines right-hand edge of rect default = 100
-#' @param bottom defines bottom edge of rectangle angle default = 0
-#' @param top defines top edge of rectangle default = 100
-#' @param step how often to draw a grid line, default = 20
-#'
-#' @return nothing but it does add a grid to a canvas
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#'  plotprep(width=8,height=5)
-#'  center <- makecanvas(xstart=0,xfinish=100,ystart=0,yfinish=100,addbox=TRUE)
-#'  addgrid()  # remove when ready to make final plot
-#' }
-addgrid <- function(left=0,right=100,bottom=0,top=100,step=20) {
-  #  xstart=0;xfinish=100;ystart=0;yfinish=100;step=20
-  nx <- length(left:right)
-  ny <- length(bottom:top) 
-  xline <- trunc(seq(left,right,step))
-  yline <- trunc(seq(bottom,top,step))
-  lenx <- length(xline)
-  leny <- length(yline)
-  for (x in 1:lenx) lines(rep(xline[x],ny),bottom:top,lty=2,col="grey")    
-  for (y in 1:leny) lines(left:right,rep(yline[y],nx),lty=2,col="grey")    
-} # end of addgrid
-
 
 #' @title addlnorm estimates a log-normal distribution from output of hist.
 #'
@@ -372,8 +340,13 @@ countgtzero <- function(invect) {
 #' @examples
 #' diagrams()
 diagrams <- function() {
+  cat('boxa <- textbox(x1=32,x2=68,y1=95,y2=86,col="black",fill=NA,lwd=1,\n') 
+  cat('                txt=c("Box a","A second line"),cex=1.1) \n')   
   cat('circle(origx = 50, origy = 50, radius = 10, col = 1, lwd = 1) \n')
-  cat('makecanvas(xstart = 0, xfinish = 100, ystart = 0, yfinish = 100) \n')
+  cat('drawarrow(box1=boxa,box2=boxb,location="down") \n')
+  cat('drawarrow(box1=boxb,box2=boxc,location="downright") \n')
+  cat('flowcharttemplate(columns=2)')
+  cat('makecanvas(start = 0, finish = 100, addgrid=FALSE,addbox=FALSE) \n')
   cat('makerect(left, xinc, top, yinc, linecol = "grey", lwd = 1) \n')
   cat('makevx(init, inc) \n')
   cat('makevy(init, inc) \n')
@@ -420,6 +393,8 @@ expandmatrix <- function(x) { #  x=t(numyr)
 #'     which uses a set of hplot functions to create a canvas and text boxes
 #'     with arrows between them. The idea is to provide a working example that
 #'     can be modified while illustrating the use of the hplot functions.
+#'     
+#' @param columns how many columns to initiate in teh flowchart
 #'
 #' @seealso{
 #'    \link{makecanvas}, \link{textbox}, \link{drawarrow}
@@ -431,29 +406,46 @@ expandmatrix <- function(x) { #  x=t(numyr)
 #' @examples
 #' # run the function, copy the code from the console and run it.
 #' flowcharttemplate()
-flowcharttemplate <- function() {
+flowcharttemplate <- function(columns=2) {
   cat('plotprep(width=8,height=7,usefont=7) \n') 
-  cat('canvas <- makecanvas()  \n')
-  cat('boxa <- textbox(x1=12,x2=47,y1=95,y2=86,col="black",fill=NA,lwd=1, \n') 
-  cat('                txt=c("Box a","A second line"),cex=1.1) \n') 
-  cat('boxb <- textbox(x1=6,x2=53,y1=75,y2=65,col="black",fill=NA,lwd=1, \n') 
-  cat('                txt=c("Box b","Includes an If Statement"),cex=1.5) \n') 
-  cat('boxc <- textbox(x1=65,x2=90,y1=62,y2=57,col="black",fill=NA,lwd=1, \n') 
-  cat('                txt=c("Box c"),cex=1.1) \n') 
-  cat('boxd <- textbox(x1=6,x2=53,y1=55,y2=46,col="black",fill=NA,lwd=1, \n') 
-  cat('                txt=c("Box d","A second line", \n') 
-  cat('                "A final third line"),cex=1.1) \n') 
-  cat('boxe <- textbox(x1=9,x2=50,y1=36,y2=24,col="black",fill=NA,lwd=1, \n') 
-  cat('                txt=c("Box e","A second line", \n') 
-  cat('                "A third line","A MUCH LONGER FOURTH LINE"),cex=1.1) \n') 
-  cat('boxf <- textbox(x1=65,x2=90,y1=85,y2=78,col="black",fill=NA,lwd=1,  \n')
-  cat('                txt=c("Box f","A second line"),cex=1.1) \n') 
-  cat('drawarrow(box1=boxa,box2=boxb,location="down") \n')
-  cat('drawarrow(box1=boxb,box2=boxc,location="downright") \n')
-  cat('drawarrow(box1=boxc,box2=boxd,location="downleft") \n')
-  cat('drawarrow(box1=boxc,box2=boxb,location="upleft") \n')
-  cat('drawarrow(box1=boxe,box2=boxd,location="up") \n')
-  cat('drawarrow(box1=boxa,box2=boxf,location="rightdown") \n')
+  cat('canvas <- makecanvas(start=0,finish=100,addgrid=TRUE)  \n')  
+  if (columns == 1) {
+    cat('boxa <- textbox(x1=32,x2=68,y1=95,y2=86,col="black",fill=NA,lwd=1,\n') 
+    cat('                txt=c("Box a","A second line"),cex=1.1) \n') 
+    cat('boxb <- textbox(x1=32,x2=68,y1=75,y2=65,col="black",fill=NA,lwd=1,\n') 
+    cat('                txt=c("Box b","Includes an If Statement"),cex=1.25)\n') 
+    cat('boxc <- textbox(x1=32,x2=68,y1=55,y2=46,col="black",fill=NA,lwd=1, \n') 
+    cat('                txt=c("Box c","A second line", \n') 
+    cat('                "A final third line"),cex=1.1) \n') 
+    cat('boxd <- textbox(x1=32,x2=68,y1=36,y2=24,col="black",fill=NA,lwd=1, \n') 
+    cat('                txt=c("Box d","A second line", \n') 
+    cat('                "A third line","A LONGER FOURTH LINE"),cex=1.1) \n') 
+    cat('drawarrow(box1=boxa,box2=boxb,location="down") \n')
+    cat('drawarrow(box1=boxb,box2=boxc,location="down") \n') 
+    cat('drawarrow(box1=boxc,box2=boxd,location="down") \n')     
+  }
+  if (columns == 2) {
+    cat('boxa <- textbox(x1=12,x2=47,y1=95,y2=86,col="black",fill=NA,lwd=1,\n') 
+    cat('                txt=c("Box a","A second line"),cex=1.1) \n') 
+    cat('boxb <- textbox(x1=6,x2=53,y1=75,y2=65,col="black",fill=NA,lwd=1,\n') 
+    cat('                txt=c("Box b","Includes an If Statement"),cex=1.5)\n') 
+    cat('boxc <- textbox(x1=65,x2=90,y1=62,y2=57,col="black",fill=NA,lwd=1,\n') 
+    cat('                txt=c("Box c"),cex=1.1) \n') 
+    cat('boxd <- textbox(x1=6,x2=53,y1=55,y2=46,col="black",fill=NA,lwd=1, \n') 
+    cat('                txt=c("Box d","A second line", \n') 
+    cat('                "A final third line"),cex=1.1) \n') 
+    cat('boxe <- textbox(x1=9,x2=50,y1=36,y2=24,col="black",fill=NA,lwd=1, \n') 
+    cat('                txt=c("Box e","A second line", \n') 
+    cat('                "A third line","A LONGER FOURTH LINE"),cex=1.1) \n') 
+    cat('boxf <- textbox(x1=65,x2=90,y1=85,y2=78,col="black",fill=NA,lwd=1,\n')
+    cat('                txt=c("Box f","A second line"),cex=1.1) \n') 
+    cat('drawarrow(box1=boxa,box2=boxb,location="down") \n')
+    cat('drawarrow(box1=boxb,box2=boxc,location="downright") \n')
+    cat('drawarrow(box1=boxc,box2=boxd,location="downleft") \n')
+    cat('drawarrow(box1=boxc,box2=boxb,location="upleft") \n')
+    cat('drawarrow(box1=boxe,box2=boxd,location="up") \n')
+    cat('drawarrow(box1=boxa,box2=boxf,location="rightdown") \n')
+  }
 } # END OF flowcharttemplate
 
 #' @title getmin generates the lower bound for a plot
@@ -729,16 +721,20 @@ linept <- function(x,y,lwd=1,pch=16,...) {
 #' @title makecanvas sets up a plotting area ready for the flowchart
 #'
 #' @description makecanvas sets up a plotting areas ready for a flowchart
-#'     made up of shapes, circles, polygons, rectangles, text, and arrows
+#'     made up of shapes, circles, polygons, rectangles, text, and arrows.
+#'     A plotprep width of 8 and height of 10 will fit an A4 page well.
 #'
-#' @param xstart x-origin value defaults = 0
-#' @param xfinish maximum of x axis defaults = 100
-#' @param ystart y-origin value default = 0
-#' @param yfinish y-axis maximum default = 100
-#' @param addbox should a box be drawn around the canvas, default = FALSE
+#' @param start x- and y-origin value defaults = 0
+#' @param finish maximum of x- and y-axes defaults = 100
+#' @param addgrid should a guiding grid and labeled axes be drawn to aid the
+#'     placing of graphical objects on the canvas. Once completed remove the 
+#'     grid and re-plot. default = FALSE
+#' @param addbox should a box be drawn around the canvas, default = FALSE. This
+#'     may be desirable after drafting a figure using addgrid.
 #'
 #' @seealso{
-#'    \link{drawarrow}, \link{textbox}, \link{flowcharttemplate}
+#'    \link{drawarrow}, \link{textbox}, \link{flowcharttemplate},
+#'    \link{plotprep}
 #' }
 #'
 #' @return plots an empty graph ready for polygons and text, returns a 
@@ -746,18 +742,29 @@ linept <- function(x,y,lwd=1,pch=16,...) {
 #' @export
 #'
 #' @examples
-#'   canvas=makecanvas(ystart=50,yfinish=93.5)
+#'   canvas=makecanvas(start=0,finish=100)
 #'   polygon(makevx(2,27),makevy(90,6),col=0,lwd=1,border=1)
-makecanvas <- function(xstart=0,xfinish=100,ystart=0,yfinish=100,addbox=FALSE) {
-  width <- length(xstart:xfinish)
-  height <- length(ystart:yfinish)
+makecanvas <- function(start=0,finish=100,addgrid=FALSE,addbox=FALSE) {
+  dimen <- length(start:finish)
   par(mfrow=c(1,1),mai=c(0.1,0.1,0.1,0.1),oma=c(0.0,0,0.0,0.0))
   par(cex=0.85, mgp=c(1.35,0.35,0), font.axis=7,font=7,font.lab=7)
-  plot(seq(xstart,xfinish,length=101),seq(ystart,yfinish,length=101),
-       type="n",xaxt="n",yaxt="n",xlab="",ylab="", bty="n")
-  if (addbox) makerect(left=xstart,right=xfinish-xstart,
-                       bottom=yfinish - (yfinish-ystart),top=yfinish)
-  canvas <- list(xyaxes=c(width,height),objects=0,form=NULL,
+  step <- finish/10
+  axlabs <- c(0,seq(step,finish,step))   
+  plot(x=axlabs,y=axlabs,type="n",xaxt="n",yaxt="n",xlab="",ylab="", bty="n")
+  if (addbox) {
+    makerect(left=start,right=finish-start,
+             bottom=finish - (finish-start),top=finish)
+  }
+  if (addgrid) {
+     
+    axis(1,at=axlabs,labels=axlabs,line=-1.5)
+    axis(2,at=axlabs,labels=axlabs,line=-1.7)     
+    for (i in 2:11) {
+      lines(x=c(start,finish),y=c(axlabs[i],axlabs[i]),lwd=1,lty=2,col="grey")
+      lines(x=c(axlabs[i],axlabs[i]),y=c(start,finish),lwd=1,lty=2,col="grey")
+    }  
+  }
+  canvas <- list(xyaxes=axlabs,objects=0,form=NULL,
                  coords=list(),njoin=0,join=list())
   return(invisible(canvas))
 } # end of makecanvas
@@ -815,7 +822,7 @@ makevx <- function(x1,x2=NULL) {
 #'
 #' @examples
 #' \dontrun{
-#'  canvas(ystart=50,yfinish=93.5)
+#'  canvas(start=0,finish=93.5)
 #'  polygon(makevx(2,27),makevy(90,6),col=0,lwd=1,border=1)
 #' }
 makevy <- function(y1,y2) {
@@ -895,7 +902,7 @@ makepolygon <- function(y1,y2,x1,x2=NULL) {
 #'
 #' @examples
 #' \dontrun{
-#'    canvas(ystart=50,yfinish=93.5)
+#'    canvas(start=0,finish=93.5)
 #'    makerect(left=2,xinc=27,top=90,yinc=6)
 #' }
 makerect <- function(left,right,bottom,top,linecol="grey",lwd=1,console=FALSE) {
@@ -1561,7 +1568,7 @@ putcircle <- function(origx=50,origy=50,radius=10,col=1,lwd=1,fill=NA,...) {
 #'
 #' @examples
 #' \dontrun{
-#'    makecanvas(xstart=0,xfinish=100,ystart=0,yfinish=100)
+#'    makecanvas(start=0,finish=100)
 #'    putoblong(x1=20,x2=80,y1=25,y2=75,col="red",lwd=2)
 #' }
 putoblong <- function(x1,x2,y1,y2,col="black",fill=NA,lwd=1,...) {
@@ -1775,15 +1782,14 @@ setplot <- function() {
 #' @export
 #'
 #' @examples
-#' canvas <- makecanvas(xstart=0,xfinish=100,ystart=0,yfinish=100,addbox=FALSE)
-#' outbox <- textbox(x1=5,x2=40,y1=90,y2=78,col="black",fill=NA,lwd=1,
+#' canvas <- makecanvas(start=0,finish=100,addbox=FALSE)
+#' boxa <- textbox(x1=5,x2=40,y1=90,y2=78,col="black",fill=NA,lwd=1,
 #'                   txt=c("Hello World","A second line","A third line",
 #'                   "A final fourth line, longer than the rest"))
-#' lines(c(5,40),c(outbox[[2]][2],outbox[[2]][2]))
-#' outbox <- textbox(x1=45,x2=95,y1=50,y2=62,col="black",fill=NA,lwd=1,
+#' boxb <- textbox(x1=45,x2=95,y1=50,y2=62,col="black",fill=NA,lwd=1,
 #'                   txt=c("Hello World","A second line",
 #'                         "A final third line, longer than the rest"),cex=1.5)
-#' lines(c(45,95),c(outbox[[2]][2],outbox[[2]][2]))
+#' drawarrow(box1=boxa,box2=boxb,location="rightdown")
 textbox <- function(x1,x2,y1,y2,col="black",fill=NA,lwd=1,txt="",inc=-0.25,
                     space=1,...) {
   xs <- makevx(x1,x2)

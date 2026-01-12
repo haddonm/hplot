@@ -54,13 +54,12 @@ textbox draws a rectangle on a canvas with the option of
     can be up to four lines of text, but no more.
 }
 \examples{
-canvas <- makecanvas(xstart=0,xfinish=100,ystart=0,yfinish=100,addbox=FALSE)
-outbox <- textbox(x1=5,x2=40,y1=90,y2=78,col="black",fill=NA,lwd=1,
+canvas <- makecanvas(start=0,finish=100,addbox=FALSE)
+boxa <- textbox(x1=5,x2=40,y1=90,y2=78,col="black",fill=NA,lwd=1,
                   txt=c("Hello World","A second line","A third line",
                   "A final fourth line, longer than the rest"))
-lines(c(5,40),c(outbox[[2]][2],outbox[[2]][2]))
-outbox <- textbox(x1=45,x2=95,y1=50,y2=62,col="black",fill=NA,lwd=1,
+boxb <- textbox(x1=45,x2=95,y1=50,y2=62,col="black",fill=NA,lwd=1,
                   txt=c("Hello World","A second line",
                         "A final third line, longer than the rest"),cex=1.5)
-lines(c(45,95),c(outbox[[2]][2],outbox[[2]][2]))
+drawarrow(box1=boxa,box2=boxb,location="rightdown")
 }

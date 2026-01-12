@@ -4,24 +4,19 @@
 \alias{makecanvas}
 \title{makecanvas sets up a plotting area ready for the flowchart}
 \usage{
-makecanvas(
-  xstart = 0,
-  xfinish = 100,
-  ystart = 0,
-  yfinish = 100,
-  addbox = FALSE
-)
+makecanvas(start = 0, finish = 100, addgrid = FALSE, addbox = FALSE)
 }
 \arguments{
-\item{xstart}{x-origin value defaults = 0}
+\item{start}{x- and y-origin value defaults = 0}
 
-\item{xfinish}{maximum of x axis defaults = 100}
+\item{finish}{maximum of x- and y-axes defaults = 100}
 
-\item{ystart}{y-origin value default = 0}
+\item{addgrid}{should a guiding grid and labeled axes be drawn to aid the
+placing of graphical objects on the canvas. Once completed remove the 
+grid and re-plot. default = FALSE}
 
-\item{yfinish}{y-axis maximum default = 100}
-
-\item{addbox}{should a box be drawn around the canvas, default = FALSE}
+\item{addbox}{should a box be drawn around the canvas, default = FALSE. This
+may be desirable after drafting a figure using addgrid.}
 }
 \value{
 plots an empty graph ready for polygons and text, returns a 
@@ -29,14 +24,16 @@ plots an empty graph ready for polygons and text, returns a
 }
 \description{
 makecanvas sets up a plotting areas ready for a flowchart
-    made up of shapes, circles, polygons, rectangles, text, and arrows
+    made up of shapes, circles, polygons, rectangles, text, and arrows.
+    A plotprep width of 8 and height of 10 will fit an A4 page well.
 }
 \examples{
-  canvas=makecanvas(ystart=50,yfinish=93.5)
+  canvas=makecanvas(start=0,finish=100)
   polygon(makevx(2,27),makevy(90,6),col=0,lwd=1,border=1)
 }
 \seealso{
 {
-   \link{drawarrow}, \link{textbox}, \link{flowcharttemplate}
+   \link{drawarrow}, \link{textbox}, \link{flowcharttemplate},
+   \link{plotprep}
 }
 }

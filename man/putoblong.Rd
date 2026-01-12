@@ -31,7 +31,7 @@ putoblong draws a rectangle after makecanvas has been called
 }
 \examples{
 \dontrun{
-   makecanvas(xstart=0,xfinish=100,ystart=0,yfinish=100)
+   makecanvas(start=0,finish=100)
    putoblong(x1=20,x2=80,y1=25,y2=75,col="red",lwd=2)
 }
 }

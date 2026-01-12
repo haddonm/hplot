@@ -4,7 +4,10 @@
 \alias{flowcharttemplate}
 \title{flowcharttemplate write a flowchart template to the console}
 \usage{
-flowcharttemplate()
+flowcharttemplate(columns = 2)
+}
+\arguments{
+\item{columns}{how many columns to initiate in teh flowchart}
 }
 \value{
 R code to the console using hplot functions to draw a flowchart
