@@ -448,66 +448,6 @@ flowcharttemplate <- function(columns=2) {
   }
 } # END OF flowcharttemplate
 
-#' @title getmin generates the lower bound for a plot
-#'
-#' @description getmin generates lower bound for a plot where it is unknown
-#'     whether the minimum is less than zero of not. If less than 0 then
-#'     multiplying by the default mult of 1.05 works well but if the outcome
-#'     if > 0 then the multiplier needs to be adjusted appropriately so 
-#'     the minimum is slightly lower than the minimum of the data
-#'
-#' @param x the vector of data to be tested for its minimum
-#' @param mult the multiplier for both ends, defaults to 1.05 (=0.95 if >0)
-#'
-#' @return a suitable lower bound for a plot if required
-#' @export
-#'
-#' @examples
-#' vect <- rnorm(10,mean=0,sd=2)
-#' sort(vect)
-#' getmin(vect,mult=1.0)
-getmin <- function(x,mult=1.05) {
-  ymin <- min(x,na.rm=TRUE)
-  if (ymin < 0) {
-    ymin <- ymin * mult
-  } else {
-    ymin <- ymin * (2 - mult)
-  }
-  return(ymin)
-} # end of getmin
-
-#' @title getmax generates the upper bound for a plot
-#'
-#' @description getmax generates upper bound for a plot where it is unknown
-#'     whether the maximum is greater than zero of not. If > 0 then
-#'     multiplying by the default mult of 1.05 works well but if the outcome
-#'     if < 0 then the multiplier needs to be adjusted appropriately so the 
-#'     maximum is slightly higher than the maximum of the data
-#'
-#' @param x the vector of data to be tested for its maximum
-#' @param mult the multiplier for both ends, defaults to 1.05 (=0.95 if < 0)
-#'
-#' @return a suitable upper bound for a plot if required
-#' @export
-#'
-#' @examples
-#'  vect <- rnorm(10,mean=0,sd=2)
-#'  sort(vect,decreasing=TRUE)
-#'  getmax(vect,mult=1.0)
-#'  vect <- rnorm(10,mean = -5,sd = 1.5)
-#'  sort(vect,decreasing=TRUE)
-#'  getmax(vect,mult=1.0)
-getmax <- function(x,mult=1.05) {
-  ymax <- max(x,na.rm=TRUE)
-  if (ymax > 0) {
-    ymax <- ymax * mult
-  } else {
-    ymax <- ymax * (2 - mult)
-  }
-  return(ymax)
-} # end of getmax
-
-
 #' @title histyear plots a histogram of a given variable for each year available
 #'
 #' @description histyear plots a histogram of a given variable for each year
