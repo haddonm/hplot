@@ -14,7 +14,8 @@ plotcompdata(
   bordercol = "black",
   horizline = NULL,
   xlabel = "",
-  labeldiv = 1
+  labeldiv = 1,
+  Nsamp = NULL
 )
 }
 \arguments{
@@ -45,6 +46,10 @@ default=NULL. To draw a line at 136mm then horizline=136}
 of each barplot can sometimes be vary large. In such cases dividing the
 number by 10, 100, or 1000 can keep the value readable. If > 1 it will 
 be added to the caption automatically.}
+
+\item{Nsamp}{a matrix of literal year by sample sizes, which if not NULL, the
+default, will be added to each year's plot. These can be used if 
+proportions are being plotted.}
 }
 \value{
 invisibly returns a list of the filename and caption

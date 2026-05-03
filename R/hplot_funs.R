@@ -1080,6 +1080,9 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 #'     of each barplot can sometimes be vary large. In such cases dividing the
 #'     number by 10, 100, or 1000 can keep the value readable. If > 1 it will 
 #'     be added to the caption automatically.
+#' @param Nsamp a matrix of literal year by sample sizes, which if not NULL, the
+#'     default, will be added to each year's plot. These can be used if 
+#'     proportions are being plotted.
 #'
 #' @return invisibly returns a list of the filename and caption
 #' @export
@@ -1095,17 +1098,19 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 #' }              
 plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
                          barcol="red",bordercol="black",horizline=NULL,
-                         xlabel="",labeldiv=1) {
+                         xlabel="",labeldiv=1,Nsamp=NULL) {
 # compdata=round(catchN[,7:26,2]);analysis="AutoL_CatchAge"; ylabel="Age";
 #  console=TRUE;outdir=rundir;barcol="red";bordercol="black";horizline=NULL;xlabel=""
   sampsize <- round(colSums(compdata,na.rm=TRUE),1)  
   fstsamp <- which(sampsize > 0)
   picksamp <- min(fstsamp):max(fstsamp)
-  compdata <- compdata[,picksamp]
+  if ((picksamp > 1) & (ncol(compdata) > 1)) {
+    compdata <- compdata[,picksamp]
+  }
   sampsize <- round(colSums(compdata,na.rm=TRUE),1) 
-  Nsamp <- ncol(compdata)
-  compcl <- as.numeric(rownames(compdata))  # expects size or age classes
-  label <- as.numeric(colnames(compdata))   # expects years
+  Nsamp <- ncol(compdata) 
+  compcl <- as.numeric(rownames(compdata))  # expects size or age classes    
+  label <- as.numeric(colnames(compdata))   # expects years    
   addyrs <- paste0(label[1],"_",label[length(label)])
   if (Nsamp > 60) {
     warning(cat(ylabel," Composition data limited to maximum 60 years \n"))
@@ -1158,42 +1163,9 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
       warning(cat("Horizontal line at ",compcl[pickcl]," not ",horizline,"\n"))
     abline(h=pickcl-1,lwd=3,col=linecol)
   }
-  if (Nsamp <= 20) {
-    for (i in 2:Nsamp) {
-      if (sampsize[i] > 0) {
-        barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
-                border=bordercol,space=0)
-      } else {  plotnull()  }    
-      mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=1)
-      mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
-      if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
-    }
-  } else {
-    for (i in 2:20) {
-      if (sampsize[i] > 0) {
-        barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
-                border=bordercol,space=0)
-      } else {  plotnull()  }    
-      mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=1)
-      mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
-      if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
-    }
-    if (sampsize[21] > 0) {
-      barplot(compdata[,21],horiz=TRUE,axes=FALSE,col=barcol,border=bordercol,
-              space=0,axis.lty=1.0,cex.names=1.0)
-    } else {  
-      plotnull(xvals=as.numeric(rownames(compdata))) 
-    }
-    mtext(label[21],side=1,outer=FALSE,cex=1,line=-0.75)
-    mtext(trunc(sampsize[21]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
-    if (length(horizline) > 0) {
-      pickcl <- which.closest(horizline,compcl)
-      if (compcl[pickcl] != horizline)
-        warning(cat("Horizontal line at ",compcl[pickcl]," not ",horizline,"\n"))
-      abline(h=pickcl-1,lwd=3,col=linecol)
-    }
-    if (Nsamp > 21) {
-      for (i in 22:min(40,Nsamp)) {
+  if (Nsamp > 1) {
+    if (Nsamp <= 20) {
+      for (i in 2:Nsamp) {
         if (sampsize[i] > 0) {
           barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
                   border=bordercol,space=0)
@@ -1202,24 +1174,32 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
         mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
         if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
       }
-    }
-    if (Nsamp > 40) {
-      if (sampsize[41] > 0) {
-        barplot(compdata[,41],horiz=TRUE,axes=FALSE,col=barcol,border=bordercol,
+    } else {
+      for (i in 2:20) {
+        if (sampsize[i] > 0) {
+          barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
+                  border=bordercol,space=0)
+        } else {  plotnull()  }    
+        mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=1)
+        mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
+        if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
+      }
+      if (sampsize[21] > 0) {
+        barplot(compdata[,21],horiz=TRUE,axes=FALSE,col=barcol,border=bordercol,
                 space=0,axis.lty=1.0,cex.names=1.0)
       } else {  
         plotnull(xvals=as.numeric(rownames(compdata))) 
       }
-      mtext(label[41],side=1,outer=FALSE,cex=1,line=-0.75)
-      mtext(trunc(sampsize[41]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
+      mtext(label[21],side=1,outer=FALSE,cex=1,line=-0.75)
+      mtext(trunc(sampsize[21]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
       if (length(horizline) > 0) {
         pickcl <- which.closest(horizline,compcl)
         if (compcl[pickcl] != horizline)
           warning(cat("Horizontal line at ",compcl[pickcl]," not ",horizline,"\n"))
         abline(h=pickcl-1,lwd=3,col=linecol)
       }
-      if (Nsamp > 41) {
-        for (i in 42:Nsamp) {
+      if (Nsamp > 21) {
+        for (i in 22:min(40,Nsamp)) {
           if (sampsize[i] > 0) {
             barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
                     border=bordercol,space=0)
@@ -1229,8 +1209,35 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
           if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
         }
       }
-    }
-  }  
+      if (Nsamp > 40) {
+        if (sampsize[41] > 0) {
+          barplot(compdata[,41],horiz=TRUE,axes=FALSE,col=barcol,border=bordercol,
+                  space=0,axis.lty=1.0,cex.names=1.0)
+        } else {  
+          plotnull(xvals=as.numeric(rownames(compdata))) 
+        }
+        mtext(label[41],side=1,outer=FALSE,cex=1,line=-0.75)
+        mtext(trunc(sampsize[41]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
+        if (length(horizline) > 0) {
+          pickcl <- which.closest(horizline,compcl)
+          if (compcl[pickcl] != horizline)
+            warning(cat("Horizontal line at ",compcl[pickcl]," not ",horizline,"\n"))
+          abline(h=pickcl-1,lwd=3,col=linecol)
+        }
+        if (Nsamp > 41) {
+          for (i in 42:Nsamp) {
+            if (sampsize[i] > 0) {
+              barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
+                      border=bordercol,space=0)
+            } else {  plotnull()  }    
+            mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=1)
+            mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
+            if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
+          }
+        }
+      }
+    }  
+  }
   txtlabel <- paste0(ylabel,"  ",analysis)
   mtext(text=txtlabel,side=2,outer=TRUE,cex=1.1,line=0.2)
   if (!console) dev.off()
@@ -1695,6 +1702,50 @@ setplot <- function() {
   cat('#dev.off() \n')
   cat('#graphics.off() \n')
 } # end of set_plot
+
+#' @title templateplot write a plot function template to the console
+#' @description templateplot is used to draft a plotting function that plays 
+#'     well with the makehtml R package. It write the template to the console 
+#'     ready to be copied over to an R file.
+#'
+#' @returns nothing but does write a template plot to the console
+#' @export
+#'
+#' @examples
+#' templateplot()
+templateplot <- function() {
+  cat("\n")
+  cat("#' @title plotname  \n")
+  cat("#' \n")
+  cat("#' @param x the input data \n")
+  cat("#' @param analysis perhaps the name of the analysis or subdirectory \n")
+  cat("#' @param rundir default = '', rundir is full path to a directory \n")
+  cat("#' @param console default = TRUE, plot will go to the console \n")
+  cat("#' @param ... other potential inputs, names of columns in x etc \n")
+  cat("#' \n")
+  cat("#' @returns invisibly the filename, which might be '' \n")
+  cat("#' @export \n")
+  cat("#' \n")
+  cat("#' @examples \n")
+  cat("#' # think of something \n")
+  cat("plotname <- function(x,analysis,rundir='',console=TRUE,...) { \n")
+  cat("  \n")
+  cat("  filen <- '' \n")
+  cat("  if (!console) { \n")
+  cat("    fileout <- paste0(analysis,'_description_desc2.png') \n")
+  cat("    filen <- pathtopath(rundir,fileout) \n")
+  cat("  } \n")
+  cat("  plotprep(width=7,height=6,newdev=FALSE,filename=filen,verbose=FALSE) \n")
+  cat("  parset(plots=c(1,1),cex=1.0,margin=c(0.3,0.45,0.1,0.1)) \n")
+  cat("  maxy <- getmax(x$y) \n")
+  cat("  plot(x$yrs,x$y[1],type='l',lwd=2,col=1,xlab='', \n")
+  cat("       ylab=' ',ylim=c(0,maxy),yaxs='i',panel.first=grid) \n")
+  cat("  legend('topleft',legend=names,col=c(1:length(names)),lwd=3,bty='n',cex=1.0) \n")
+  cat(" \n")
+  cat("  if (!console) dev.off() \n")
+  cat("  return(invisible(filen)) \n")
+  cat("} # end of plotss3catches \n")
+} # end of templateplot
 
 #' @title textbox draws a rectangle on a canvas adding text is optional 
 #'
