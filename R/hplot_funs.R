@@ -1179,7 +1179,7 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
   sampsize <- round(colSums(compdata,na.rm=TRUE),1)  
   fstsamp <- which(sampsize > 0)
   picksamp <- min(fstsamp):max(fstsamp)
-  if ((picksamp > 1) & (ncol(compdata) > 1)) {
+  if ((length(picksamp > 1)) & (ncol(compdata) > 1)) {
     compdata <- compdata[,picksamp]
   }
   sampsize <- round(colSums(compdata,na.rm=TRUE),1) 
