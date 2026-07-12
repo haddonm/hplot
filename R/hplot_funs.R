@@ -1652,6 +1652,34 @@ pythag <- function(x) {  # x = ans
   return(ans) 
 }
 
+#' @title replacezeros replaces zeros in columns of a matrix with a given value
+#' 
+#' @description replacezeros replaces any zeros that occur in the columns of a
+#'     matrix or data.frame with the value in 'replacewith'. If ther are no 
+#'     zeros then this does nothing. This can be used to remove zeros to avoid
+#'     plots having zeros when really the value is missing.
+#'
+#' @param x the matrix or data.frame to be processed for zeros
+#' @param replacewith the replacement value, deafult = 'NA'
+#'
+#' @returns the same input matrix but with zeros replaced with 'replacewith'
+#' @export
+#'
+#' @examples
+#' x <- matrix(rnorm(25,mean=5,sd=1),nrow=5,ncol=5)
+#' diag(x) <- 0
+#' print(x)
+#' no0x <- replacezeros(x)
+#' print(no0x)
+replacezeros <- function(x,replacewith=NA) {
+  numcol <- ncol(x)
+  for (i in 1:numcol) {
+    pick <- which(x[,i] == 0)
+    if (length(pick) > 0) x[pick,i] <- replacewith
+  }
+  return(x)
+} # end of replacezeros
+
 #' @title RGB a wrapper for col2rgb and rgb with maxColorValue=255
 #'
 #' @description RGB is a wrapper that simplifies the use of the rgb function
