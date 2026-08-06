@@ -1158,24 +1158,26 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 #' @param Nsamp a matrix of literal year by sample sizes, which if not NULL, the
 #'     default, will be added to each year's plot. These can be used if 
 #'     proportions are being plotted.
+#' @param cex default plot font size, default = 1.0
+#' @param topcex the size of the labels on top of each bar, default = 0.9
+#' @param bottomcex the size of the labels underneath each bar, default =0.75
 #'
 #' @return invisibly returns a list of the filename and caption
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#'   x <- matrix(rnorm(600,mean=20,sd=3),nrow=20,ncol=30,
+#'   x <- matrix(rnorm(600,mean=21,sd=3),nrow=20,ncol=30,
 #'               dimnames=list(seq(122,160,2),1991:2020))
 #'   ylabel="Random Composition"
 #'   numcol <- ncol(x)
-#'   plotcompdata(compdata=x,analysis="sauX",ylabel="Random Composition Data",
+#'   plotcompdata(compdata=x,analysis="Test",ylabel="Random Composition Data",
 #'                console=TRUE,barcol="red",bordercol="black",horizline=136)
 #' }              
 plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
                          barcol="red",bordercol="black",horizline=NULL,
-                         xlabel="",labeldiv=1,Nsamp=NULL) {
-# compdata=round(catchN[,7:26,2]);analysis="AutoL_CatchAge"; ylabel="Age";
-#  console=TRUE;outdir=rundir;barcol="red";bordercol="black";horizline=NULL;xlabel=""
+                         xlabel="",labeldiv=1,Nsamp=NULL,cex=1.0,topcex=0.9,
+                         bottomcex=0.75) {
   sampsize <- round(colSums(compdata,na.rm=TRUE),1)  
   fstsamp <- which(sampsize > 0)
   picksamp <- min(fstsamp):max(fstsamp)
@@ -1204,20 +1206,20 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
   if (length(horizline) == 1) linecol <- "blue"
   if (length(horizline) == 2) linecol <- c("green","blue")
   if (Nsamp > 40) {
-    plotprep(width=10,height=12,newdev=!console,filename=filen,cex=0.9,
+    plotprep(width=10,height=12,newdev=!console,filename=filen,cex=cex,
              verbose=FALSE)
     parset(outmargin=c(1,2,1,1),margin=c(0.2,0.2,0,0))
     matfor <- matrix(c(1:60),3,20,byrow=TRUE)
     layout(matfor,heights=rep(1,60),TRUE)
   } else { 
     if (Nsamp > 20) {
-      plotprep(width=10,height=8,newdev=!console,filename=filen,cex=0.9,
+      plotprep(width=10,height=8,newdev=!console,filename=filen,cex=cex,
                verbose=FALSE)
       parset(outmargin=c(1,2,1,1),margin=c(0.2,0.2,0,0))
       matfor <- matrix(c(1:40),2,20,byrow=TRUE)
       layout(matfor,heights=rep(1,40),TRUE)
     } else {
-      plotprep(width=12,height=4,newdev=!console,filename=filen,cex=0.9,
+      plotprep(width=12,height=4,newdev=!console,filename=filen,cex=cex,
                verbose=FALSE)
       parset(outmargin=c(1,2,1,0.2),margin=c(0.2,0.2,0,0))
       matfor <- matrix(c(1:20),1,20,byrow=TRUE)
@@ -1226,12 +1228,12 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
   }
   if (sampsize[1] > 0) {
     barplot(compdata[,1],horiz=TRUE,axes=FALSE,col=barcol,border=bordercol,
-            space=0,axis.lty=1.0,cex.names=1.0)
+            space=0,axis.lty=1.0,cex.names=bottomcex)
   } else {  
     plotnull(xvals=as.numeric(rownames(compdata))) 
   }
-  mtext(label[1],side=1,outer=FALSE,cex=1,line=-0.75)
-  mtext(trunc(sampsize[1]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
+  mtext(label[1],side=1,outer=FALSE,cex=bottomcex,line=-0.75)
+  mtext(trunc(sampsize[1]/labeldiv),side=3,outer=FALSE,line=-1,cex=topcex)
   if (length(horizline) > 0) {
     pickcl <- which.closest(horizline,compcl)
     if (compcl[pickcl] != horizline)
@@ -1243,10 +1245,10 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
       for (i in 2:Nsamp) {
         if (sampsize[i] > 0) {
           barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
-                  border=bordercol,space=0)
+                  border=bordercol,space=0,axis.lty=1.0)
         } else {  plotnull()  }    
-        mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=1)
-        mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
+        mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=topcex)
+        mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,cex=topcex)
         if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
       }
     } else {
@@ -1255,18 +1257,18 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
           barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
                   border=bordercol,space=0)
         } else {  plotnull()  }    
-        mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=1)
-        mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
+        mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=bottomcex)
+        mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,cex=topcex)
         if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
       }
       if (sampsize[21] > 0) {
         barplot(compdata[,21],horiz=TRUE,axes=FALSE,col=barcol,border=bordercol,
-                space=0,axis.lty=1.0,cex.names=1.0)
+                space=0,axis.lty=1.0)
       } else {  
         plotnull(xvals=as.numeric(rownames(compdata))) 
       }
-      mtext(label[21],side=1,outer=FALSE,cex=1,line=-0.75)
-      mtext(trunc(sampsize[21]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
+      mtext(label[21],side=1,outer=FALSE,cex=bottomcex,line=-0.75)
+      mtext(trunc(sampsize[21]/labeldiv),side=3,outer=FALSE,line=-1,cex=topcex)
       if (length(horizline) > 0) {
         pickcl <- which.closest(horizline,compcl)
         if (compcl[pickcl] != horizline)
@@ -1279,20 +1281,20 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
             barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
                     border=bordercol,space=0)
           } else {  plotnull()  }    
-          mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=1)
-          mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
+          mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=bottomcex)
+          mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,cex=topcex)
           if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
         }
       }
       if (Nsamp > 40) {
         if (sampsize[41] > 0) {
           barplot(compdata[,41],horiz=TRUE,axes=FALSE,col=barcol,border=bordercol,
-                  space=0,axis.lty=1.0,cex.names=1.0)
+                  space=0,axis.lty=1.0)
         } else {  
           plotnull(xvals=as.numeric(rownames(compdata))) 
         }
-        mtext(label[41],side=1,outer=FALSE,cex=1,line=-0.75)
-        mtext(trunc(sampsize[41]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
+        mtext(label[41],side=1,outer=FALSE,cex=bottomcex,line=-0.75)
+        mtext(trunc(sampsize[41]/labeldiv),side=3,outer=FALSE,line=-1,cex=topcex)
         if (length(horizline) > 0) {
           pickcl <- which.closest(horizline,compcl)
           if (compcl[pickcl] != horizline)
@@ -1305,8 +1307,8 @@ plotcompdata <- function(compdata,analysis,ylabel="",console=TRUE,outdir="",
               barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
                       border=bordercol,space=0)
             } else {  plotnull()  }    
-            mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=1)
-            mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,cex=1)
+            mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=bottomcex)
+            mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,cex=topcex)
             if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
           }
         }

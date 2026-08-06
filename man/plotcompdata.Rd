@@ -15,7 +15,10 @@ plotcompdata(
   horizline = NULL,
   xlabel = "",
   labeldiv = 1,
-  Nsamp = NULL
+  Nsamp = NULL,
+  cex = 1,
+  topcex = 0.9,
+  bottomcex = 0.75
 )
 }
 \arguments{
@@ -50,6 +53,12 @@ be added to the caption automatically.}
 \item{Nsamp}{a matrix of literal year by sample sizes, which if not NULL, the
 default, will be added to each year's plot. These can be used if 
 proportions are being plotted.}
+
+\item{cex}{default plot font size, default = 1.0}
+
+\item{topcex}{the size of the labels on top of each bar, default = 0.9}
+
+\item{bottomcex}{the size of the labels underneath each bar, default =0.75}
 }
 \value{
 invisibly returns a list of the filename and caption
@@ -63,11 +72,11 @@ plotcompdata generates a horizontal array of up to 60 barplots,
 }
 \examples{
 \dontrun{
-  x <- matrix(rnorm(600,mean=20,sd=3),nrow=20,ncol=30,
+  x <- matrix(rnorm(600,mean=21,sd=3),nrow=20,ncol=30,
               dimnames=list(seq(122,160,2),1991:2020))
   ylabel="Random Composition"
   numcol <- ncol(x)
-  plotcompdata(compdata=x,analysis="sauX",ylabel="Random Composition Data",
+  plotcompdata(compdata=x,analysis="Test",ylabel="Random Composition Data",
                console=TRUE,barcol="red",bordercol="black",horizline=136)
 }              
 }
