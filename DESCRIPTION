@@ -1,8 +1,8 @@
 Package: hplot
 Type: Package
 Title: Contains utility functions for when using base R graphics
-Version: 0.1.13
-Date: 2026-08-06
+Version: 0.1.14
+Date: 2026-09-09
 Authors@R: person(given="Malcolm",
                   family="Haddon", 
                   email = "malcolm.haddon@gmail.com", 
@@ -19,6 +19,6 @@ License: GPL-2
 Imports:
     makehtml,
     codeutils
-RoxygenNote: 7.3.3
 Encoding: UTF-8
 URL: https://haddonm.github.io/hplot/
+Config/roxygen2/version: 8.1.0

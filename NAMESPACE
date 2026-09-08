@@ -46,40 +46,48 @@ export(uphist)
 export(xyplotyear)
 export(yearBubble)
 importFrom(codeutils,which.closest)
-importFrom(grDevices,col2rgb)
-importFrom(grDevices,dev.cur)
-importFrom(grDevices,dev.new)
-importFrom(grDevices,dev.off)
-importFrom(grDevices,palette)
-importFrom(grDevices,png)
-importFrom(grDevices,rgb)
-importFrom(graphics,abline)
-importFrom(graphics,arrows)
-importFrom(graphics,axis)
-importFrom(graphics,barplot)
-importFrom(graphics,grid)
-importFrom(graphics,hist)
-importFrom(graphics,layout)
-importFrom(graphics,lines)
-importFrom(graphics,mtext)
-importFrom(graphics,par)
-importFrom(graphics,plot)
-importFrom(graphics,points)
-importFrom(graphics,polygon)
-importFrom(graphics,rect)
-importFrom(graphics,symbols)
-importFrom(graphics,text)
-importFrom(graphics,title)
+importFrom(grDevices,
+  col2rgb,
+  dev.cur,
+  dev.new,
+  dev.off,
+  palette,
+  png,
+  rgb
+)
+importFrom(graphics,
+  abline,
+  arrows,
+  axis,
+  barplot,
+  grid,
+  hist,
+  layout,
+  lines,
+  mtext,
+  par,
+  plot,
+  points,
+  polygon,
+  rect,
+  symbols,
+  text,
+  title
+)
 importFrom(makehtml,addplot)
-importFrom(stats,coef)
-importFrom(stats,dnorm)
-importFrom(stats,lm)
-importFrom(stats,loess)
-importFrom(stats,median)
-importFrom(stats,quantile)
-importFrom(stats,sd)
-importFrom(utils,head)
-importFrom(utils,str)
-importFrom(utils,tail)
-importFrom(utils,write.csv)
-importFrom(utils,write.table)
+importFrom(stats,
+  coef,
+  dnorm,
+  lm,
+  loess,
+  median,
+  quantile,
+  sd
+)
+importFrom(utils,
+  head,
+  str,
+  tail,
+  write.csv,
+  write.table
+)

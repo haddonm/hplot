@@ -7,6 +7,7 @@
 plotcompdata(
   compdata,
   analysis,
+  prop = FALSE,
   ylabel = "",
   console = TRUE,
   outdir = "",
@@ -26,6 +27,10 @@ plotcompdata(
 be numbers, as in ages or sizeclasses for rows, and years for columns.}
 
 \item{analysis}{name of assessment scenario or unit or origin of samples}
+
+\item{prop}{default = FALSE, should the composition data be plotted as
+proportions or as counts or frequency. If TRUE the compdata is put 
+through prop.table}
 
 \item{ylabel}{what outer name to be used for the Y-axis, default=''}
 
