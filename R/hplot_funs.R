@@ -1135,7 +1135,8 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 #'     20 plots per row. And is used to represent time-series of age- or 
 #'     size-composition data in a manner that makes interannual comparisons 
 #'     simple. Currently designed for use with makehtml. It adjusts the size of
-#'     the output to match the number of barplots to be plotted.
+#'     the output to match the number of barplots to be plotted. A maximum of 
+#'     60 years of data can be plotted.
 #'
 #' @param compdata matrix of sizes or ages by years, row and column names should
 #'    be numbers, as in ages or sizeclasses for rows, and years for columns.
@@ -1188,7 +1189,6 @@ plotcompdata <- function(compdata,analysis,prop=FALSE,ylabel="",console=TRUE,
     compdata <- compdata[,picksamp]
   }
   sampsize <- round(colSums(compdata,na.rm=TRUE),1) 
-  Nsamp <- ncol(compdata) 
   compcl <- as.numeric(rownames(compdata))  # expects size or age classes    
   label <- as.numeric(colnames(compdata))   # expects years    
   addyrs <- paste0(label[1],"_",label[length(label)])
@@ -1198,13 +1198,19 @@ plotcompdata <- function(compdata,analysis,prop=FALSE,ylabel="",console=TRUE,
   } else {
     ylabel <- paste0(ylabel," Frequency")
   }
+  Nsamp <- ncol(compdata)
   if (Nsamp > 60) {
     warning(cat(ylabel," Composition data limited to maximum 60 years \n"))
-    compdata <- compdata[,1:60]
-  }
+    diffcomp <- diffcomp[,1:60]
+    Nsamp <- 60
+  }  
+  nc <- 10
+  nr <- ceiling(Nsamp/10)
+  hgt <- nr * 2.0
   filen <- ""
   if (!console) {
-    filen <- paste0(outdir,"/compdata_for_",analysis,"_",addyrs,".png")
+    nospace <- gsub(" ","_",analysis,fixed=TRUE)
+    filen <- paste0(outdir,"/compdata_for_",nospace,"_",addyrs,".png")
   }
   if (labeldiv > 1) {
     caption <- paste0("Observed ",ylabel,"-composition data for ",analysis,
@@ -1214,27 +1220,11 @@ plotcompdata <- function(compdata,analysis,prop=FALSE,ylabel="",console=TRUE,
   }
   if (length(horizline) == 1) linecol <- "blue"
   if (length(horizline) == 2) linecol <- c("green","blue")
-  if (Nsamp > 40) {
-    plotprep(width=10,height=12,newdev=!console,filename=filen,cex=cex,
-             verbose=FALSE)
-    parset(outmargin=c(1,2,1,1),margin=c(0.2,0.2,0,0))
-    matfor <- matrix(c(1:60),3,20,byrow=TRUE)
-    layout(matfor,heights=rep(1,60),TRUE)
-  } else { 
-    if (Nsamp > 20) {
-      plotprep(width=10,height=8,newdev=!console,filename=filen,cex=cex,
-               verbose=FALSE)
-      parset(outmargin=c(1,2,1,1),margin=c(0.2,0.2,0,0))
-      matfor <- matrix(c(1:40),2,20,byrow=TRUE)
-      layout(matfor,heights=rep(1,40),TRUE)
-    } else {
-      plotprep(width=12,height=4,newdev=!console,filename=filen,cex=cex,
-               verbose=FALSE)
-      parset(outmargin=c(1,2,1,0.2),margin=c(0.2,0.2,0,0))
-      matfor <- matrix(c(1:20),1,20,byrow=TRUE)
-      layout(matfor,heights=rep(1,20),TRUE)
-    }
-  }
+  plotprep(width=10,height=hgt,newdev=!console,filename=filen,cex=cex,
+           verbose=FALSE)
+  parset(outmargin=c(1,2,1,1),margin=c(0.2,0.2,0,0))
+  matfor <- matrix(c(1:(nr*nc)),nr,nc,byrow=TRUE)
+  layout(matfor,heights=rep(1,(nr*nc)),TRUE)
   if (sampsize[1] > 0) {
     barplot(compdata[,1],horiz=TRUE,axes=FALSE,col=barcol,border=bordercol,
             space=0,axis.lty=1.0,cex.names=bottomcex)
@@ -1252,105 +1242,27 @@ plotcompdata <- function(compdata,analysis,prop=FALSE,ylabel="",console=TRUE,
     abline(h=pickcl-1,lwd=3,col=linecol)
   }
   if (Nsamp > 1) {
-    if (Nsamp <= 20) {
-      for (i in 2:Nsamp) {
-        if (sampsize[i] > 0) {
-          barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
-                  border=bordercol,space=0,axis.lty=1.0)
-        } else {  plotnull()  }    
-        mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=topcex)
-        if (!prop) {
-          mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,
-                cex=topcex)
-        }
-        if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
-      }
-    } else {
-      for (i in 2:20) {
-        if (sampsize[i] > 0) {
-          barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
-                  border=bordercol,space=0)
-        } else {  plotnull()  }    
-        mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=bottomcex)
-        if (!prop) {
-          mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,
-                cex=topcex)
-        }
-        if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
-      }
-      if (sampsize[21] > 0) {
-        barplot(compdata[,21],horiz=TRUE,axes=FALSE,col=barcol,border=bordercol,
-                space=0,axis.lty=1.0)
-      } else {  
-        plotnull(xvals=as.numeric(rownames(compdata))) 
-      }
-      mtext(label[21],side=1,outer=FALSE,cex=bottomcex,line=-0.75)
+    for (i in 2:Nsamp) {
+      if (sampsize[i] > 0) {
+        barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
+                border=bordercol,space=0,axis.lty=1.0)
+      } else {  plotnull()  }    
+      mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=topcex)
       if (!prop) {
-        mtext(trunc(sampsize[21]/labeldiv),side=3,outer=FALSE,line=-1,
+        mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,
               cex=topcex)
       }
-      if (length(horizline) > 0) {
-        pickcl <- which.closest(horizline,compcl)
-        if (compcl[pickcl] != horizline)
-          warning(cat("Horizontal line at ",compcl[pickcl]," not ",
-                      horizline,"\n"))
-        abline(h=pickcl-1,lwd=3,col=linecol)
-      }
-      if (Nsamp > 21) {
-        for (i in 22:min(40,Nsamp)) {
-          if (sampsize[i] > 0) {
-            barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,
-                    col=barcol,border=bordercol,space=0)
-          } else {  plotnull()  }    
-          mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=bottomcex)
-          if (!prop) {
-            mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,
-                  cex=topcex)
-          }
-          if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
-        }
-      }
-      if (Nsamp > 40) {
-        if (sampsize[41] > 0) {
-          barplot(compdata[,41],horiz=TRUE,axes=FALSE,col=barcol,
-                  border=bordercol,space=0,axis.lty=1.0)
-        } else {  
-          plotnull(xvals=as.numeric(rownames(compdata))) 
-        }
-        mtext(label[41],side=1,outer=FALSE,cex=bottomcex,line=-0.75)
-        if (!prop) {
-          mtext(trunc(sampsize[41]/labeldiv),side=3,outer=FALSE,line=-1,
-                cex=topcex)
-        }
-        if (length(horizline) > 0) {
-          pickcl <- which.closest(horizline,compcl)
-          if (compcl[pickcl] != horizline)
-            warning(cat("Horizontal line at ",compcl[pickcl]," not ",
-                        horizline,"\n"))
-          abline(h=pickcl-1,lwd=3,col=linecol)
-        }
-        if (Nsamp > 41) {
-          for (i in 42:Nsamp) {
-            if (sampsize[i] > 0) {
-              barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,
-                      col=barcol,border=bordercol,space=0)
-            } else {  plotnull()  }    
-            mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=bottomcex)
-            if (!prop) {
-              mtext(trunc(sampsize[i]/labeldiv),side=3,outer=FALSE,line=-1,
-                    cex=topcex)
-            }
-            if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
-          }
-        }
-      }
-    }  
+      if (length(horizline) > 0) abline(h=pickcl-1,lwd=3,col=linecol)
+    } 
   }
   txtlabel <- paste0(ylabel,"  ",analysis)
   mtext(text=txtlabel,side=2,outer=TRUE,cex=1.1,line=0.2)
+  xtxtlabel <- paste0("Categories ",ylabel," ",min(compcl)," - ",max(compcl))
+  mtext(text=xtxtlabel,side=1,outer=TRUE,cex=1.1,line=-0.25)
   if (!console) dev.off()
   return(invisible(list(filename=filen,caption=caption)))
 } # end of plotcompdata
+
 #' @title plotnull generates an empty plot when one is needed
 #'
 #' @description plotnull, there are often circumstances, for example, when

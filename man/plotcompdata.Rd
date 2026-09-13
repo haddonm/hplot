@@ -73,7 +73,8 @@ plotcompdata generates a horizontal array of up to 60 barplots,
     20 plots per row. And is used to represent time-series of age- or 
     size-composition data in a manner that makes interannual comparisons 
     simple. Currently designed for use with makehtml. It adjusts the size of
-    the output to match the number of barplots to be plotted.
+    the output to match the number of barplots to be plotted. A maximum of 
+    60 years of data can be plotted.
 }
 \examples{
 \dontrun{
