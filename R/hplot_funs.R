@@ -1143,7 +1143,7 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 #' @param analysis name of assessment scenario or unit or origin of samples
 #' @param prop default = FALSE, should the composition data be plotted as
 #'     proportions or as counts or frequency. If TRUE the compdata is put 
-#'     through prop.table 
+#'     through prop.table and constmaxx is set to FALSE
 #' @param ylabel what outer name to be used for the Y-axis, default=''
 #' @param console should the graph be plotted to the console or saved as a file.
 #'     default=TRUE ie it goes to the console, if set to FALSE it goes to 
@@ -1165,6 +1165,7 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 #' @param cex default plot font size, default = 1.0
 #' @param topcex the size of the labels on top of each bar, default = 0.9
 #' @param bottomcex the size of the labels underneath each bar, default =0.75
+#' @param constmaxx should maximum height of all plots be fixed? default=TRUE
 #'
 #' @return invisibly returns a list of the filename and caption
 #' @export
@@ -1181,7 +1182,7 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 plotcompdata <- function(compdata,analysis,prop=FALSE,ylabel="",console=TRUE,
                          outdir="",barcol="red",bordercol="black",
                          horizline=NULL,xlabel="",labeldiv=1,Nsamp=NULL,
-                         cex=1.0,topcex=0.9,bottomcex=0.75) {
+                         cex=1.0,topcex=0.9,bottomcex=0.75,constmaxx=TRUE) {
   sampsize <- round(colSums(compdata,na.rm=TRUE),1)  
   fstsamp <- which(sampsize > 0)
   picksamp <- min(fstsamp):max(fstsamp)
@@ -1192,9 +1193,11 @@ plotcompdata <- function(compdata,analysis,prop=FALSE,ylabel="",console=TRUE,
   compcl <- as.numeric(rownames(compdata))  # expects size or age classes    
   label <- as.numeric(colnames(compdata))   # expects years    
   addyrs <- paste0(label[1],"_",label[length(label)])
+  if (constmaxx) maxx <- getmax(compdata)  
   if (prop) {
     compdata <- prop.table(compdata,margin=2)
     ylabel <- paste0(ylabel," Proportional")
+    constmaxx <- FALSE
   } else {
     ylabel <- paste0(ylabel," Frequency")
   }
@@ -1207,10 +1210,11 @@ plotcompdata <- function(compdata,analysis,prop=FALSE,ylabel="",console=TRUE,
   nc <- 10
   nr <- ceiling(Nsamp/10)
   hgt <- nr * 2.0
-  filen <- ""
+  fileout <- ""
   if (!console) {
     nospace <- gsub(" ","_",analysis,fixed=TRUE)
-    filen <- paste0(outdir,"/compdata_for_",nospace,"_",addyrs,".png")
+    filen <- paste0("compdata_for_",nospace,"_",addyrs,".png")
+    fileout <- pathtopath(outdir,filen)
   }
   if (labeldiv > 1) {
     caption <- paste0("Observed ",ylabel,"-composition data for ",analysis,
@@ -1220,14 +1224,15 @@ plotcompdata <- function(compdata,analysis,prop=FALSE,ylabel="",console=TRUE,
   }
   if (length(horizline) == 1) linecol <- "blue"
   if (length(horizline) == 2) linecol <- c("green","blue")
-  plotprep(width=10,height=hgt,newdev=!console,filename=filen,cex=cex,
+  plotprep(width=10,height=hgt,newdev=!console,filename=fileout,cex=cex,
            verbose=FALSE)
-  parset(outmargin=c(1,2,1,1),margin=c(0.2,0.2,0,0))
+  parset(outmargin=c(1,3,1,1),margin=c(0.2,0.1,0,0))
   matfor <- matrix(c(1:(nr*nc)),nr,nc,byrow=TRUE)
   layout(matfor,heights=rep(1,(nr*nc)),TRUE)
   if (sampsize[1] > 0) {
+    if (!constmaxx) maxx <- getmax(compdata[,1])
     barplot(compdata[,1],horiz=TRUE,axes=FALSE,col=barcol,border=bordercol,
-            space=0,axis.lty=1.0,cex.names=bottomcex)
+            space=0,axis.lty=1.0,cex.names=bottomcex,xlim=c(0,maxx))
   } else {  
     plotnull(xvals=as.numeric(rownames(compdata))) 
   }
@@ -1244,8 +1249,16 @@ plotcompdata <- function(compdata,analysis,prop=FALSE,ylabel="",console=TRUE,
   if (Nsamp > 1) {
     for (i in 2:Nsamp) {
       if (sampsize[i] > 0) {
-        barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,col=barcol,
-                border=bordercol,space=0,axis.lty=1.0)
+        if ((i %% 10) != 1) {
+          if (!constmaxx) maxx <- getmax(compdata[,i])
+          barplot(compdata[,i],horiz=TRUE,axes=FALSE,axisnames=FALSE,
+                  col=barcol,border=bordercol,space=0,axis.lty=1.0,
+                  xlim=c(0,maxx))
+        } else {
+          barplot(compdata[,i],horiz=TRUE,axes=FALSE,
+                  col=barcol,border=bordercol,space=0,axis.lty=1.0,
+                  xlim=c(0,maxx))          
+        }
       } else {  plotnull()  }    
       mtext(label[i],side=1,outer=FALSE,line=-0.75,cex=topcex)
       if (!prop) {
@@ -1256,7 +1269,7 @@ plotcompdata <- function(compdata,analysis,prop=FALSE,ylabel="",console=TRUE,
     } 
   }
   txtlabel <- paste0(ylabel,"  ",analysis)
-  mtext(text=txtlabel,side=2,outer=TRUE,cex=1.1,line=0.2)
+  mtext(text=txtlabel,side=2,outer=TRUE,cex=1.1,line=1)
   xtxtlabel <- paste0("Categories ",ylabel," ",min(compcl)," - ",max(compcl))
   mtext(text=xtxtlabel,side=1,outer=TRUE,cex=1.1,line=-0.25)
   if (!console) dev.off()

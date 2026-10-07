@@ -19,7 +19,8 @@ plotcompdata(
   Nsamp = NULL,
   cex = 1,
   topcex = 0.9,
-  bottomcex = 0.75
+  bottomcex = 0.75,
+  constmaxx = TRUE
 )
 }
 \arguments{
@@ -30,7 +31,7 @@ be numbers, as in ages or sizeclasses for rows, and years for columns.}
 
 \item{prop}{default = FALSE, should the composition data be plotted as
 proportions or as counts or frequency. If TRUE the compdata is put 
-through prop.table}
+through prop.table and constmaxx is set to FALSE}
 
 \item{ylabel}{what outer name to be used for the Y-axis, default=''}
 
@@ -64,6 +65,8 @@ proportions are being plotted.}
 \item{topcex}{the size of the labels on top of each bar, default = 0.9}
 
 \item{bottomcex}{the size of the labels underneath each bar, default =0.75}
+
+\item{constmaxx}{should maximum height of all plots be fixed? default=TRUE}
 }
 \value{
 invisibly returns a list of the filename and caption
