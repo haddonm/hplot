@@ -45,7 +45,10 @@ export(textbox)
 export(uphist)
 export(xyplotyear)
 export(yearBubble)
-importFrom(codeutils,which.closest)
+importFrom(codeutils,
+  pathtopath,
+  which.closest
+)
 importFrom(grDevices,
   col2rgb,
   dev.cur,

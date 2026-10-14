@@ -1273,7 +1273,7 @@ plotcompdata <- function(compdata,analysis,prop=FALSE,ylabel="",console=TRUE,
   xtxtlabel <- paste0("Categories ",ylabel," ",min(compcl)," - ",max(compcl))
   mtext(text=xtxtlabel,side=1,outer=TRUE,cex=1.1,line=-0.25)
   if (!console) dev.off()
-  return(invisible(list(filename=filen,caption=caption)))
+  return(invisible(list(filename=fileout,caption=caption)))
 } # end of plotcompdata
 
 #' @title plotnull generates an empty plot when one is needed
