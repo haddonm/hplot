@@ -13,6 +13,7 @@ plotcompdata(
   outdir = "",
   barcol = "red",
   bordercol = "black",
+  rowhgt = 2.5,
   horizline = NULL,
   xlabel = "",
   labeldiv = 1,
@@ -45,6 +46,9 @@ is added, default=""}
 \item{barcol}{what colour should the bars be, default = red}
 
 \item{bordercol}{what colour should the bar borders be? default = black}
+
+\item{rowhgt}{the baseline rowheight, sets the height of each row of plots.
+default = 2.5}
 
 \item{horizline}{the size or age against which to draw a reference line. 
 default=NULL. To draw a line at 136mm then horizline=136}

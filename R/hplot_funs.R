@@ -1152,6 +1152,8 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 #'     is added, default=""
 #' @param barcol what colour should the bars be, default = red 
 #' @param bordercol what colour should the bar borders be? default = black
+#' @param rowhgt the baseline rowheight, sets the height of each row of plots.
+#'     default = 2.5
 #' @param horizline the size or age against which to draw a reference line. 
 #'     default=NULL. To draw a line at 136mm then horizline=136
 #' @param xlabel label for the x-axis. default = '', as years should be obvious
@@ -1180,7 +1182,7 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 #'                console=TRUE,barcol="red",bordercol="black",horizline=136)
 #' }              
 plotcompdata <- function(compdata,analysis,prop=FALSE,ylabel="",console=TRUE,
-                         outdir="",barcol="red",bordercol="black",
+                         outdir="",barcol="red",bordercol="black",rowhgt=2.5,
                          horizline=NULL,xlabel="",labeldiv=1,Nsamp=NULL,
                          cex=1.0,topcex=0.9,bottomcex=0.75,constmaxx=TRUE) {
   sampsize <- round(colSums(compdata,na.rm=TRUE),1)  
@@ -1209,7 +1211,7 @@ plotcompdata <- function(compdata,analysis,prop=FALSE,ylabel="",console=TRUE,
   }  
   nc <- 10
   nr <- ceiling(Nsamp/10)
-  hgt <- nr * 2.0
+  hgt <- nr * rowhgt
   fileout <- ""
   if (!console) {
     nospace <- gsub(" ","_",analysis,fixed=TRUE)
@@ -1273,7 +1275,7 @@ plotcompdata <- function(compdata,analysis,prop=FALSE,ylabel="",console=TRUE,
   xtxtlabel <- paste0("Categories ",ylabel," ",min(compcl)," - ",max(compcl))
   mtext(text=xtxtlabel,side=1,outer=TRUE,cex=1.1,line=-0.25)
   if (!console) dev.off()
-  return(invisible(list(filename=fileout,caption=caption)))
+  return(invisible(list(filename=fileout,caption=caption,sampsize=sampsize)))
 } # end of plotcompdata
 
 #' @title plotnull generates an empty plot when one is needed

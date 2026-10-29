@@ -2,7 +2,7 @@ Package: hplot
 Type: Package
 Title: Contains utility functions for when using base R graphics
 Version: 0.1.14
-Date: 2026-09-09
+Date: 2026-10-29
 Authors@R: person(given="Malcolm",
                   family="Haddon", 
                   email = "malcolm.haddon@gmail.com", 
