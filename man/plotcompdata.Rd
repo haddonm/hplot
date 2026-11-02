@@ -21,7 +21,9 @@ plotcompdata(
   cex = 1,
   topcex = 0.9,
   bottomcex = 0.75,
-  constmaxx = TRUE
+  constmaxx = TRUE,
+  miny = 0,
+  maxy = 0
 )
 }
 \arguments{
@@ -71,6 +73,12 @@ proportions are being plotted.}
 \item{bottomcex}{the size of the labels underneath each bar, default =0.75}
 
 \item{constmaxx}{should maximum height of all plots be fixed? default=TRUE}
+
+\item{miny}{the minimum category to plot if one wants to expand the details
+of a plot, default = 0, meaning using all size classes}
+
+\item{maxy}{the maximum category to plot if one wants to expand the details
+of a plot, default = 0, meaning using all size classes}
 }
 \value{
 invisibly returns a list of the filename and caption

@@ -1168,6 +1168,10 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 #' @param topcex the size of the labels on top of each bar, default = 0.9
 #' @param bottomcex the size of the labels underneath each bar, default =0.75
 #' @param constmaxx should maximum height of all plots be fixed? default=TRUE
+#' @param miny the minimum category to plot if one wants to expand the details
+#'     of a plot, default = 0, meaning using all size classes
+#' @param maxy the maximum category to plot if one wants to expand the details
+#'     of a plot, default = 0, meaning using all size classes
 #'
 #' @return invisibly returns a list of the filename and caption
 #' @export
@@ -1184,7 +1188,8 @@ plot1 <- function(x,y,xlab="",ylab="",type="l",usefont=7,cex=0.75,
 plotcompdata <- function(compdata,analysis,prop=FALSE,ylabel="",console=TRUE,
                          outdir="",barcol="red",bordercol="black",rowhgt=2.5,
                          horizline=NULL,xlabel="",labeldiv=1,Nsamp=NULL,
-                         cex=1.0,topcex=0.9,bottomcex=0.75,constmaxx=TRUE) {
+                         cex=1.0,topcex=0.9,bottomcex=0.75,constmaxx=TRUE,
+                         miny=0,maxy=0) {
   sampsize <- round(colSums(compdata,na.rm=TRUE),1)  
   fstsamp <- which(sampsize > 0)
   picksamp <- min(fstsamp):max(fstsamp)
@@ -1192,7 +1197,6 @@ plotcompdata <- function(compdata,analysis,prop=FALSE,ylabel="",console=TRUE,
     compdata <- compdata[,picksamp]
   }
   sampsize <- round(colSums(compdata,na.rm=TRUE),1) 
-  compcl <- as.numeric(rownames(compdata))  # expects size or age classes    
   label <- as.numeric(colnames(compdata))   # expects years    
   addyrs <- paste0(label[1],"_",label[length(label)])
   if (constmaxx) maxx <- getmax(compdata)  
@@ -1226,6 +1230,18 @@ plotcompdata <- function(compdata,analysis,prop=FALSE,ylabel="",console=TRUE,
   }
   if (length(horizline) == 1) linecol <- "blue"
   if (length(horizline) == 2) linecol <- c("green","blue")
+  if (miny != 0) {
+    lbins <- as.numeric(rownames(compdata))
+    numrow <- length(lbins)    
+    pick <- which.closest(miny,lbins)
+    compdata <- compdata[pick:numrow,]
+  }
+  if (maxy != 0) {
+    lbins <- as.numeric(rownames(compdata))
+    pick2 <- which.closest(maxy,lbins)
+    compdata <- compdata[1:pick2,]
+  }
+  compcl <- as.numeric(rownames(compdata))  # expects size or age classes 
   plotprep(width=10,height=hgt,newdev=!console,filename=fileout,cex=cex,
            verbose=FALSE)
   parset(outmargin=c(1,3,1,1),margin=c(0.2,0.1,0,0))
